@@ -1,7 +1,7 @@
 [[source]]
 
-verify_ssl = true
 url = "https://pypi.python.org/simple"
+verify_ssl = true
 name = "pypi"
 
 
@@ -11,4 +11,6 @@ name = "pypi"
 
 [packages]
 
-"e1839a8" = {editable = true, path = "."}
+tensorflow = "*"
+tensorflow-gpu = "*"
+"2811dad" = {path = "./../alpha-zero-general"}
