@@ -74,3 +74,15 @@ player. At 1000, it beat me when it was first player, and then beat me again
 in a long game when I was first player.
 
 Now I think I understand enough to try adding a new set of game rules.
+
+### 21 Jun 2018 ###
+Spent a few nights fighting with the setup tools, and now the Shibumi Games
+project can use Alpha Zero General as a dependency. I can run Othello from
+the Shibumi Games project.
+
+Next step: implement Spline!
+
+### 25 Jun 2018 ###
+Implemented the rules of Spline, and tried playing human vs. human.
+
+Next step: write the neural network wrapper.
