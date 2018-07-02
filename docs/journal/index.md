@@ -86,3 +86,19 @@ Next step: implement Spline!
 Implemented the rules of Spline, and tried playing human vs. human.
 
 Next step: write the neural network wrapper.
+
+### 2 Jul 2018 ###
+Tried using the Connect 4 neural network wrapper without changes. I had to hack
+the Shibumi `Board` to hold the pieces in an 8x8 array instead of 4x4x4.
+
+The training session saved eight checkpoints and then quit. Only checkpoint 2
+was accepted. I tried playing against the saved model, and beat it two out of
+two games. It wasn't completely stupid, but it made some moves I didn't
+understand.
+
+Maybe I've messed up the symmetry or something. I have to try to understand
+what the neural network code is really doing. So far, I just copied the existing
+code.
+
+It would also be nice to let the human player give board coordinates instead of
+a move index.

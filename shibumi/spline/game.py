@@ -18,7 +18,7 @@ class SplineGame(Game):
         return self._base_board.pieces
 
     def getBoardSize(self):
-        return self._base_board.size, self._base_board.size
+        return self._base_board.size*self._base_board.size//2, self._base_board.size*2
 
     def getActionSize(self):
         return len(self._base_board.get_valid_moves())
