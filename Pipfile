@@ -1,17 +1,14 @@
 [[source]]
-
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
 
-
 [dev-packages]
-
 pytest = "*"
-
+matplotlib = "*"
+seaborn = "*"
 
 [packages]
-
 tensorflow = "*"
 tensorflow-gpu = "*"
-"2811dad" = {path = "./../alpha-zero-general"}
+"2811dad" = {path = "./../alpha-zero-general", editable = true}

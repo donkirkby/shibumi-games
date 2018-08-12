@@ -102,3 +102,11 @@ code.
 
 It would also be nice to let the human player give board coordinates instead of
 a move index.
+
+I tried just running the training again without change, and it ran for 14
+iterations with 7 accepted before I stopped it. Was I just unlucky the first
+time?
+
+I tried playing against the new network, and we each won one game. My win was
+strange, because the opponent didn't play to block it. Maybe there was an
+unavoidable win somewhere in the next few turns that I didn't see?

@@ -139,18 +139,23 @@ class Board:
     def get_move_index(self, row_name, column_name):
         row = int(row_name) - 1
         row_index = row // 2
-        column = ord(column_name) - self.FIRST_COLUMN_ORD
+        column = ord(column_name.upper()) - self.FIRST_COLUMN_ORD
         column_index = column // 2
         height = row % 2
         while True:
+            if height >= self.size:
+                break
+            if not 0 <= column_index < self.size - height:
+                break
+            if not 0 <= row_index < self.size - height:
+                break
             piece_index = self.get_index(height, row_index, column_index)
             if self.valid_moves[piece_index]:
                 return piece_index
             height += 2
-            if height >= self.size:
-                raise ValueError(f'Invalid move: {row_name}{column_name}.')
             row_index -= 1
             column_index -= 1
+        raise ValueError(f'Invalid move: {row_name}{column_name}.')
 
     def get_valid_moves(self):
         return self.valid_moves

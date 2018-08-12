@@ -60,6 +60,26 @@ def test_add_stone_display():
     assert expected_display == display
 
 
+def test_add_stone_lower_case():
+    board = Board()
+    expected_display = """\
+  A C E G
+7 . . . . 7
+
+5 . . . . 5
+
+3 . . B . 3
+
+1 . . . . 1
+  A C E G
+"""
+
+    board.add_stone('3', 'e', Player.BLACK)
+    display = str(board)
+
+    assert expected_display == display
+
+
 def test_init_text():
     expected_display = """\
   A C E G
@@ -253,7 +273,7 @@ def test_add_stone_third_level():
     assert expected_display == display
 
 
-def test_add_stone_bad_row():
+def test_add_stone_occupied_row():
     board = Board(text="""\
   A C E G
 7 . . . . 7
@@ -268,6 +288,40 @@ def test_add_stone_bad_row():
 
     with pytest.raises(ValueError, match='Invalid move: 5C.'):
         board.add_stone('5', 'C', Player.RED)
+
+
+def test_add_stone_bad_column():
+    board = Board(text="""\
+  A C E G
+7 . . . . 7
+
+5 . W B . 5
+
+3 . W B . 3
+
+1 . . . . 1
+  A C E G
+""")
+
+    with pytest.raises(ValueError, match='Invalid move: 5X.'):
+        board.add_stone('5', 'X', Player.RED)
+
+
+def test_add_stone_bad_row():
+    board = Board(text="""\
+  A C E G
+7 . . . . 7
+
+5 . W B . 5
+
+3 . W B . 3
+
+1 . . . . 1
+  A C E G
+""")
+
+    with pytest.raises(ValueError, match='Invalid move: 9C.'):
+        board.add_stone('9', 'C', Player.RED)
 
 
 def test_full_spaces_valid_moves():
