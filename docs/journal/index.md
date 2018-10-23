@@ -110,3 +110,19 @@ time?
 I tried playing against the new network, and we each won one game. My win was
 strange, because the opponent didn't play to block it. Maybe there was an
 unavoidable win somewhere in the next few turns that I didn't see?
+
+### 11 Aug 2018 ###
+Coming back to this after a couple of months. The last thing I did was to plot
+the change in strength as I changed the number of iterations. I never got the
+expected result, so either my player is random, or there's something wrong
+with my test.
+
+### 30 Aug 2018 ###
+I decided to get a better understanding of the machine learning tools by taking
+the [Coursera] course by Andrew Ng.
+
+### 21 Oct 2018 ###
+Finished the Coursera course, and got a [TensorFlow book] from the library.
+
+[Coursera]: https://www.coursera.org/learn/machine-learning
+[TensorFlow book]: https://vpl.bibliocommons.com/item/show/5484355038
