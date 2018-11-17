@@ -12,8 +12,7 @@ from alpha_zero_general.Arena import Arena
 from matplotlib.animation import FuncAnimation
 import seaborn as sn
 
-from alpha_zero_general.pit import create_player
-from alpha_zero_general.connect4.tensorflow.NNet import NNetWrapper
+from alpha_zero_general.pit import MCTSPlayer
 from shibumi.spline.game import SplineGame
 
 SAVED_MODEL = '../saved_models/spline4_gpu/best.pth.tar'
@@ -22,8 +21,8 @@ logger = logging.getLogger(__name__)
 
 class Plotter:
     def __init__(self, start_thread=True):
-        self.x = np.arange(50, 501, 50)
-        self.y = np.arange(50, 501, 50)
+        self.x = 2 << np.arange(7)
+        self.y = 2 << np.arange(7)
         self.x_coords, self.y_coords = np.meshgrid(self.x, self.y)
         self.counts = np.zeros(self.y_coords.shape)
         self.y_wins = np.zeros(self.y_coords.shape)
@@ -40,10 +39,12 @@ class Plotter:
         sn.set()
         plt.ylabel('Player 1 MCTS simulation count')
         plt.xlabel('Player 2 MCTS simulation count')
+        plt.xscale('log')
+        plt.yscale('log')
         self.artists = []
         self.contour = None
+        self.colorbar_axes = None
         self.create_contour()
-        plt.colorbar()
 
     def update(self, frame):
         messages = []
@@ -93,6 +94,9 @@ class Plotter:
         # self.artists.append(plt.clabel(self.contour))
         self.artists.append(plt.suptitle(
             f'Player 1 Win Rates After {int(self.counts.sum())} Games'))
+        self.colorbar = plt.colorbar(cax=self.colorbar_axes)
+        self.artists.append(self.colorbar)
+        _, self.colorbar_axes = plt.gcf().get_axes()
 
     def load_history(self):
         try:
@@ -169,11 +173,11 @@ def run_games(result_queue: Queue, x_values, y_values, counts):
                       cpuct=1.0,
                       player=None,
                       load_model=SAVED_MODEL,
-                      network=NNetWrapper)
+                      network='alpha_zero_general.connect4.tensorflow.NNet.NNetWrapper')
     args2 = copy(args1)
-    player1 = create_player(args1, game)
+    player1 = MCTSPlayer(game, args1).play
     # noinspection PyUnresolvedReferences
-    player2 = create_player(args2, game)
+    player2 = MCTSPlayer(game, args2).play
     arena = Arena(player1, player2, game)
 
     while True:

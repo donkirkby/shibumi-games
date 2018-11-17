@@ -124,5 +124,28 @@ the [Coursera] course by Andrew Ng.
 ### 21 Oct 2018 ###
 Finished the Coursera course, and got a [TensorFlow book] from the library.
 
+### 27 Oct 2018 ###
+Now that I have a better understanding of the machine learning tools, I want to
+try and dig into the source code for the alpha-zero-general project. Some ideas:
+
+1. Play two different branches against each other. That way you can test whether
+    a change actually improves play.
+2. Try to measure the benefits of different features: deep learning to score
+    position values, number of iterations of MCTS, architecture of deep learning
+    model. Use existing games in the alpha-zero-general project like Connect
+    Four and Go Bang.
+3. Try a simpler 3D game, like 3D Tic Tac Toe or Score Four, before going back
+    to Shibumi games. The [`conv3d`] class is probably useful.
+
+### 16 Nov 2018 ###
+The upgrade from Ubuntu 16.04 to 18.04 broke my GPU support for Tensorflow.
+After breaking my video drivers and reinstalling, I found an article that
+describes how to install [multiple CUDA libraries]. It seems like installing
+version 9.0 with the `--toolkit` option and then pointing to it with
+`$LD_LIBRARY_PATH` was what I needed. I also pointed the `/usr/local/cuda`
+symbolic link back at the 9.1 version, but I'm not sure if that's necessary.
+
 [Coursera]: https://www.coursera.org/learn/machine-learning
 [TensorFlow book]: https://vpl.bibliocommons.com/item/show/5484355038
+[`conv3d`]: https://www.tensorflow.org/api_docs/python/tf/nn/conv3d
+[multiple CUDA libraries]: https://blog.kovalevskyi.com/b9502d50ae77
