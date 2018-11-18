@@ -145,6 +145,31 @@ version 9.0 with the `--toolkit` option and then pointing to it with
 `$LD_LIBRARY_PATH` was what I needed. I also pointed the `/usr/local/cuda`
 symbolic link back at the 9.1 version, but I'm not sure if that's necessary.
 
+### 18 Nov 2018 ###
+Now that I've got Tensorflow running again, I tried to validate its behaviour.
+The first thing I tried was to look at how the number of MCTS iterations
+affects the win rate. I tried pitting players against each other with different
+numbers of iterations, but the patterns didn't make any sense. I thought there
+might be bugs in Spline, so I also tried it with Connect 4. That didn't make
+sense either. Most of the win rates were around 50%:
+
+![connect 4 wins]
+
+Just to test my expectations, I simulated a simple game where two players flip
+coins, and the most heads wins. Then I plotted the win rates as each player
+flips a different number of coins. This was meant to show how I expected the
+MCTS players' strengths to vary with the number of iterations.
+
+![headcount wins]
+
+My guess is that the neural network is actually doing a good enough job on
+these simple games that the MCTS part is irrelevant. I could try a deeper game
+like Othello, or I could try making a dummy neural network so the MCTS part is
+more important.
+
+[connect 4 wins]: 2018/connect-4-wins.png
+[headcount wins]: 2018/headcount-wins.png
+
 [Coursera]: https://www.coursera.org/learn/machine-learning
 [TensorFlow book]: https://vpl.bibliocommons.com/item/show/5484355038
 [`conv3d`]: https://www.tensorflow.org/api_docs/python/tf/nn/conv3d

@@ -9,13 +9,13 @@ from threading import Thread
 import numpy as np
 import matplotlib.pyplot as plt
 from alpha_zero_general.Arena import Arena
+from alpha_zero_general.connect4.Connect4Game import Connect4Game
 from matplotlib.animation import FuncAnimation
 import seaborn as sn
 
 from alpha_zero_general.pit import MCTSPlayer
-from shibumi.spline.game import SplineGame
 
-SAVED_MODEL = '../saved_models/spline4_gpu/best.pth.tar'
+SAVED_MODEL = '../saved_models/connect4_gpu/best.pth.tar'
 logger = logging.getLogger(__name__)
 
 
@@ -27,7 +27,7 @@ class Plotter:
         self.counts = np.zeros(self.y_coords.shape)
         self.y_wins = np.zeros(self.y_coords.shape)
         self.result_queue = Queue()
-        self.conn = sqlite3.connect('strengths.db')
+        self.conn = sqlite3.connect('utils/strengths/connect4.db')
         self.conn.row_factory = sqlite3.Row
         self.load_history()
         self.has_reported = False
@@ -45,8 +45,9 @@ class Plotter:
         self.contour = None
         self.colorbar_axes = None
         self.create_contour()
+        plt.tight_layout()
 
-    def update(self, frame):
+    def update(self, _frame):
         messages = []
         try:
             while True:
@@ -55,10 +56,12 @@ class Plotter:
             if not messages:
                 return
         for x, y, result in messages:
-            if result < 0:
+            if result < -0.1:
                 wins1 = 1
-            else:
+            elif result > 0.1:
                 wins1 = 0
+            else:
+                wins1 = 0.5
             self.record_result(y, x, wins1)
         self.write_history()
 
@@ -92,10 +95,10 @@ class Plotter:
         self.contour = plt.contourf(self.x_coords, self.y_coords, z)
         self.artists.append(self.contour)
         # self.artists.append(plt.clabel(self.contour))
-        self.artists.append(plt.suptitle(
-            f'Player 1 Win Rates After {int(self.counts.sum())} Games'))
-        self.colorbar = plt.colorbar(cax=self.colorbar_axes)
-        self.artists.append(self.colorbar)
+        self.artists.append(plt.title(
+            f'Player 1 Win Rates After {int(self.counts.sum())} Games of Connect 4'))
+        colorbar = plt.colorbar(cax=self.colorbar_axes)
+        self.artists.append(colorbar)
         _, self.colorbar_axes = plt.gcf().get_axes()
 
     def load_history(self):
@@ -162,13 +165,13 @@ INTO    games
         ?
         )
 """,
-                [strength1, strength2, count, wins1])
+                    [strength1, strength2, count, wins1])
             self.conn.commit()
             it.iternext()
 
 
 def run_games(result_queue: Queue, x_values, y_values, counts):
-    game = SplineGame()
+    game = Connect4Game()
     args1 = Namespace(game=game,
                       cpuct=1.0,
                       player=None,
@@ -201,7 +204,8 @@ def main():
                         format="%(asctime)s[%(levelname)s]:%(name)s:%(message)s")
     figure = plt.figure()
     plotter = Plotter(start_thread)
-    animation = FuncAnimation(figure, plotter.update, interval=10000)
+    # noinspection PyUnusedLocal
+    animation = FuncAnimation(figure, plotter.update, interval=100)
     plt.show()
 
 

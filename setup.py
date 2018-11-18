@@ -6,4 +6,5 @@ setup(name='shibumi',
       author='Don Kirkby',
       url='https://github.com/donkirkby/shibumi-games',
       packages=['shibumi'],
-      scripts=['shibumi/play_shibumi.py'])
+      scripts=['shibumi/play_shibumi.py'],
+      extras_require=dict(dev=['matplotlib', 'seaborn']))
