@@ -184,6 +184,7 @@ increase the MCTS iterations with the dummy network.
 
 [connect 4 wins]: 2018/connect-4-wins.png
 [headcount wins]: 2018/headcount-wins.png
+[connect 4 wins without machine learning]: 2018/connect-4-wins-no-ml.png
 
 [Coursera]: https://www.coursera.org/learn/machine-learning
 [TensorFlow book]: https://vpl.bibliocommons.com/item/show/5484355038
