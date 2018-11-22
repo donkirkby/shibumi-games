@@ -27,7 +27,7 @@ class Plotter:
         self.counts = np.zeros(self.y_coords.shape)
         self.y_wins = np.zeros(self.y_coords.shape)
         self.result_queue = Queue()
-        self.conn = sqlite3.connect('utils/strengths/connect4.db')
+        self.conn = sqlite3.connect('utils/strengths/connect4-dummy-net.db')
         self.conn.row_factory = sqlite3.Row
         self.load_history()
         self.has_reported = False
@@ -57,9 +57,9 @@ class Plotter:
                 return
         for x, y, result in messages:
             if result < -0.1:
-                wins1 = 1
-            elif result > 0.1:
                 wins1 = 0
+            elif result > 0.1:
+                wins1 = 1
             else:
                 wins1 = 0.5
             self.record_result(y, x, wins1)
@@ -176,7 +176,7 @@ def run_games(result_queue: Queue, x_values, y_values, counts):
                       cpuct=1.0,
                       player=None,
                       load_model=SAVED_MODEL,
-                      network='alpha_zero_general.connect4.tensorflow.NNet.NNetWrapper')
+                      network='shibumi.spline.players.DummyNNet')
     args2 = copy(args1)
     player1 = MCTSPlayer(game, args1).play
     # noinspection PyUnresolvedReferences

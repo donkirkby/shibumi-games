@@ -167,6 +167,21 @@ these simple games that the MCTS part is irrelevant. I could try a deeper game
 like Othello, or I could try making a dummy neural network so the MCTS part is
 more important.
 
+### 21 Nov 2018 ###
+I made a dummy neural network that rated all boards the same, and now the MCTS
+strength varies with the number of iterations:
+
+![connect 4 wins without machine learning]
+
+There's something weird happening between 2 and 4 iterations, so 4 iterations
+actually looks weaker than 2. Above that, however, the strength changes exactly
+as I would expect. When both players use 128 iterations, player 1 wins 44% of
+the games. Is there an advantage for the second player?
+
+The next task is to confirm that the neural network is much stronger than plain
+MCTS. I'll plot MCTS with a dummy network against MCTS with a real network, and
+increase the MCTS iterations with the dummy network.
+
 [connect 4 wins]: 2018/connect-4-wins.png
 [headcount wins]: 2018/headcount-wins.png
 

@@ -1,3 +1,6 @@
+import numpy as np
+
+
 class HumanSplinePlayer:
     def __init__(self, game):
         self.game = game
@@ -14,3 +17,18 @@ class HumanSplinePlayer:
                     return action_index
                 except ValueError:
                     print('Invalid move.')
+
+
+class DummyNNet:
+    # noinspection PyUnusedLocal
+    def __init__(self, game):
+        pass
+
+    def load_checkpoint(self,
+                        folder='checkpoint',
+                        filename='checkpoint.pth.tar'):
+        pass
+
+    # noinspection PyMethodMayBeStatic,PyUnusedLocal
+    def predict(self, board):
+        return np.full(7, 1/7), np.zeros(1)
