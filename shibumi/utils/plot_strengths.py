@@ -1,5 +1,8 @@
+import linecache
 import logging
+import os
 import sqlite3
+import tracemalloc
 from argparse import Namespace
 from copy import copy
 from queue import Queue, Empty
@@ -22,12 +25,12 @@ logger = logging.getLogger(__name__)
 class Plotter:
     def __init__(self, start_thread=True):
         self.x = 2 << np.arange(7)
-        self.y = 2 << np.arange(7)
+        self.y = 4 << np.arange(1)
         self.x_coords, self.y_coords = np.meshgrid(self.x, self.y)
         self.counts = np.zeros(self.y_coords.shape)
         self.y_wins = np.zeros(self.y_coords.shape)
         self.result_queue = Queue()
-        self.conn = sqlite3.connect('utils/strengths/connect4-dummy-net.db')
+        self.conn = sqlite3.connect('utils/strengths/connect4-1dummy-net.db')
         self.conn.row_factory = sqlite3.Row
         self.load_history()
         self.has_reported = False
@@ -37,12 +40,15 @@ class Plotter:
                                  daemon=True)
             game_thread.start()
         sn.set()
-        plt.ylabel('Player 1 MCTS simulation count')
-        plt.xlabel('Player 2 MCTS simulation count')
+        plt.xlabel('MCTS Simulation Count')
         plt.xscale('log')
-        plt.yscale('log')
+        if len(self.y) > 1:
+            plt.ylabel('Player 1 MCTS simulation count')
+            plt.yscale('log')
+        else:
+            plt.ylabel('Neural Net Win Rate')
         self.artists = []
-        self.contour = None
+        self.contour = self.line = None
         self.colorbar_axes = None
         self.create_contour()
         plt.tight_layout()
@@ -65,8 +71,9 @@ class Plotter:
             self.record_result(y, x, wins1)
         self.write_history()
 
-        for artist in self.contour.collections:
-            artist.remove()
+        if self.contour is not None:
+            for artist in self.contour.collections:
+                artist.remove()
         self.artists.clear()
 
         self.create_contour()
@@ -92,14 +99,23 @@ class Plotter:
             print(z)
             self.has_reported = True
         # np.savetxt(sys.stdout, z)
-        self.contour = plt.contourf(self.x_coords, self.y_coords, z)
-        self.artists.append(self.contour)
-        # self.artists.append(plt.clabel(self.contour))
+        if len(self.y_coords) > 1:
+            self.contour = plt.contourf(self.x_coords, self.y_coords, z)
+            self.artists.append(self.contour)
+            colorbar = plt.colorbar(cax=self.colorbar_axes)
+            self.artists.append(colorbar)
+            _, self.colorbar_axes = plt.gcf().get_axes()
+        else:
+            if self.line is None:
+                self.line, = plt.plot(self.x_coords[0], z[0])
+            else:
+                self.line.set_data(self.x_coords[0], z[0])
+                self.line.axes.relim()
+                plt.autoscale()
+                plt.ylim(0, 1)
+            self.artists.append(self.line)
         self.artists.append(plt.title(
-            f'Player 1 Win Rates After {int(self.counts.sum())} Games of Connect 4'))
-        colorbar = plt.colorbar(cax=self.colorbar_axes)
-        self.artists.append(colorbar)
-        _, self.colorbar_axes = plt.gcf().get_axes()
+            f'Neural Net Strength vs MCTS in {int(self.counts.sum())} Games of Connect 4'))
 
     def load_history(self):
         try:
@@ -176,12 +192,14 @@ def run_games(result_queue: Queue, x_values, y_values, counts):
                       cpuct=1.0,
                       player=None,
                       load_model=SAVED_MODEL,
-                      network='shibumi.spline.players.DummyNNet')
+                      network='alpha_zero_general.connect4.tensorflow.NNet.NNetWrapper')
     args2 = copy(args1)
+    args2.network = 'shibumi.spline.players.DummyNNet'
     player1 = MCTSPlayer(game, args1).play
     # noinspection PyUnresolvedReferences
     player2 = MCTSPlayer(game, args2).play
     arena = Arena(player1, player2, game)
+    game_count = 0
 
     while True:
         for j, x in enumerate(x_values):
@@ -196,6 +214,39 @@ def run_games(result_queue: Queue, x_values, y_values, counts):
 
                 logger.debug(f'Result of pitting {y} vs {x}: {result}.')
                 result_queue.put((x, y, result))
+                game_count += 1
+                if game_count == 1000:
+                    tracemalloc.start()
+                elif game_count == 2000:
+                    snapshot = tracemalloc.take_snapshot()
+                    display_top(snapshot, limit=50)
+                    return
+
+
+def display_top(snapshot, key_type='lineno', limit=3):
+    snapshot = snapshot.filter_traces((
+        tracemalloc.Filter(False, "<frozen importlib._bootstrap>"),
+        tracemalloc.Filter(False, "<unknown>"),
+    ))
+    top_stats = snapshot.statistics(key_type)
+
+    print("Top %s lines" % limit)
+    for index, stat in enumerate(top_stats[:limit], 1):
+        frame = stat.traceback[0]
+        # replace "/path/to/module/file.py" with "module/file.py"
+        filename = os.sep.join(frame.filename.split(os.sep)[-2:])
+        print("#%s: %s:%s: %.1f KiB"
+              % (index, filename, frame.lineno, stat.size / 1024))
+        line = linecache.getline(frame.filename, frame.lineno).strip()
+        if line:
+            print('    %s' % line)
+
+    other = top_stats[limit:]
+    if other:
+        size = sum(stat.size for stat in other)
+        print("%s other: %.1f KiB" % (len(other), size / 1024))
+    total = sum(stat.size for stat in top_stats)
+    print("Total allocated size: %.1f KiB" % (total / 1024))
 
 
 def main():

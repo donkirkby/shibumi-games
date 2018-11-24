@@ -182,9 +182,36 @@ The next task is to confirm that the neural network is much stronger than plain
 MCTS. I'll plot MCTS with a dummy network against MCTS with a real network, and
 increase the MCTS iterations with the dummy network.
 
+### 23 Nov 2018 ###
+The results looked promising at first. In this plot, player 1 uses a neural
+network with 4 MCTS iterations, and player 2 varies between 2 and 128 MCTS
+iterations without a neural network.
+
+![neural network strength vs MCTS in short run]
+
+As expected, the MCTS gets stronger with more iterations, and the neural
+network win rate drops toward 50%. I still don't understand why the neural
+network doesn't do better against 2 and 4 MCTS iterations, but the rest
+looks good.
+
+However, something went horribly wrong when I left it to run overnight.
+
+![neural network strength in long run]
+
+The neural network started losing most games, and the memory usage went way up.
+There's probably a memory leak, and maybe it's holding a whole bunch of data
+that messes up the statistics.
+
+### 24 Nov 2018 ###
+I think the players are holding all their board positions and statistics from
+one game to the next, so the MCTS player steadily gets stronger, and memory
+usage steadily goes up.
+
 [connect 4 wins]: 2018/connect-4-wins.png
 [headcount wins]: 2018/headcount-wins.png
 [connect 4 wins without machine learning]: 2018/connect-4-wins-no-ml.png
+[neural network strength vs MCTS in short run]: 2018/connect-4-wins-vs-ml.png
+[neural network strength in long run]: 2018/connect-4-wins-vs-ml-long.png
 
 [Coursera]: https://www.coursera.org/learn/machine-learning
 [TensorFlow book]: https://vpl.bibliocommons.com/item/show/5484355038
