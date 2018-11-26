@@ -207,12 +207,27 @@ I think the players are holding all their board positions and statistics from
 one game to the next, so the MCTS player steadily gets stronger, and memory
 usage steadily goes up.
 
+### 25 Nov 2018 ###
+You can see in this plot that the memory is climbing steadily, probably because
+the board positions and statistics aren't being released.
+
+![MCTS memory usage]
+
+A couple of things I don't understand, though:
+
+1. The memory climbs pretty steadily. I would have expected it to slow down as
+the most common board positions got recorded. It should only add memory when
+it finds new positions it hasn't analysed yet.
+2. Why does the average strength of the neural network drop? I guess that's
+because all those MCTS iterations slowly build up its game knowledge for
+player 2.
+
 [connect 4 wins]: 2018/connect-4-wins.png
 [headcount wins]: 2018/headcount-wins.png
 [connect 4 wins without machine learning]: 2018/connect-4-wins-no-ml.png
 [neural network strength vs MCTS in short run]: 2018/connect-4-wins-vs-ml.png
 [neural network strength in long run]: 2018/connect-4-wins-vs-ml-long.png
-
+[MCTS memory usage]: 2018/mcts-memory.png
 [Coursera]: https://www.coursera.org/learn/machine-learning
 [TensorFlow book]: https://vpl.bibliocommons.com/item/show/5484355038
 [`conv3d`]: https://www.tensorflow.org/api_docs/python/tf/nn/conv3d

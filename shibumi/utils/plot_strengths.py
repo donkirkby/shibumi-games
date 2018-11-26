@@ -5,7 +5,9 @@ import sqlite3
 import tracemalloc
 from argparse import Namespace
 from copy import copy
+from pathlib import Path
 from queue import Queue, Empty
+from resource import getrusage, RUSAGE_SELF, getpagesize
 from sqlite3 import OperationalError
 from threading import Thread
 
@@ -24,31 +26,39 @@ logger = logging.getLogger(__name__)
 
 class Plotter:
     def __init__(self, start_thread=True):
-        self.x = 2 << np.arange(7)
+        self.x = 2 << np.arange(4)
         self.y = 4 << np.arange(1)
         self.x_coords, self.y_coords = np.meshgrid(self.x, self.y)
         self.counts = np.zeros(self.y_coords.shape)
         self.y_wins = np.zeros(self.y_coords.shape)
         self.result_queue = Queue()
-        self.conn = sqlite3.connect('utils/strengths/connect4-1dummy-net.db')
+        db_path = os.path.abspath(os.path.join(__file__, '../strengths/connect4-1dummy-net.db'))
+        logger.debug(db_path)
+        self.conn = sqlite3.connect(db_path)
         self.conn.row_factory = sqlite3.Row
-        self.load_history()
         self.has_reported = False
+        self.game_count_history = []
+        self.memory_history = []
+        self.win_rate_history = []
+        self.batch_size = self.batch_wins = 0
+        self.load_history()
         if start_thread:
             game_thread = Thread(target=run_games,
                                  args=(self.result_queue, self.x, self.y, self.counts.copy()),
                                  daemon=True)
             game_thread.start()
         sn.set()
-        plt.xlabel('MCTS Simulation Count')
-        plt.xscale('log')
         if len(self.y) > 1:
             plt.ylabel('Player 1 MCTS simulation count')
             plt.yscale('log')
         else:
+            plt.subplot(211)
             plt.ylabel('Neural Net Win Rate')
+        plt.xlabel('MCTS Simulation Count')
+        # plt.xscale('log')
         self.artists = []
         self.contour = self.line = None
+        self.win_history_line = self.memory_history_line = None
         self.colorbar_axes = None
         self.create_contour()
         plt.tight_layout()
@@ -91,8 +101,26 @@ class Plotter:
         self.y_wins[i, j] += wins1
         self.counts[i, j] += count
 
+        if count > 1:
+            # Loading historical data, don't record memory.
+            return
+
+        game_count = self.counts.sum()
+        grid_size = self.counts.size
+        self.batch_size += count
+        self.batch_wins += wins1
+        if self.batch_size >= grid_size * 50:
+            self.game_count_history.append(game_count)
+            win_rate = self.batch_wins / self.batch_size
+            self.win_rate_history.append(win_rate)
+            rss = get_resident_set_size() // 1024 // 1024
+            self.memory_history.append(rss)
+            logger.info('win rate %f, memory %d', win_rate, rss)
+            self.batch_wins = self.batch_size = 0
+
     def create_contour(self):
-        z = self.y_wins / self.counts
+        safe_counts = self.counts + (self.counts == 0)  # Avoid dividing by 0.
+        z = self.y_wins / safe_counts
         if not self.has_reported:
             # print(self.y_wins)
             print(self.counts)
@@ -107,14 +135,39 @@ class Plotter:
             _, self.colorbar_axes = plt.gcf().get_axes()
         else:
             if self.line is None:
+                plt.subplot(211)
                 self.line, = plt.plot(self.x_coords[0], z[0])
+                plt.subplot(212)
+                self.win_history_line, = plt.plot(
+                    self.game_count_history,
+                    self.win_rate_history)
+                self.win_history_line.axes.grid(False)
+                plt.title('Changes Over Time')
+                plt.ylabel('Player 1 Win Rate', color='C0')
+                plt.xlabel('Game Count')
+                plt.twinx()
+                self.memory_history_line, = plt.plot(
+                    self.game_count_history,
+                    self.memory_history,
+                    'C1')
+                self.memory_history_line.axes.grid(False)
+                plt.ylabel('Memory Usage (MB)', color='C1')
             else:
                 self.line.set_data(self.x_coords[0], z[0])
                 self.line.axes.relim()
+                self.win_history_line.set_data(self.game_count_history,
+                                               self.win_rate_history)
+                self.memory_history_line.set_data(self.game_count_history,
+                                                  self.memory_history)
+                self.win_history_line.axes.relim()
+                self.memory_history_line.axes.relim()
                 plt.autoscale()
-                plt.ylim(0, 1)
+            self.line.axes.set_ylim(0, 1)
+            self.win_history_line.axes.set_ylim(0, 1)
             self.artists.append(self.line)
-        self.artists.append(plt.title(
+            self.artists.append(self.memory_history_line)
+            self.artists.append(self.win_history_line)
+        self.artists.append(self.line.axes.set_title(
             f'Neural Net Strength vs MCTS in {int(self.counts.sum())} Games of Connect 4'))
 
     def load_history(self):
@@ -215,12 +268,19 @@ def run_games(result_queue: Queue, x_values, y_values, counts):
                 logger.debug(f'Result of pitting {y} vs {x}: {result}.')
                 result_queue.put((x, y, result))
                 game_count += 1
-                if game_count == 1000:
-                    tracemalloc.start()
-                elif game_count == 2000:
-                    snapshot = tracemalloc.take_snapshot()
-                    display_top(snapshot, limit=50)
-                    return
+                # if game_count == 1000:
+                #     tracemalloc.start()
+                # elif game_count == 2000:
+                #     snapshot = tracemalloc.take_snapshot()
+                #     display_top(snapshot, limit=50)
+                #     return
+
+
+def get_resident_set_size():
+    # Columns are: size resident shared text lib data dt
+    statm = Path('/proc/self/statm').read_text()
+    fields = statm.split()
+    return int(fields[1]) * getpagesize()
 
 
 def display_top(snapshot, key_type='lineno', limit=3):
@@ -255,6 +315,15 @@ def main():
                         format="%(asctime)s[%(levelname)s]:%(name)s:%(message)s")
     figure = plt.figure()
     plotter = Plotter(start_thread)
+    if not start_thread:
+        plotter.write_history = lambda *args, **kwargs: None
+        plotter.record_result(4, 4, 2, 4)
+        plotter.record_result(4, 8, 2, 3)
+        plotter.game_count_history.extend([0, 80, 120])
+        plotter.win_rate_history.extend([.8, .9, .8])
+        plotter.memory_history.extend(([1500, 1500, 1600]))
+        plotter.result_queue.put((2, 2, -1))
+        plotter.update(1)
     # noinspection PyUnusedLocal
     animation = FuncAnimation(figure, plotter.update, interval=100)
     plt.show()
