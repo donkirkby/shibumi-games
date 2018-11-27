@@ -222,6 +222,13 @@ it finds new positions it hasn't analysed yet.
 because all those MCTS iterations slowly build up its game knowledge for
 player 2.
 
+### 26 Nov 2018 ###
+I tried clearing the data structures in the `MCTS` class, but that introduced
+a bug that made it lose all games. I can't find the bug, so I'm going to take
+a break. I think I understand the Alpha Zero technique well enough that I can
+rewrite the `alpha_zero_general` project to make it easier to use as a library.
+
+
 [connect 4 wins]: 2018/connect-4-wins.png
 [headcount wins]: 2018/headcount-wins.png
 [connect 4 wins without machine learning]: 2018/connect-4-wins-no-ml.png
