@@ -5,10 +5,9 @@ name = "pypi"
 
 [dev-packages]
 pytest = "*"
-matplotlib = "*"
-seaborn = "*"
+"e1839a8" = {editable = true, extras = ["dev"], path = "."}
+"3171ee2" = {editable = true, extras = ["dev"], path = "./../zero-play"}
 
 [packages]
-tensorflow = "*"
-tensorflow-gpu = "*"
-"2811dad" = {path = "./../alpha-zero-general", editable = true}
+"3171ee2" = {editable = true, path = "./../zero-play"}
+"e1839a8" = {editable = true, path = "."}
