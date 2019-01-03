@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "0f102579fb40d6462cbfd10bae25d7c57688f89b2a610aa66b3fbfa2ffe1dac8"
+            "sha256": "e1904211047089018092895b80723d15b9d7199e6782b5320e37b25f9e1c917a"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -16,6 +16,10 @@
         ]
     },
     "default": {
+        "3171ee2": {
+            "editable": true,
+            "path": "./../zero-play"
+        },
         "e1839a8": {
             "editable": true,
             "path": "."
@@ -52,14 +56,13 @@
                 "sha256:edfa6fba9157e0e3be0f40168eb142511012683ac3dc82420bee4a3f3981b30e"
             ],
             "version": "==1.15.4"
-        },
-        "zero-play": {
-            "editable": true,
-            "git": "https://github.com/donkirkby/zero-play",
-            "ref": "72a246b6585cebaea46b1e690a04c3bc07a02358"
         }
     },
     "develop": {
+        "3171ee2": {
+            "editable": true,
+            "path": "./../zero-play"
+        },
         "atomicwrites": {
             "hashes": [
                 "sha256:0312ad34fcad8fac3704d441f7b317e50af620823353ec657a53e981f92920c0",
@@ -366,11 +369,6 @@
                 "sha256:fe800a58547dd424cd286b7270b967b5b3316b993d86453ede184a17b5a6b17d"
             ],
             "version": "==1.1.1"
-        },
-        "zero-play": {
-            "editable": true,
-            "git": "https://github.com/donkirkby/zero-play",
-            "ref": "72a246b6585cebaea46b1e690a04c3bc07a02358"
         }
     }
 }

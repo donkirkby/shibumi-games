@@ -2,10 +2,13 @@ language: python
 python:
     - "3.6"
 install:
-    - "pip install pipenv"
-    - "pipenv install --dev"
+    - cd ..
+    - git clone https://github.com/donkirkby/zero-play
+    - cd shibumi-games
+    - pip install pipenv
+    - pipenv install --dev
 script:
-    - mypy shibumi
+    - MYPYPATH=../zero-play/ mypy shibumi
     - coverage run --source=shibumi -m pytest
 
 after_success:
