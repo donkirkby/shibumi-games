@@ -18,7 +18,7 @@ z = np.zeros(x_coords.shape)
 trial_count = 100
 for i, y in enumerate(counts):
     for j, x in enumerate(counts):
-        y_wins = 0
+        y_wins = 0.0
         for _ in range(trial_count):
             a = random()
             x_total = sum(random() for _ in range(x))

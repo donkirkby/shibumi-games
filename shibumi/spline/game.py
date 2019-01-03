@@ -181,6 +181,7 @@ class SplineGame(Game):
             return True
         if self.is_diagonal_winner(player_pieces):
             return True
+        return False
 
     def is_diagonal_winner(self, player_pieces):
         """Checks if player_pieces contains a diagonal win."""

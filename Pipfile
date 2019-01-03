@@ -1,13 +1,15 @@
 [[source]]
-url = "https://pypi.python.org/simple"
+url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
 
-[dev-packages]
-pytest = "*"
-"e1839a8" = {editable = true, extras = ["dev"], path = "."}
-"3171ee2" = {editable = true, extras = ["dev"], path = "./../zero-play"}
-
 [packages]
-"3171ee2" = {editable = true, path = "./../zero-play"}
+zero-play = {editable = true, ref = "72a246b6585cebaea46b1e690a04c3bc07a02358", git = "https://github.com/donkirkby/zero-play"}
 "e1839a8" = {editable = true, path = "."}
+
+[dev-packages]
+zero-play = {extras = ["dev"], editable = true, ref = "72a246b6585cebaea46b1e690a04c3bc07a02358", git = "https://github.com/donkirkby/zero-play"}
+"e1839a8" = {editable = true, extras = ["dev"], path = "."}
+
+[requires]
+python_version = "3.6"

@@ -1,0 +1,13 @@
+language: python
+python:
+    - "3.6"
+install:
+    - "pip install pipenv"
+    - "pipenv install --dev"
+script:
+    - mypy shibumi
+    - coverage run --source=shibumi -m pytest
+
+after_success:
+    - pip install codecov
+    - codecov
