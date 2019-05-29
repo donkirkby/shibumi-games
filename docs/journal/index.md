@@ -228,6 +228,26 @@ a bug that made it lose all games. I can't find the bug, so I'm going to take
 a break. I think I understand the Alpha Zero technique well enough that I can
 rewrite the `alpha_zero_general` project to make it easier to use as a library.
 
+### Dec 2018 to Mar 2019 ###
+I tried rewriting the `alpha_zero_general` project as [`zero-play`], but I
+couldn't get the TensorFlow models to work.
+
+### 6 May 2019 ###
+[Minigo] sounds promising. Maybe it has all the features I need for the Shibumi
+games project, and I don't need to build my own. It was based on [MuGo], so that
+might also be useful.
+
+The [shap] project looks like it might be useful for explaining the models, either
+for `zero-play` or for Minigo.
+
+### 28 May 2019 ###
+I've been trying to get Minigo to run for a while. I had to install CUDA 10.0
+using the instructions for [multiple CUDA libraries], and then I had to
+[upgrade the Nvidia driver] to 410. It was a little weird, because they changed
+the apt package name from `nvidia-390` to `nvidia-driver-410`. Now I get this error,
+and I'm done for the day.
+
+>Loaded runtime CuDNN library: 7.3.1 but source was compiled with: 7.4.2.
 
 [connect 4 wins]: 2018/connect-4-wins.png
 [headcount wins]: 2018/headcount-wins.png
@@ -239,3 +259,8 @@ rewrite the `alpha_zero_general` project to make it easier to use as a library.
 [TensorFlow book]: https://vpl.bibliocommons.com/item/show/5484355038
 [`conv3d`]: https://www.tensorflow.org/api_docs/python/tf/nn/conv3d
 [multiple CUDA libraries]: https://blog.kovalevskyi.com/b9502d50ae77
+[`zero-play`]: https://donkirkby.github.io/zero-play/journal/
+[Minigo]: https://github.com/tensorflow/minigo
+[MuGo]: https://github.com/brilee/MuGo
+[shap]: https://github.com/slundberg/shap
+[upgrade the Nvidia driver]: http://www.linuxandubuntu.com/home/how-to-install-latest-nvidia-drivers-in-linux
