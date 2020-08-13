@@ -249,6 +249,34 @@ and I'm done for the day.
 
 >Loaded runtime CuDNN library: 7.3.1 but source was compiled with: 7.4.2.
 
+### 29 May 2019 ###
+I [upgraded CuDNN], and now I can make MiniGo play against itself!
+
+    export MODEL_NAME=000000-bootstrap
+    python3 bootstrap.py \
+      --work_dir=estimator_working_dir \
+      --export_path=outputs/models/$MODEL_NAME
+    python3 selfplay.py \
+      --load_file=outputs/models/$MODEL_NAME \
+      --num_readouts 10 \
+      --verbose 3 \
+      --selfplay_dir=outputs/data/selfplay \
+      --holdout_dir=outputs/data/holdout \
+      --sgf_dir=outputs/sgf
+
+### 1 Jun 2019 ###
+It looks like Minigo is actually two projects, a Python version and a C++
+version. I thought there were just some C++ components in a Python proect.
+The Python version also looks like it's just a proof of concept or
+documentation for the C++ version. I can't see how to make the Python version
+run a complete training pipeline.
+
+I also don't see any obvious extension points for making Minigo play other
+board games, so it might just be useful as a more readable template than
+alpha-zero-general to base my zero-play project on.
+
+Next, I'll try to get MuGo running.
+
 [connect 4 wins]: 2018/connect-4-wins.png
 [headcount wins]: 2018/headcount-wins.png
 [connect 4 wins without machine learning]: 2018/connect-4-wins-no-ml.png
@@ -264,3 +292,4 @@ and I'm done for the day.
 [MuGo]: https://github.com/brilee/MuGo
 [shap]: https://github.com/slundberg/shap
 [upgrade the Nvidia driver]: http://www.linuxandubuntu.com/home/how-to-install-latest-nvidia-drivers-in-linux
+[upgraded CuDNN]: http://www.askaswiss.com/2019/01/how-to-install-cuda-9-cudnn-7-ubuntu-18-04.html
