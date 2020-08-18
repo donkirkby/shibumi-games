@@ -7,6 +7,7 @@ install:
     - cd shibumi-games
     - pip install pipenv
     - pipenv install --dev
+    - pipenv graph
 script:
     - MYPYPATH=../zero-play/ mypy shibumi
     - coverage run --source=shibumi -m pytest
