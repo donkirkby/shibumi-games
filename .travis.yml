@@ -9,8 +9,10 @@ install:
     - pipenv install --dev
     - pipenv graph
 script:
+    - set -e
     - MYPYPATH=../zero-play/ mypy shibumi
-    - coverage run --source=shibumi -m pytest
+    # Add QT_DEBUG_PLUGINS=1 before xvfb-run to debug Qt library problems.
+    - xvfb-run -a coverage run --source=shibumi -m pytest
 
 after_success:
     - pip install codecov
