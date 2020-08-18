@@ -1,6 +1,6 @@
 language: python
 python:
-    - "3.6"
+    - "3.8"
 install:
     - cd ..
     - git clone https://github.com/donkirkby/zero-play
