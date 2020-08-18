@@ -4,12 +4,12 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-"3171ee2" = {editable = true, path = "./../zero-play"}
-"e1839a8" = {editable = true, path = "."}
+zero-play = {editable = true, path = "./../zero-play"}
+shibumi = {editable = true, path = "."}
 
 [dev-packages]
-"3171ee2" = {editable = true, extras = ["dev"], path = "./../zero-play"}
-"e1839a8" = {editable = true, extras = ["dev"], path = "."}
+zero-play = {editable = true, extras = ["dev"], path = "./../zero-play"}
+shibumi = {editable = true, extras = ["dev"], path = "."}
 
 [requires]
-python_version = "3.6"
+python_version = "3.8"

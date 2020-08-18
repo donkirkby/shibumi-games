@@ -30,12 +30,16 @@ setup(name='shibumi',
           'Programming Language :: Python :: 3.7'],
       keywords='boardgames alphazero machine learning mcts shibumi',
       packages=['shibumi'],
-      install_requires=['zero-play', 'numpy'],
+      install_requires=['zero-play', 'numpy', 'PySide2'],
       extras_require={'dev': ['pytest', 'coverage', 'mypy']},
       entry_points={
           # The game entry point lets you add rules for new games.
           # The zero_play.game.Game class is a useful base class.
-          'zero_play.game': ['spline=shibumi.spline.game:SplineGame']},
+          'zero_play.game': ['spline=shibumi.spline.game:SplineGame'],
+          # The game_display entry point lets you add screens for new games.
+          # The zero_play.game_display.GameDisplay class is a useful base class.
+          'zero_play.game_display': [
+              'spline=shibumi.spline.display:SplineDisplay']},
       project_urls={
           'Bug Reports': 'https://github.com/donkirkby/shibumi-games/issues',
           'Source': 'https://github.com/donkirkby/shibumi-games'})

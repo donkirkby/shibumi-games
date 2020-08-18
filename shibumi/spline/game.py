@@ -23,9 +23,9 @@ class SplineGame(Game):
 
     def create_board(self, text: str = None) -> np.ndarray:
         r = np.arange(self.SIZE, dtype=np.int8)
-        heights = r.reshape(self.SIZE, 1, 1)
-        rows = r.reshape(1, self.SIZE, 1)
-        columns = r.reshape(1, 1, self.SIZE)
+        heights = r.reshape((self.SIZE, 1, 1))
+        rows = r.reshape((1, self.SIZE, 1))
+        columns = r.reshape((1, 1, self.SIZE))
         level_sizes = self.SIZE - heights
         levels = self.UNUSABLE * np.logical_or(rows >= level_sizes,
                                                columns >= level_sizes)
@@ -115,11 +115,19 @@ class SplineGame(Game):
         lines.append('')
         return '\n'.join(lines)
 
-    def get_levels(self, board):
+    def get_levels(self, board) -> np.ndarray:
         levels = board.reshape(self.SIZE, self.SIZE, self.SIZE)
         return levels
 
-    def display_move(self, move: int) -> str:
+    def display_move(self, board: np.ndarray, move: int) -> str:
+        raise NotImplementedError()
+
+    def get_move_count(self, board: np.ndarray) -> int:
+        """ The number of moves that have already been made in the game. """
+        raise NotImplementedError()
+
+    def get_spaces(self, board: np.ndarray) -> np.ndarray:
+        """ Extract the board spaces from the complete game state. """
         raise NotImplementedError()
 
     def get_index(self, height, row=0, column=0):
@@ -153,7 +161,8 @@ class SplineGame(Game):
         raise ValueError(f'Invalid move: {row_name}{column_name}.')
 
     def parse_move(self, text: str, board: np.ndarray) -> int:
-        row_name, column_name = text
+        assert len(text) == 2
+        row_name, column_name = text[0], text[1]
         return self.get_move_index(board, row_name, column_name)
 
     def get_coordinates(self, move_index):
