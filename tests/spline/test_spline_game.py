@@ -517,3 +517,29 @@ def test_display_move(move_index: int, expected_display: str):
     display = game.display_move(board, move_index)
 
     assert display == expected_display
+
+
+def test_get_move_count():
+    game = SplineGame()
+    board = game.create_board("""\
+  A C E G
+7 . . . . 7
+
+5 . W B . 5
+
+3 . B W . 3
+
+1 . . . . 1
+  A C E G
+   B D F
+ 6 . . . 6
+
+ 4 . B . 4
+
+ 2 . . . 2
+   B D F
+""")
+
+    move_count = game.get_move_count(board)
+
+    assert move_count == 5

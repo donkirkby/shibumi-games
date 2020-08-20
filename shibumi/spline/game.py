@@ -127,7 +127,9 @@ class SplineGame(Game):
 
     def get_move_count(self, board: np.ndarray) -> int:
         """ The number of moves that have already been made in the game. """
-        raise NotImplementedError()
+        pieces = board.reshape(self.SIZE * self.SIZE * self.SIZE)
+        return sum(piece in (self.WHITE, self.BLACK)
+                   for piece in pieces)
 
     def get_spaces(self, board: np.ndarray) -> np.ndarray:
         """ Extract the board spaces from the complete game state. """
