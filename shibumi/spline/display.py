@@ -171,7 +171,7 @@ class SplineDisplay(GameDisplay):
                                          piece_item.column)
         valid_moves = self.game.get_valid_moves(self.current_board)
         if valid_moves[move_index]:
-            self.update(self.game.make_move(self.current_board, move_index))
+            self.make_move(move_index)
 
     @staticmethod
     def load_pixmap(name: str, size: QSize = None) -> QPixmap:

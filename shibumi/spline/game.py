@@ -120,7 +120,10 @@ class SplineGame(Game):
         return levels
 
     def display_move(self, board: np.ndarray, move: int) -> str:
-        raise NotImplementedError()
+        height, row, column = self.get_coordinates(move)
+        row_text = str(height + 1 + 2*row)
+        column_text = chr(height + 65 + column*2)
+        return row_text + column_text
 
     def get_move_count(self, board: np.ndarray) -> int:
         """ The number of moves that have already been made in the game. """

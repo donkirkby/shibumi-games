@@ -486,3 +486,34 @@ def test_get_levels():
                         [u, u, u, u],
                         [u, u, u, u]]]
     assert game.get_levels(board).tolist() == expected_levels
+
+
+@pytest.mark.parametrize(['move_index', 'expected_display'],
+                         [(0, '1A'),
+                          (3, '1G'),
+                          (4, '3A'),
+                          (16, '2B')])
+def test_display_move(move_index: int, expected_display: str):
+    game = SplineGame()
+    board = game.create_board("""\
+  A C E G
+7 . . . . 7
+
+5 . . . . 5
+
+3 . . . . 3
+
+1 . . . . 1
+  A C E G
+   B D F
+ 6 . . . 6
+
+ 4 . . . 4
+
+ 2 . . . 2
+   B D F
+""")
+
+    display = game.display_move(board, move_index)
+
+    assert display == expected_display
