@@ -429,3 +429,32 @@ def test_double_update(pixmap_differ: PixmapDiffer):
 """))
 
         display.scene.render(actual)
+
+
+# noinspection DuplicatedCode
+def test_coordinates(pixmap_differ: PixmapDiffer):
+    actual: QPainter
+    expected: QPainter
+    with pixmap_differ.create_painters(240, 200, 'spline_coordinates') as (
+            actual,
+            expected):
+        expected_scene = QGraphicsScene(0, 0, 240, 200)
+        expected_scene.addPixmap(
+            SplineDisplay.load_pixmap('board-1.png',
+                                      QSize(160, 160))).setPos(36, 0)
+        black_ball = SplineDisplay.load_pixmap('ball-b-shadow-1.png',
+                                               QSize(40, 40))
+
+        expected_scene.addPixmap(black_ball).setPos(196, 59)
+        add_text(expected_scene, 'to move', 216, 103, 7)
+        for i in range(7):
+            add_text(expected_scene, str(7-i), 15+i % 2*10, i*17+27, 10)
+            add_text(expected_scene, chr(65+i), i*17+64, 178-i % 2*10, 10)
+
+        expected_scene.render(expected)
+
+        display = SplineDisplay()
+        display.resize(QSize(240, 200))
+        display.show_coordinates = True
+
+        display.scene.render(actual)

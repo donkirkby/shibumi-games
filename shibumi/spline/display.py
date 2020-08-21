@@ -58,9 +58,15 @@ class SplineDisplay(GameDisplay):
                     item_row.append(item)
                 item_level.append(item_row)
             self.item_levels.append(item_level)
+        self.row_labels = []
+        self.column_labels = []
+        for i in range(self.game.SIZE*2-1):
+            self.row_labels.append(self.scene.addSimpleText(str(i+1)))
+            self.column_labels.append(self.scene.addSimpleText(chr(i+65)))
         self.player_item = self.scene.addPixmap(QPixmap())
         self.move_text = self.scene.addSimpleText('')
         self.text_x = self.text_y = 0
+        self.debug_message = ''
 
     def update(self, board: np.ndarray):
         self.current_board = board
@@ -104,21 +110,41 @@ class SplineDisplay(GameDisplay):
         self.player_item.setVisible(displayed_player is not None)
 
     def update_move_text(self, text: str = None):
-        if text is not None:
+        if self.debug_message:
+            self.move_text.setText(self.debug_message)
+        elif text is not None:
             self.move_text.setText(text)
         center_text_item(self.move_text, self.text_x, self.text_y)
 
     def resize(self, view_size: QSize):
         super().resize(view_size)
         self.game: SplineGame
-        scaled_pixmap = self.background_pixmap.scaled(self.scene.width() // 1.25,
-                                                      self.scene.height(),
-                                                      Qt.KeepAspectRatio,
-                                                      Qt.SmoothTransformation)
+        if self.show_coordinates:
+            # Leave room for active player and coordinates
+            x_scale = 1.5
+            y_scale = 1.25
+        else:
+            # Leave room for active player
+            x_scale = 1.25
+            y_scale = 1
+        scaled_pixmap = self.background_pixmap.scaled(
+            self.scene.width() // x_scale,
+            self.scene.height() // y_scale,
+            Qt.KeepAspectRatio,
+            Qt.SmoothTransformation)
         self.background_item.setPixmap(scaled_pixmap)
         display_width = scaled_pixmap.width() // .795
-        x0 = (self.scene.width() - display_width) // 2
-        y0 = (self.scene.height() - scaled_pixmap.height()) // 2
+        if self.show_coordinates:
+            full_width = scaled_pixmap.width() // 0.666
+            full_height = scaled_pixmap.height() // 0.8
+        else:
+            full_width = display_width
+            full_height = scaled_pixmap.height()
+        x0 = (self.scene.width() - full_width) // 2
+        y0 = (self.scene.height() - full_height) // 2
+        cell_size = scaled_pixmap.width() // 4.5
+        if self.show_coordinates:
+            x0 += cell_size
         self.background_item.setPos(x0, y0)
         self.black_scaled = self.black_pixmap.scaled(display_width // 4.9,
                                                      display_width // 4.9,
@@ -128,7 +154,6 @@ class SplineDisplay(GameDisplay):
                                                      display_width // 4.9,
                                                      Qt.KeepAspectRatio,
                                                      Qt.SmoothTransformation)
-        cell_size = scaled_pixmap.width() // 4.5
         x0 += scaled_pixmap.width() // 22
         y0 += scaled_pixmap.height() // 22
         for height, level in enumerate(self.item_levels):
@@ -145,6 +170,19 @@ class SplineDisplay(GameDisplay):
         self.move_text.setFont(font)
         self.text_x = x0 + scaled_pixmap.width() + cell_size // 2.3
         self.text_y = y0 + scaled_pixmap.height() // 1.65
+        font.setPointSize(cell_size//3.4)
+        for i, label in enumerate(self.row_labels):
+            label.setVisible(self.show_coordinates)
+            label.setFont(font)
+            center_text_item(label,
+                             x0 - cell_size//1.25 + i % 2 * cell_size//3.5,
+                             y0 + cell_size//1.67 + (6-i)*(cell_size // 2))
+        for i, label in enumerate(self.column_labels):
+            label.setVisible(self.show_coordinates)
+            label.setFont(font)
+            center_text_item(label,
+                             x0 + cell_size//1.65 + i*(cell_size // 2),
+                             y0 + full_height - cell_size//1.25 - i % 2 * cell_size//3.5)
         self.update(self.current_board)
 
     def on_hover_enter(self, piece_item: GraphicsShibumiPieceItem):
