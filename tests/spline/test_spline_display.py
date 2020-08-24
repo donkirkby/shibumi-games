@@ -1,10 +1,15 @@
 from PySide2.QtCore import QSize
-from PySide2.QtGui import QPainter, QFont
-from PySide2.QtWidgets import QGraphicsScene
+from PySide2.QtGui import QPainter, QFont, QResizeEvent
+from PySide2.QtWidgets import QGraphicsScene, QGraphicsView
 from zero_play.game_display import center_text_item
 from zero_play.pixmap_differ import PixmapDiffer
 
 from shibumi.spline.display import SplineDisplay
+
+
+def trigger_resize(view: QGraphicsView, width: int, height: int):
+    event = QResizeEvent(QSize(width, height), QSize(1, 1))
+    view.resizeEvent(event)
 
 
 def add_text(scene: QGraphicsScene, text: str, x: int, y: int, font_size: int):
@@ -34,9 +39,9 @@ def test_empty(pixmap_differ: PixmapDiffer):
 
         display = SplineDisplay()
 
-        display.resize(QSize(300, 240))
+        trigger_resize(display, 300, 240)
 
-        display.scene.render(actual)
+        display.scene().render(actual)
 
 
 # noinspection DuplicatedCode
@@ -63,7 +68,7 @@ def test_first_level(pixmap_differ: PixmapDiffer):
         expected_scene.render(expected)
 
         display = SplineDisplay()
-        display.update(display.game.create_board("""\
+        display.update_board(display.game.create_board("""\
   A C E G
 7 W B . . 7
 
@@ -75,9 +80,9 @@ def test_first_level(pixmap_differ: PixmapDiffer):
   A C E G
 """))
 
-        display.resize(QSize(300, 240))
+        trigger_resize(display, 300, 240)
 
-        display.scene.render(actual)
+        display.scene().render(actual)
 
 
 # noinspection DuplicatedCode
@@ -106,7 +111,7 @@ def test_second_level(pixmap_differ: PixmapDiffer):
         expected_scene.render(expected)
 
         display = SplineDisplay()
-        display.update(display.game.create_board("""\
+        display.update_board(display.game.create_board("""\
   A C E G
 7 W B . . 7
 
@@ -125,9 +130,9 @@ def test_second_level(pixmap_differ: PixmapDiffer):
    B D F
 """))
 
-        display.resize(QSize(300, 240))
+        trigger_resize(display, 300, 240)
 
-        display.scene.render(actual)
+        display.scene().render(actual)
 
 
 # noinspection DuplicatedCode
@@ -154,7 +159,7 @@ def test_resize_wide(pixmap_differ: PixmapDiffer):
         expected_scene.render(expected)
 
         display = SplineDisplay()
-        display.update(display.game.create_board("""\
+        display.update_board(display.game.create_board("""\
   A C E G
 7 W B . . 7
 
@@ -166,9 +171,9 @@ def test_resize_wide(pixmap_differ: PixmapDiffer):
   A C E G
 """))
 
-        display.resize(QSize(400, 240))
+        trigger_resize(display, 400, 240)
 
-        display.scene.render(actual)
+        display.scene().render(actual)
 
 
 # noinspection DuplicatedCode
@@ -191,9 +196,9 @@ def test_resize_narrow(pixmap_differ: PixmapDiffer):
 
         display = SplineDisplay()
 
-        display.resize(QSize(150, 240))
+        trigger_resize(display, 150, 240)
 
-        display.scene.render(actual)
+        display.scene().render(actual)
 
 
 # noinspection DuplicatedCode
@@ -223,10 +228,10 @@ def test_hover_enter(pixmap_differ: PixmapDiffer):
         column = 2
         piece_item = display.item_levels[height][row][column]
 
-        display.resize(QSize(300, 240))
+        trigger_resize(display, 300, 240)
         display.on_hover_enter(piece_item)
 
-        display.scene.render(actual)
+        display.scene().render(actual)
 
 
 # noinspection DuplicatedCode
@@ -256,10 +261,10 @@ def test_click(pixmap_differ: PixmapDiffer):
         column = 2
         piece_item = display.item_levels[height][row][column]
 
-        display.resize(QSize(300, 240))
+        trigger_resize(display, 300, 240)
         display.on_click(piece_item)
 
-        display.scene.render(actual)
+        display.scene().render(actual)
 
 
 # noinspection DuplicatedCode
@@ -285,11 +290,11 @@ def test_hover_leave(pixmap_differ: PixmapDiffer):
         column = 2
         piece_item = display.item_levels[height][row][column]
 
-        display.resize(QSize(300, 240))
+        trigger_resize(display, 300, 240)
         display.on_hover_enter(piece_item)
         display.on_hover_leave(piece_item)
 
-        display.scene.render(actual)
+        display.scene().render(actual)
 
 
 # noinspection DuplicatedCode
@@ -314,7 +319,7 @@ def test_hover_enter_existing(pixmap_differ: PixmapDiffer):
         expected_scene.render(expected)
 
         display = SplineDisplay()
-        display.update(display.game.create_board("""\
+        display.update_board(display.game.create_board("""\
   A C E G
 7 . . . . 7
 
@@ -330,10 +335,10 @@ def test_hover_enter_existing(pixmap_differ: PixmapDiffer):
         column = 2
         piece_item = display.item_levels[height][row][column]
 
-        display.resize(QSize(300, 240))
+        trigger_resize(display, 300, 240)
         display.on_hover_enter(piece_item)
 
-        display.scene.render(actual)
+        display.scene().render(actual)
 
 
 # noinspection DuplicatedCode
@@ -358,7 +363,7 @@ def test_hover_leave_existing(pixmap_differ: PixmapDiffer):
         expected_scene.render(expected)
 
         display = SplineDisplay()
-        display.update(display.game.create_board("""\
+        display.update_board(display.game.create_board("""\
   A C E G
 7 . . . . 7
 
@@ -374,10 +379,10 @@ def test_hover_leave_existing(pixmap_differ: PixmapDiffer):
         column = 2
         piece_item = display.item_levels[height][row][column]
 
-        display.resize(QSize(300, 240))
+        trigger_resize(display, 300, 240)
         display.on_hover_leave(piece_item)
 
-        display.scene.render(actual)
+        display.scene().render(actual)
 
 
 # noinspection DuplicatedCode
@@ -404,8 +409,8 @@ def test_double_update(pixmap_differ: PixmapDiffer):
         expected_scene.render(expected)
 
         display = SplineDisplay()
-        display.resize(QSize(300, 240))
-        display.update(display.game.create_board("""\
+        trigger_resize(display, 300, 240)
+        display.update_board(display.game.create_board("""\
   A C E G
 7 W B . . 7
 
@@ -416,7 +421,7 @@ def test_double_update(pixmap_differ: PixmapDiffer):
 1 . . . . 1
   A C E G
 """))
-        display.update(display.game.create_board("""\
+        display.update_board(display.game.create_board("""\
   A C E G
 7 B W . . 7
 
@@ -428,7 +433,7 @@ def test_double_update(pixmap_differ: PixmapDiffer):
   A C E G
 """))
 
-        display.scene.render(actual)
+        display.scene().render(actual)
 
 
 # noinspection DuplicatedCode
@@ -454,7 +459,7 @@ def test_coordinates(pixmap_differ: PixmapDiffer):
         expected_scene.render(expected)
 
         display = SplineDisplay()
-        display.resize(QSize(240, 200))
+        trigger_resize(display, 240, 200)
         display.show_coordinates = True
 
-        display.scene.render(actual)
+        display.scene().render(actual)

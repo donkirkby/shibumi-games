@@ -3,7 +3,7 @@ from pathlib import Path
 import numpy as np
 from PySide2.QtCore import QSize
 from PySide2.QtCore import Qt
-from PySide2.QtGui import QImage, QPixmap, QFont
+from PySide2.QtGui import QImage, QPixmap, QFont, QResizeEvent
 from PySide2.QtWidgets import QGraphicsPixmapItem, QGraphicsSceneHoverEvent, QGraphicsSceneMouseEvent
 from zero_play.game_display import GameDisplay, center_text_item
 
@@ -42,7 +42,8 @@ class SplineDisplay(GameDisplay):
         super().__init__(game)
         self.game = game
         self.background_pixmap = self.load_pixmap('board-1.png')
-        self.background_item = self.scene.addPixmap(self.background_pixmap)
+        scene = self.scene()
+        self.background_item = scene.addPixmap(self.background_pixmap)
         self.white_scaled = self.white_pixmap = self.load_pixmap(
             'ball-w-shadow-1.png')
         self.black_scaled = self.black_pixmap = self.load_pixmap(
@@ -54,21 +55,21 @@ class SplineDisplay(GameDisplay):
                 item_row = []
                 for column in range(self.game.SIZE - height):
                     item = GraphicsShibumiPieceItem(height, row, column, self)
-                    self.scene.addItem(item)
+                    scene.addItem(item)
                     item_row.append(item)
                 item_level.append(item_row)
             self.item_levels.append(item_level)
         self.row_labels = []
         self.column_labels = []
         for i in range(self.game.SIZE*2-1):
-            self.row_labels.append(self.scene.addSimpleText(str(i+1)))
-            self.column_labels.append(self.scene.addSimpleText(chr(i+65)))
-        self.player_item = self.scene.addPixmap(QPixmap())
-        self.move_text = self.scene.addSimpleText('')
+            self.row_labels.append(scene.addSimpleText(str(i + 1)))
+            self.column_labels.append(scene.addSimpleText(chr(i + 65)))
+        self.player_item = scene.addPixmap(QPixmap())
+        self.move_text = scene.addSimpleText('')
         self.text_x = self.text_y = 0
         self.debug_message = ''
 
-    def update(self, board: np.ndarray):
+    def update_board(self, board: np.ndarray):
         self.current_board = board
         valid_moves = self.game.get_valid_moves(board)
         is_ended = self.game.is_ended(board)
@@ -116,8 +117,9 @@ class SplineDisplay(GameDisplay):
             self.move_text.setText(text)
         center_text_item(self.move_text, self.text_x, self.text_y)
 
-    def resize(self, view_size: QSize):
-        super().resize(view_size)
+    def resizeEvent(self, event: QResizeEvent):
+        super().resizeEvent(event)
+        view_size = event.size()
         self.game: SplineGame
         if self.show_coordinates:
             # Leave room for active player and coordinates
@@ -128,8 +130,8 @@ class SplineDisplay(GameDisplay):
             x_scale = 1.25
             y_scale = 1
         scaled_pixmap = self.background_pixmap.scaled(
-            self.scene.width() // x_scale,
-            self.scene.height() // y_scale,
+            view_size.width() // x_scale,
+            view_size.height() // y_scale,
             Qt.KeepAspectRatio,
             Qt.SmoothTransformation)
         self.background_item.setPixmap(scaled_pixmap)
@@ -140,8 +142,8 @@ class SplineDisplay(GameDisplay):
         else:
             full_width = display_width
             full_height = scaled_pixmap.height()
-        x0 = (self.scene.width() - full_width) // 2
-        y0 = (self.scene.height() - full_height) // 2
+        x0 = (view_size.width() - full_width) // 2
+        y0 = (view_size.height() - full_height) // 2
         cell_size = scaled_pixmap.width() // 4.5
         if self.show_coordinates:
             x0 += cell_size
@@ -183,7 +185,7 @@ class SplineDisplay(GameDisplay):
             center_text_item(label,
                              x0 + cell_size//1.65 + i*(cell_size // 2),
                              y0 + full_height - cell_size//1.25 - i % 2 * cell_size//3.5)
-        self.update(self.current_board)
+        self.update_board(self.current_board)
 
     def on_hover_enter(self, piece_item: GraphicsShibumiPieceItem):
         levels = self.game.get_levels(self.current_board)
