@@ -1,13 +1,14 @@
-from pathlib import Path
-
 import numpy as np
 from PySide2.QtCore import QSize
 from PySide2.QtCore import Qt
 from PySide2.QtGui import QImage, QPixmap, QFont, QResizeEvent
-from PySide2.QtWidgets import QGraphicsPixmapItem, QGraphicsSceneHoverEvent, QGraphicsSceneMouseEvent
+from PySide2.QtWidgets import (QGraphicsPixmapItem, QGraphicsSceneHoverEvent,
+                               QGraphicsSceneMouseEvent)
 from zero_play.game_display import GameDisplay, center_text_item
 
 from shibumi.spline.game import SplineGame
+# noinspection PyUnresolvedReferences
+from shibumi import shibumi_images_rc
 
 
 class GraphicsShibumiPieceItem(QGraphicsPixmapItem):
@@ -82,8 +83,8 @@ class SplineDisplay(GameDisplay):
                                                      piece_item.row,
                                                      piece_item.column)
                     is_valid = valid_moves[move_index] and not is_ended
-                    piece_item.setVisible(piece != self.game.NO_PLAYER or
-                                          is_valid)
+                    piece_item.setVisible(bool(piece != self.game.NO_PLAYER or
+                                               is_valid))
                     if piece == self.game.WHITE:
                         piece_item.setPixmap(self.white_scaled)
                     else:
@@ -215,7 +216,7 @@ class SplineDisplay(GameDisplay):
 
     @staticmethod
     def load_pixmap(name: str, size: QSize = None) -> QPixmap:
-        file_path = Path(__file__).parent.parent.parent / 'images' / name
+        file_path = ':/shibumi_images/' + name
         image = QImage(str(file_path))
         if image.isNull():
             raise ValueError(f'Unable to load image {file_path}.')
