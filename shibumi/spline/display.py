@@ -1,4 +1,5 @@
 import numpy as np
+import typing
 from PySide2.QtCore import QSize
 from PySide2.QtCore import Qt
 from PySide2.QtGui import QImage, QPixmap, QFont, QResizeEvent
@@ -224,3 +225,9 @@ class SplineDisplay(GameDisplay):
         if size is not None:
             pixmap = pixmap.scaled(size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         return pixmap
+
+    @property
+    def credit_pairs(self) -> typing.Iterable[typing.Tuple[str, str]]:
+        return [('Shibumi Graphics:', 'Cameron Browne'),
+                ('Spline Game:', 'Néstor Romeral Andrés'),
+                ('Spline Implementation:', 'Don Kirkby')]

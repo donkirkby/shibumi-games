@@ -5,8 +5,8 @@ or pitch in with some development work. Check if there are some issues labeled
 as [good first issues] or [help wanted].
 
 [@donkirkby]: https://twitter.com/donkirkby
-[good first issues]: https://github.com/donkirkby/live-py-plugin/labels/good%20first%20issue
-[help wanted]: https://github.com/donkirkby/live-py-plugin/labels/help%20wanted
+[good first issues]: https://github.com/donkirkby/shibumi-games/labels/good%20first%20issue
+[help wanted]: https://github.com/donkirkby/shibumi-games/labels/help%20wanted
 
 ## Bug Reports and Enhancement Requests
 Please create issue descriptions [on GitHub][issues]. Be as specific as possible.
@@ -14,7 +14,7 @@ Which version are you using? What did you do? What did you expect to happen? Are
 you planning to submit your own fix in a pull request? Please include a game
 transcript if that helps explain the problem.
 
-[issues]: https://github.com/donkirkby/live-py-plugin/issues?state=open
+[issues]: https://github.com/donkirkby/shibumi-games/issues?state=open
 
 ## Building a Release
 The nice thing about using the [PySide2 GUI] is that users can install Shibumi
