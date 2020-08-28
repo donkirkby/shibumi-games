@@ -1,12 +1,46 @@
-# shibumi-games
-Play board games that use the Shibumi system of marbles stacked on a 4x4 board
+# Shibumi Games [![Build Status Badge]][latest build] [![Code Coverage]][codecov]
+### Simple board games hiding complexity
 
-![demo](docs/images/demo.png)
+[Build Status Badge]: https://travis-ci.org/donkirkby/shibumi-games.svg?branch=master
+[latest build]: https://travis-ci.org/donkirkby/shibumi-games
+[Code Coverage]: https://codecov.io/github/donkirkby/shibumi-games/coverage.svg?branch=master
+[codecov]: https://codecov.io/github/donkirkby/shibumi-games?branch=master
+[screenshot]: https://donkirkby.github.io/shibumi-games/images/demo.png
+[journal]: https://donkirkby.github.io/shibumi-games/journal
 
-### Installation
-Download the source code, then run this in the main folder:
+Play board games that use the [Shibumi] game system of marbles stacked on a 4x4
+board, build computer opponents for those games, learn strategy, and analyse the
+structure of the games.
 
-    pip install -e .
+![screenshot]
+
+## Installing Shibumi Games
+Even though Shibumi Games has a graphical display, it is a regular Python package,
+so you can install it with `pip install shibumi-games`. If you haven't installed
+Python packages before, read Brett Cannon's [quick-and-dirty guide].
+
+Then run it with the `zero_play_gui` command.
+
+The default installation generates some errors about `bdist_wheel` that don't
+seem to actually cause any problems. You can either ignore them, or install
+`wheel` before installing Shibumi Games.
+
+    pip install wheel
+    pip install shibumi-games
+    zero_play_gui
+
+Known bug on Ubuntu 20.04:
+
+> qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though
+> it was found.
+
+This is a [PySide2 bug] that is missing some dependencies. You can work around
+it by installing those dependencies like this:
+
+    sudo apt install libxcb-xinerama0
+
+[quick-and-dirty guide]: https://snarky.ca/a-quick-and-dirty-guide-on-how-to-install-packages-for-python/
+[PySide2 bug]: https://bugreports.qt.io/browse/QTBUG-84749
 
 ### Game Credits
 The Shibumi game system was designed by Cameron Browne and Néstor Romeral
@@ -24,3 +58,14 @@ Challenge.
 ### Image Credits
 The marble and board graphics were designed by Cameron Browne, and are used with
 permission.
+
+## More Information
+If you'd like to help out with the project, or add your own games, see the
+`CONTRIBUTING.md` file in the source code. For all the details, look through the
+design [journal] for the project.
+
+Shibumi games are built on top of the [Zero Play library] that you can use to
+build your own games.
+
+[Shibumi]: https://boardgamegeek.com/boardgame/135270/shibumi
+[Zero Play library]: https://donkirkby.github.io/zero-play/

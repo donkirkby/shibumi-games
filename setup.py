@@ -3,7 +3,7 @@ See:
 https://packaging.python.org/en/latest/distributing.html
 https://github.com/pypa/sampleproject
 """
-
+import setuptools
 from setuptools import setup
 from os import path
 import shibumi
@@ -19,18 +19,17 @@ setup(name='shibumi',
       description='Board games for the Shibumi system of stacked marbles',
       long_description=long_description,
       long_description_content_type='text/markdown',
-      url='https://github.com/donkirkby/shibumi-games',
+      url='https://donkirkby.github.io/shibumi-games/',
       author='Don Kirkby',
       classifiers=[  # https://pypi.org/classifiers/
           'Development Status :: 3 - Alpha',
           'Intended Audience :: Developers',
           'Topic :: Games/Entertainment :: Board Games',
           'License :: OSI Approved :: MIT License',
-          'Programming Language :: Python :: 3.6',
-          'Programming Language :: Python :: 3.7'],
+          'Programming Language :: Python :: 3.8'],
       keywords='boardgames alphazero machine learning mcts shibumi',
-      packages=['shibumi'],
-      install_requires=['zero-play', 'numpy', 'PySide2'],
+      packages=setuptools.find_packages(),
+      install_requires=['zero-play', 'numpy<1.19.0', 'PySide2'],
       extras_require={'dev': ['pytest', 'coverage', 'mypy']},
       entry_points={
           # The game entry point lets you add rules for new games.

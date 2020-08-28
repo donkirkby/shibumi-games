@@ -1,8 +1,8 @@
 # Contributing to the Shibumi Games Project
-If you like this project and want to make it better, help out. It could be as
-simple as sending [@donkirkby] a nice note on Twitter, you could report a bug,
-or pitch in with some development work. Check if there are some issues labeled
-as [good first issues] or [help wanted].
+If you like this project and want to make it better, please help out. It could
+be as simple as sending [@donkirkby] a nice note on Twitter, you could report a
+bug, or pitch in with some development work. Check if there are some issues
+labeled as [good first issues] or [help wanted].
 
 [@donkirkby]: https://twitter.com/donkirkby
 [good first issues]: https://github.com/donkirkby/shibumi-games/labels/good%20first%20issue
@@ -19,7 +19,42 @@ transcript if that helps explain the problem.
 ## Building a Release
 The nice thing about using the [PySide2 GUI] is that users can install Shibumi
 Games with pip. Releasing a new version means publishing it on the
-[Python package index] where pip can find it.
+[Python package index] where pip can find it. The details are at
+[packaging.python.org], but the main steps are:
+
+1. Activate the project's Python virtual environment.
+
+        pipenv shell
+
+3. Temporarily install the build tools using pip, not pipenv.
+
+        python -m pip install --upgrade setuptools wheel twine
+
+4. Build the release files.
+
+        python setup.py sdist bdist_wheel
+
+5. Upload the release to PyPI. You'll need a user name and password.
+
+        ls dist/*
+        twine upload dist/*
+
+6. Check that the new version is on the [package page], and try installing it.
+
+        pip install --no-cache zero-play
+
+7. Remove the uploaded files, deactivate the virtual environment, and recreate
+    it.
+
+        rm dist/*
+        exit
+        pipenv clean
+
+8. Commit the version number changes, push, and create a release on GitHub.
+
+[packaging.python.org]: https://packaging.python.org/tutorials/packaging-projects/
+[package page]: https://pypi.org/project/shibumi-games/
+
 
 [PySide2 GUI]: https://wiki.qt.io/Qt_for_Python
 [Python package index]: https://pypi.org/
