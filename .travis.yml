@@ -9,6 +9,8 @@ install:
     - git clone https://github.com/donkirkby/zero-play
     - cd shibumi-games
     - pipenv install --dev
+    - pip install -e ../zero-play
+    - pip install -e .
     - pipenv graph
 script:
     - set -e
