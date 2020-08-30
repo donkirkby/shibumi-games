@@ -1,15 +1,19 @@
 [[source]]
+name = "pypi"
 url = "https://pypi.org/simple"
 verify_ssl = true
-name = "pypi"
-
-[packages]
-zero-play = {editable = true, path = "./../zero-play"}
-shibumi = {editable = true, path = "."}
 
 [dev-packages]
-zero-play = {editable = true, extras = ["dev"], path = "./../zero-play"}
-shibumi = {editable = true, extras = ["dev"], path = "."}
+seaborn = "*"
+pytest = "*"
+coverage = "*"
+mypy = "*"
+
+[packages]
+zero-play = "*"
+numpy = "<1.19.0"
+pyside2 = "*"
+pip = "*"
 
 [requires]
 python_version = "3.8"

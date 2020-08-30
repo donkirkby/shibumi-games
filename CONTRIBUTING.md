@@ -53,7 +53,7 @@ Games with pip. Releasing a new version means publishing it on the
 8. Commit the version number changes, push, and create a release on GitHub.
 
 [packaging.python.org]: https://packaging.python.org/tutorials/packaging-projects/
-[package page]: https://pypi.org/project/shibumi-games/
+[package page]: https://pypi.org/project/shibumi/
 
 
 [PySide2 GUI]: https://wiki.qt.io/Qt_for_Python

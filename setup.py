@@ -16,7 +16,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(name='shibumi',
       version=shibumi.__version__,
-      description='Board games for the Shibumi system of stacked marbles',
+      description='Simple board games hiding complexity',
       long_description=long_description,
       long_description_content_type='text/markdown',
       url='https://donkirkby.github.io/shibumi-games/',
@@ -30,7 +30,8 @@ setup(name='shibumi',
       keywords='boardgames alphazero machine learning mcts shibumi',
       packages=setuptools.find_packages(),
       install_requires=['zero-play', 'numpy<1.19.0', 'PySide2'],
-      extras_require={'dev': ['pytest', 'coverage', 'mypy']},
+      extras_require={'ml': ['zero-play[ml]'],
+                      'ml-gpu': ['zero-play[ml-gpu]']},
       entry_points={
           # The game entry point lets you add rules for new games.
           # The zero_play.game.Game class is a useful base class.
