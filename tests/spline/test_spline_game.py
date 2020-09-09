@@ -445,6 +445,26 @@ def test_win_diagonal():
     assert expected_winner == winner
 
 
+def test_valid_moves_after_win():
+    game = SplineGame()
+    board = game.create_board("""\
+  A C E G
+7 . W B . 7
+
+5 . W B . 5
+
+3 . W B . 3
+
+1 . . B . 1
+  A C E G
+""")
+    expected_valid_moves = [False] * 30
+
+    valid_moves = game.get_valid_moves(board)
+
+    assert valid_moves.tolist() == expected_valid_moves
+
+
 def test_get_levels():
     game = SplineGame()
     board = game.create_board("""\

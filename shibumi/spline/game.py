@@ -62,9 +62,12 @@ class SplineGame(Game):
             lines = lines[level_size*2 + 1:]
 
     def get_valid_moves(self, board: np.ndarray) -> np.ndarray:
-        levels = self.get_levels(board)
         piece_count = self.calculate_volume(self.SIZE)
         valid_moves = np.full(piece_count, False)
+        if self.is_win(board, self.BLACK) or self.is_win(board, self.WHITE):
+            return valid_moves
+
+        levels = self.get_levels(board)
         piece_index = 0
         for height in range(self.SIZE):
             level_size = self.SIZE - height
