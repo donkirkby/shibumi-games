@@ -93,7 +93,7 @@ class SplineDisplay(GameDisplay):
                     piece_item.setOpacity(0.001
                                           if piece == self.game.NO_PLAYER
                                           else 1)
-        displayed_player = None
+        displayed_player: typing.Optional[int] = None
         if is_ended:
             if self.game.is_win(board, self.game.WHITE):
                 self.update_move_text('wins')
