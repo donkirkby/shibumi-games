@@ -33,6 +33,7 @@ setup(name='shibumi',
       extras_require={'ml': ['zero-play[ml]'],
                       'ml-gpu': ['zero-play[ml-gpu]']},
       entry_points={
+          'gui_scripts': ['shibumi=shibumi.shibumi:main'],
           # The game entry point lets you add rules for new games.
           # The zero_play.game.Game class is a useful base class.
           'zero_play.game': ['spline=shibumi.spline.game:SplineGame'],
