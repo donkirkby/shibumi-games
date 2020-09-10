@@ -1,0 +1,99 @@
+import numpy as np
+import typing
+
+from shibumi.shibumi_game import ShibumiGame, PlayerCode
+
+
+class SpargoGame(ShibumiGame):
+    name = 'Spargo'
+
+    def create_board(self, text: str = None) -> np.ndarray:
+        if text is None:
+            player = self.BLACK
+        else:
+            text = text.rstrip()
+            player_text = text[-2:]
+            if not player_text[0] == '>':
+                player = self.BLACK
+            else:
+                player = self.BLACK if player_text == '>B' else self.WHITE
+                text = text[:-2]
+        board = super().create_board(text)
+        levels = self.get_levels(board)
+        levels[self.SIZE-1, self.SIZE-1, self.SIZE-1] = player
+        return board
+
+    def is_win(self, board: np.ndarray, player: int) -> bool:
+        return False
+
+    def display(self, board: np.ndarray, show_coordinates: bool = False) -> str:
+        display = super().display(board, show_coordinates)
+        player = self.get_active_player(board)
+        player_display = 'W' if player == self.WHITE else 'B'
+        display += f'>{player_display}\n'
+        return display
+
+    def get_active_player(self, board: np.ndarray) -> int:
+        levels = self.get_levels(board)
+        player = PlayerCode(levels[self.SIZE-1, self.SIZE-1, self.SIZE-1])
+        if player == self.UNUSABLE:
+            player = self.BLACK
+        return player
+
+    def make_move(self, board: np.ndarray, move: int) -> np.ndarray:
+        new_board = board.copy()
+        levels = self.get_levels(new_board)
+        height, row, column = self.get_coordinates(move)
+        player = self.get_active_player(board)
+        levels[height, row, column] = player
+        captured = set()  # {(height, row, column)}
+        for height2, row2, column2 in self.find_neighbours(height, row, column):
+            neighbour_piece = levels[height2, row2, column2]
+            group: typing.Set[typing.Tuple[int, int, int]] = set()
+            if (neighbour_piece not in (player, self.NO_PLAYER) and
+                    not self.has_freedom(levels, height2, row2, column2, group)):
+                captured.add((height2, row2, column2))
+        for height2, row2, column2 in captured:
+            levels[height2, row2, column2] = self.NO_PLAYER
+        new_player = self.WHITE if (player == self.BLACK) else self.BLACK
+        levels[self.SIZE-1, self.SIZE-1, self.SIZE-1] = new_player
+        return new_board
+
+    def find_neighbours(self,
+                        height: int,
+                        row: int,
+                        column: int) -> typing.Generator[typing.Tuple[int,
+                                                                      int,
+                                                                      int],
+                                                         None,
+                                                         None]:
+        for dr in range(-1, 2):
+            for dc in range(-1, 2):
+                if abs(dr) == abs(dc):
+                    continue
+                neighbour_row = row + dr
+                neighbour_column = column + dc
+                if not 0 <= neighbour_row < self.SIZE:
+                    continue
+                if not 0 <= neighbour_column < self.SIZE:
+                    continue
+                yield height, neighbour_row, neighbour_column
+
+    def has_freedom(self,
+                    levels: np.ndarray,
+                    height: int,
+                    row: int,
+                    column: int,
+                    group: set) -> bool:
+        player = levels[height, row, column]
+        for neighbour_coordinates in self.find_neighbours(height, row, column):
+            height2, row2, column2 = neighbour_coordinates
+            neighbour_piece = levels[height2, row2, column2]
+            if neighbour_piece == self.NO_PLAYER:
+                return True
+            if neighbour_piece == player and neighbour_coordinates not in group:
+                group.add(neighbour_coordinates)
+                if self.has_freedom(levels, height2, row2, column2, group):
+                    return True
+
+        return False
