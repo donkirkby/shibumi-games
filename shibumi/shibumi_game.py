@@ -74,6 +74,16 @@ class ShibumiGame(Game, ABC):
         if self.is_win(board, self.BLACK) or self.is_win(board, self.WHITE):
             return valid_moves
 
+        self.fill_supported_moves(board, valid_moves)
+        return valid_moves
+
+    def fill_supported_moves(self, board, valid_moves):
+        """ Mark any moves that are supported by the board or other pieces.
+
+        :param board: the board to analyse
+        :param valid_moves: an array of boolean flags - will be set to True for
+            each space that is supported
+        """
         levels = self.get_levels(board)
         piece_index = 0
         for height in range(self.SIZE):
@@ -83,14 +93,13 @@ class ShibumiGame(Game, ABC):
                     if height == 0:
                         is_supported = True
                     else:
-                        below_height = height-1
+                        below_height = height - 1
                         is_supported = all(levels[below_height, lower_row, lower_column] != self.NO_PLAYER
-                                           for lower_row in range(row, row+2)
-                                           for lower_column in range(column, column+2))
+                                           for lower_row in range(row, row + 2)
+                                           for lower_column in range(column, column + 2))
                     is_valid = is_supported and levels[height, row, column] == self.NO_PLAYER
                     valid_moves[piece_index] = is_valid
                     piece_index += 1
-        return valid_moves
 
     @staticmethod
     def calculate_volume(base_size):

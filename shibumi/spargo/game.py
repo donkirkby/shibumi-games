@@ -4,6 +4,11 @@ import typing
 from shibumi.shibumi_game import ShibumiGame, PlayerCode
 
 
+class IllegalMoveError(Exception):
+    """ Raised when a requested move is not allowed. """
+    pass
+
+
 class SpargoGame(ShibumiGame):
     name = 'Spargo'
 
@@ -24,7 +29,11 @@ class SpargoGame(ShibumiGame):
         return board
 
     def is_win(self, board: np.ndarray, player: int) -> bool:
-        return False
+        if player == self.get_active_player(board):
+            return False
+        valid_moves = self.get_valid_moves(board)
+
+        return valid_moves.sum() == 0
 
     def display(self, board: np.ndarray, show_coordinates: bool = False) -> str:
         display = super().display(board, show_coordinates)
@@ -66,6 +75,8 @@ class SpargoGame(ShibumiGame):
             else:
                 # not supporting any pieces, can be removed.
                 levels[height2, row2, column2] = self.NO_PLAYER
+        if not self.has_freedom(levels, height, row, column, set()):
+            raise IllegalMoveError('Added piece has no freedom.')
         new_player = self.WHITE if (player == self.BLACK) else self.BLACK
         levels[self.SIZE-1, self.SIZE-1, self.SIZE-1] = new_player
         return new_board
@@ -84,11 +95,11 @@ class SpargoGame(ShibumiGame):
                 continue
             for dr in range(-1, 2):
                 neighbour_row = row + dr
-                if not 0 <= neighbour_row < self.SIZE:
+                if not 0 <= neighbour_row < self.SIZE - neighbour_height:
                     continue
                 for dc in range(-1, 2):
                     neighbour_column = column + dc
-                    if not 0 <= neighbour_column < self.SIZE:
+                    if not 0 <= neighbour_column < self.SIZE - neighbour_height:
                         continue
                     if dh == 0:
                         if abs(dr) == abs(dc):
@@ -117,3 +128,17 @@ class SpargoGame(ShibumiGame):
                     return True
 
         return False
+
+    def get_valid_moves(self, board: np.ndarray) -> np.ndarray:
+        piece_count = self.calculate_volume(self.SIZE)
+        valid_moves = np.full(piece_count, False)
+        self.fill_supported_moves(board, valid_moves)
+        for move, is_valid in enumerate(valid_moves):
+            if not is_valid:
+                continue
+            try:
+                self.make_move(board, move)
+            except IllegalMoveError:
+                valid_moves[move] = False
+
+        return valid_moves
