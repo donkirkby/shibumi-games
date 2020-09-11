@@ -5,9 +5,10 @@ from PySide2.QtCore import Qt
 from PySide2.QtGui import QImage, QPixmap, QFont, QResizeEvent
 from PySide2.QtWidgets import (QGraphicsPixmapItem, QGraphicsSceneHoverEvent,
                                QGraphicsSceneMouseEvent)
+
+from shibumi.shibumi_game import ShibumiGame
 from zero_play.game_display import GameDisplay, center_text_item
 
-from shibumi.spline.game import SplineGame
 # noinspection PyUnresolvedReferences
 from shibumi import shibumi_images_rc
 
@@ -38,9 +39,8 @@ class GraphicsShibumiPieceItem(QGraphicsPixmapItem):
                 f'{self.column})')
 
 
-class SplineDisplay(GameDisplay):
-    def __init__(self):
-        game = SplineGame()
+class ShibumiDisplay(GameDisplay):
+    def __init__(self, game: ShibumiGame):
         super().__init__(game)
         self.game = game
         self.background_pixmap = self.load_pixmap('board-1.png')
@@ -122,7 +122,7 @@ class SplineDisplay(GameDisplay):
     def resizeEvent(self, event: QResizeEvent):
         super().resizeEvent(event)
         view_size = event.size()
-        self.game: SplineGame
+        self.game: ShibumiGame
         if self.show_coordinates:
             # Leave room for active player and coordinates
             x_scale = 1.5
@@ -135,7 +135,7 @@ class SplineDisplay(GameDisplay):
             view_size.width() // x_scale,
             view_size.height() // y_scale,
             Qt.KeepAspectRatio,
-            Qt.SmoothTransformation)
+            Qt.SmoothTransformation)  # type: ignore
         self.background_item.setPixmap(scaled_pixmap)
         display_width = scaled_pixmap.width() // .795
         if self.show_coordinates:
@@ -225,9 +225,3 @@ class SplineDisplay(GameDisplay):
         if size is not None:
             pixmap = pixmap.scaled(size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         return pixmap
-
-    @property
-    def credit_pairs(self) -> typing.Iterable[typing.Tuple[str, str]]:
-        return [('Shibumi Graphics:', 'Cameron Browne'),
-                ('Spline Game:', 'Néstor Romeral Andrés'),
-                ('Spline Implementation:', 'Don Kirkby')]
