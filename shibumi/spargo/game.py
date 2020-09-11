@@ -28,12 +28,17 @@ class SpargoGame(ShibumiGame):
         levels[self.SIZE-1, self.SIZE-1, self.SIZE-1] = player
         return board
 
-    def is_win(self, board: np.ndarray, player: int) -> bool:
-        if player == self.get_active_player(board):
-            return False
+    def is_ended(self, board: np.ndarray) -> bool:
         valid_moves = self.get_valid_moves(board)
-
         return valid_moves.sum() == 0
+
+    def is_win(self, board: np.ndarray, player: int) -> bool:
+        if not self.is_ended(board):
+            return False
+        player_count = (board[:-1] == player).sum()
+        opponent_count = (board[:-1] == -player).sum()
+
+        return player_count > opponent_count
 
     def display(self, board: np.ndarray, show_coordinates: bool = False) -> str:
         display = super().display(board, show_coordinates)

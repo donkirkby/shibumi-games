@@ -330,5 +330,73 @@ def test_winner():
 >W
 """)
 
+    assert game.is_ended(board)
     assert game.is_win(board, game.BLACK)
     assert not game.is_win(board, game.WHITE)
+    assert game.get_winner(board) == game.BLACK
+
+
+def test_draw():
+    game = SpargoGame()
+    board = game.create_board("""\
+  A C E G
+7 . W W . 7
+
+5 W W W W 5
+
+3 B B B B 3
+
+1 . B B B 1
+  A C E G
+   B D F
+ 6 . W . 6
+
+ 4 W B W 4
+
+ 2 . B W 2
+   B D F
+    C E
+  5 . . 5
+
+  3 . B 3
+    C E
+>B
+""")
+
+    assert game.is_ended(board)
+    assert not game.is_win(board, game.BLACK)
+    assert not game.is_win(board, game.WHITE)
+    assert game.get_winner(board) == game.NO_PLAYER
+
+
+def test_blocked_player_wins():
+    game = SpargoGame()
+    board = game.create_board("""\
+  A C E G
+7 . W W . 7
+
+5 W W W W 5
+
+3 B B B B 3
+
+1 . B B B 1
+  A C E G
+   B D F
+ 6 . W . 6
+
+ 4 B W B 4
+
+ 2 . B B 2
+   B D F
+    C E
+  5 . . 5
+
+  3 . W 3
+    C E
+>B
+""")
+
+    assert game.is_ended(board)
+    assert game.is_win(board, game.BLACK)
+    assert not game.is_win(board, game.WHITE)
+    assert game.get_winner(board) == game.BLACK
