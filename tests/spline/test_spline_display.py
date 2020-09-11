@@ -4,7 +4,7 @@ from PySide2.QtWidgets import QGraphicsScene, QGraphicsView
 from zero_play.game_display import center_text_item
 from zero_play.pixmap_differ import PixmapDiffer
 
-from shibumi.spline.display import SplineDisplay
+from shibumi.shibumi_display import SplineDisplay
 
 
 def trigger_resize(view: QGraphicsView, width: int, height: int):

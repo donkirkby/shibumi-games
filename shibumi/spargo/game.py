@@ -52,9 +52,20 @@ class SpargoGame(ShibumiGame):
             group: typing.Set[typing.Tuple[int, int, int]] = set()
             if (neighbour_piece not in (player, self.NO_PLAYER) and
                     not self.has_freedom(levels, height2, row2, column2, group)):
-                captured.add((height2, row2, column2))
-        for height2, row2, column2 in captured:
-            levels[height2, row2, column2] = self.NO_PLAYER
+                captured |= group
+
+        sorted_capture = sorted(captured, reverse=True)  # Check from top down.
+        for height2, row2, column2 in sorted_capture:
+            for height3, row3, column3 in self.find_neighbours(height2, row2, column2):
+                if height3 != height2 + 1:
+                    # Not the level above.
+                    continue
+                piece_above = levels[height3, row3, column3]
+                if piece_above != self.NO_PLAYER:
+                    break
+            else:
+                # not supporting any pieces, can be removed.
+                levels[height2, row2, column2] = self.NO_PLAYER
         new_player = self.WHITE if (player == self.BLACK) else self.BLACK
         levels[self.SIZE-1, self.SIZE-1, self.SIZE-1] = new_player
         return new_board
@@ -67,17 +78,25 @@ class SpargoGame(ShibumiGame):
                                                                       int],
                                                          None,
                                                          None]:
-        for dr in range(-1, 2):
-            for dc in range(-1, 2):
-                if abs(dr) == abs(dc):
-                    continue
+        for dh in range(-1, 2):
+            neighbour_height = height + dh
+            if not 0 <= neighbour_height < self.SIZE:
+                continue
+            for dr in range(-1, 2):
                 neighbour_row = row + dr
-                neighbour_column = column + dc
                 if not 0 <= neighbour_row < self.SIZE:
                     continue
-                if not 0 <= neighbour_column < self.SIZE:
-                    continue
-                yield height, neighbour_row, neighbour_column
+                for dc in range(-1, 2):
+                    neighbour_column = column + dc
+                    if not 0 <= neighbour_column < self.SIZE:
+                        continue
+                    if dh == 0:
+                        if abs(dr) == abs(dc):
+                            continue
+                    else:
+                        if dh in (dr, dc):
+                            continue
+                    yield neighbour_height, neighbour_row, neighbour_column
 
     def has_freedom(self,
                     levels: np.ndarray,
@@ -86,13 +105,14 @@ class SpargoGame(ShibumiGame):
                     column: int,
                     group: set) -> bool:
         player = levels[height, row, column]
+        group.add((height, row, column))
         for neighbour_coordinates in self.find_neighbours(height, row, column):
             height2, row2, column2 = neighbour_coordinates
             neighbour_piece = levels[height2, row2, column2]
-            if neighbour_piece == self.NO_PLAYER:
+            if height2 == 0 and neighbour_piece == self.NO_PLAYER:
+                # Empty space on the board, connected to the group.
                 return True
             if neighbour_piece == player and neighbour_coordinates not in group:
-                group.add(neighbour_coordinates)
                 if self.has_freedom(levels, height2, row2, column2, group):
                     return True
 
