@@ -1,15 +1,15 @@
 import numpy as np
 
-from shibumi.shibumi_game import ShibumiGame
+from shibumi.shibumi_game import ShibumiGameState
 
 
-class SplineGame(ShibumiGame):
-    """ Spline Game class implementing the zero-play Game interface. """
+class SplineState(ShibumiGameState):
+    """ Spline game class implementing the zero-play GameState interface. """
 
-    name = 'Spline'
+    game_name = 'Spline'
 
-    def is_win(self, board: np.ndarray, player: int) -> bool:
-        levels = self.get_levels(board)
+    def is_win(self, player: int) -> bool:
+        levels = self.get_levels()
         player_pieces = levels == player
         if self.is_straight_winner(player_pieces):
             return True

@@ -1,12 +1,12 @@
 import typing
 
 from shibumi.shibumi_display import ShibumiDisplay
-from shibumi.spline.game import SplineGame
+from shibumi.spline.game import SplineState
 
 
 class SplineDisplay(ShibumiDisplay):
     def __init__(self):
-        super().__init__(SplineGame())
+        super().__init__(SplineState())
 
     @property
     def credit_pairs(self) -> typing.Iterable[typing.Tuple[str, str]]:

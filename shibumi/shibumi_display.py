@@ -1,4 +1,3 @@
-import numpy as np
 import typing
 from PySide2.QtCore import QSize
 from PySide2.QtCore import Qt
@@ -6,7 +5,7 @@ from PySide2.QtGui import QImage, QPixmap, QFont, QResizeEvent
 from PySide2.QtWidgets import (QGraphicsPixmapItem, QGraphicsSceneHoverEvent,
                                QGraphicsSceneMouseEvent)
 
-from shibumi.shibumi_game import ShibumiGame
+from shibumi.shibumi_game import ShibumiGameState
 from zero_play.game_display import GameDisplay, center_text_item
 
 # noinspection PyUnresolvedReferences
@@ -40,9 +39,9 @@ class GraphicsShibumiPieceItem(QGraphicsPixmapItem):
 
 
 class ShibumiDisplay(GameDisplay):
-    def __init__(self, game: ShibumiGame):
-        super().__init__(game)
-        self.game = game
+    def __init__(self, start_state: ShibumiGameState):
+        super().__init__(start_state)
+        self.start_state = start_state
         self.background_pixmap = self.load_pixmap('board-1.png')
         scene = self.scene()
         self.background_item = scene.addPixmap(self.background_pixmap)
@@ -51,11 +50,11 @@ class ShibumiDisplay(GameDisplay):
         self.black_scaled = self.black_pixmap = self.load_pixmap(
             'ball-b-shadow-1.png')
         self.item_levels = []
-        for height in range(self.game.SIZE):
+        for height in range(self.start_state.SIZE):
             item_level = []
-            for row in range(self.game.SIZE - height):
+            for row in range(self.start_state.SIZE - height):
                 item_row = []
-                for column in range(self.game.SIZE - height):
+                for column in range(self.start_state.SIZE - height):
                     item = GraphicsShibumiPieceItem(height, row, column, self)
                     scene.addItem(item)
                     item_row.append(item)
@@ -63,7 +62,7 @@ class ShibumiDisplay(GameDisplay):
             self.item_levels.append(item_level)
         self.row_labels = []
         self.column_labels = []
-        for i in range(self.game.SIZE*2-1):
+        for i in range(self.start_state.SIZE * 2 - 1):
             self.row_labels.append(scene.addSimpleText(str(i + 1)))
             self.column_labels.append(scene.addSimpleText(chr(i + 65)))
         self.player_item = scene.addPixmap(QPixmap())
@@ -71,44 +70,44 @@ class ShibumiDisplay(GameDisplay):
         self.text_x = self.text_y = 0
         self.debug_message = ''
 
-    def update_board(self, board: np.ndarray):
-        self.current_board = board
-        valid_moves = self.game.get_valid_moves(board)
-        is_ended = self.game.is_ended(board)
-        for level, item_level in zip(self.game.get_levels(self.current_board),
+    def update_board(self, game_state: ShibumiGameState):
+        self.current_state = game_state
+        valid_moves = game_state.get_valid_moves()
+        is_ended = game_state.is_ended()
+        for level, item_level in zip(game_state.get_levels(),
                                      self.item_levels):
             for row_pieces, row_items in zip(level, item_level):
                 piece_item: QGraphicsPixmapItem
                 for piece, piece_item in zip(row_pieces, row_items):
-                    move_index = self.game.get_index(piece_item.height,
-                                                     piece_item.row,
-                                                     piece_item.column)
+                    move_index = game_state.get_index(piece_item.height,
+                                                      piece_item.row,
+                                                      piece_item.column)
                     is_valid = valid_moves[move_index] and not is_ended
-                    piece_item.setVisible(bool(piece != self.game.NO_PLAYER or
+                    piece_item.setVisible(bool(piece != game_state.NO_PLAYER or
                                                is_valid))
-                    if piece == self.game.WHITE:
+                    if piece == game_state.WHITE:
                         piece_item.setPixmap(self.white_scaled)
                     else:
                         piece_item.setPixmap(self.black_scaled)
                     piece_item.setOpacity(0.001
-                                          if piece == self.game.NO_PLAYER
+                                          if piece == game_state.NO_PLAYER
                                           else 1)
         displayed_player: typing.Optional[int] = None
         if is_ended:
-            if self.game.is_win(board, self.game.WHITE):
+            if game_state.is_win(game_state.WHITE):
                 self.update_move_text('wins')
-                displayed_player = self.game.WHITE
-            elif self.game.is_win(board, self.game.BLACK):
+                displayed_player = game_state.WHITE
+            elif game_state.is_win(game_state.BLACK):
                 self.update_move_text('wins')
-                displayed_player = self.game.BLACK
+                displayed_player = game_state.BLACK
             else:
                 self.update_move_text('draw')
         else:
-            displayed_player = self.game.get_active_player(board)
+            displayed_player = game_state.get_active_player()
             self.update_move_text(self.choose_active_text())
-        if displayed_player == self.game.WHITE:
+        if displayed_player == game_state.WHITE:
             self.player_item.setPixmap(self.white_scaled)
-        elif displayed_player == self.game.BLACK:
+        elif displayed_player == game_state.BLACK:
             self.player_item.setPixmap(self.black_scaled)
         self.player_item.setVisible(displayed_player is not None)
 
@@ -122,7 +121,7 @@ class ShibumiDisplay(GameDisplay):
     def resizeEvent(self, event: QResizeEvent):
         super().resizeEvent(event)
         view_size = event.size()
-        self.game: ShibumiGame
+        self.start_state: ShibumiGameState
         if self.show_coordinates:
             # Leave room for active player and coordinates
             x_scale = 1.5
@@ -162,7 +161,7 @@ class ShibumiDisplay(GameDisplay):
         y0 += scaled_pixmap.height() // 22
         for height, level in enumerate(self.item_levels):
             for row, row_items in enumerate(level):
-                row = self.game.SIZE - row - height - 1
+                row = self.start_state.SIZE - row - height - 1
                 piece_item: QGraphicsPixmapItem
                 for column, piece_item in enumerate(row_items):
                     piece_item.setPos(x0+(height + 2*column)*cell_size // 2,
@@ -187,31 +186,31 @@ class ShibumiDisplay(GameDisplay):
             center_text_item(label,
                              x0 + cell_size//1.65 + i*(cell_size // 2),
                              y0 + full_height - cell_size//1.25 - i % 2 * cell_size//3.5)
-        self.update_board(self.current_board)
+        self.update_board(self.current_state)
 
     def on_hover_enter(self, piece_item: GraphicsShibumiPieceItem):
-        levels = self.game.get_levels(self.current_board)
+        levels = self.current_state.get_levels()
         piece = levels[piece_item.height][piece_item.row][piece_item.column]
-        if piece != self.game.NO_PLAYER:
+        if piece != self.start_state.NO_PLAYER:
             return
-        player = self.game.get_active_player(self.current_board)
-        if player == self.game.BLACK:
+        player = self.current_state.get_active_player()
+        if player == self.start_state.BLACK:
             piece_item.setPixmap(self.black_scaled)
         else:
             piece_item.setPixmap(self.white_scaled)
         piece_item.setOpacity(0.5)
 
     def on_hover_leave(self, piece_item: GraphicsShibumiPieceItem):
-        levels = self.game.get_levels(self.current_board)
+        levels = self.current_state.get_levels()
         piece = levels[piece_item.height][piece_item.row][piece_item.column]
-        if piece == self.game.NO_PLAYER:
+        if piece == self.start_state.NO_PLAYER:
             piece_item.setOpacity(0.001)
 
     def on_click(self, piece_item: GraphicsShibumiPieceItem):
-        move_index = self.game.get_index(piece_item.height,
-                                         piece_item.row,
-                                         piece_item.column)
-        valid_moves = self.game.get_valid_moves(self.current_board)
+        move_index = self.start_state.get_index(piece_item.height,
+                                                piece_item.row,
+                                                piece_item.column)
+        valid_moves = self.current_state.get_valid_moves()
         if valid_moves[move_index]:
             self.make_move(move_index)
 

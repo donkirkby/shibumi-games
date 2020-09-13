@@ -1,6 +1,8 @@
 from PySide2.QtCore import QSize
 from PySide2.QtGui import QPainter, QFont, QResizeEvent
 from PySide2.QtWidgets import QGraphicsScene, QGraphicsView
+
+from shibumi.spline.game import SplineState
 from zero_play.game_display import center_text_item
 from zero_play.pixmap_differ import PixmapDiffer
 
@@ -68,7 +70,7 @@ def test_first_level(pixmap_differ: PixmapDiffer):
         expected_scene.render(expected)
 
         display = SplineDisplay()
-        display.update_board(display.game.create_board("""\
+        display.update_board(SplineState("""\
   A C E G
 7 W B . . 7
 
@@ -111,7 +113,7 @@ def test_second_level(pixmap_differ: PixmapDiffer):
         expected_scene.render(expected)
 
         display = SplineDisplay()
-        display.update_board(display.game.create_board("""\
+        display.update_board(SplineState("""\
   A C E G
 7 W B . . 7
 
@@ -159,7 +161,7 @@ def test_resize_wide(pixmap_differ: PixmapDiffer):
         expected_scene.render(expected)
 
         display = SplineDisplay()
-        display.update_board(display.game.create_board("""\
+        display.update_board(SplineState("""\
   A C E G
 7 W B . . 7
 
@@ -319,7 +321,7 @@ def test_hover_enter_existing(pixmap_differ: PixmapDiffer):
         expected_scene.render(expected)
 
         display = SplineDisplay()
-        display.update_board(display.game.create_board("""\
+        display.update_board(SplineState("""\
   A C E G
 7 . . . . 7
 
@@ -363,7 +365,7 @@ def test_hover_leave_existing(pixmap_differ: PixmapDiffer):
         expected_scene.render(expected)
 
         display = SplineDisplay()
-        display.update_board(display.game.create_board("""\
+        display.update_board(SplineState("""\
   A C E G
 7 . . . . 7
 
@@ -410,7 +412,7 @@ def test_double_update(pixmap_differ: PixmapDiffer):
 
         display = SplineDisplay()
         trigger_resize(display, 300, 240)
-        display.update_board(display.game.create_board("""\
+        display.update_board(SplineState("""\
   A C E G
 7 W B . . 7
 
@@ -421,7 +423,7 @@ def test_double_update(pixmap_differ: PixmapDiffer):
 1 . . . . 1
   A C E G
 """))
-        display.update_board(display.game.create_board("""\
+        display.update_board(SplineState("""\
   A C E G
 7 B W . . 7
 

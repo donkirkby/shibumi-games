@@ -1,12 +1,11 @@
 # noinspection PyPackageRequirements
 import pytest
 
-from shibumi.spline.game import SplineGame
+from shibumi.spline.game import SplineState
 
 
 def test_start_display():
-    game = SplineGame()
-    board = game.create_board()
+    board = SplineState()
     expected_display = """\
   A C E G
 7 . . . . 7
@@ -19,24 +18,22 @@ def test_start_display():
   A C E G
 """
 
-    display = game.display(board, show_coordinates=True)
+    display = board.display(show_coordinates=True)
 
-    assert expected_display == display
+    assert display == expected_display
 
 
 def test_start_valid_moves():
-    game = SplineGame()
-    board = game.create_board()
+    board = SplineState()
     expected_moves = [True] * 16 + [False] * 14
 
-    valid_moves = game.get_valid_moves(board)
+    valid_moves = board.get_valid_moves()
 
-    assert expected_moves == valid_moves.tolist()
+    assert valid_moves.tolist() == expected_moves
 
 
 def test_add_stone_display():
-    game = SplineGame()
-    board1 = game.create_board()
+    board1 = SplineState()
     expected_display = """\
   A C E G
 7 . . . . 7
@@ -49,16 +46,15 @@ def test_add_stone_display():
   A C E G
 """
 
-    move = game.parse_move('3E', board1)
-    board2 = game.make_move(board1, move)
-    display = game.display(board2, show_coordinates=True)
+    move = board1.parse_move('3E')
+    board2 = board1.make_move(move)
+    display = board2.display(show_coordinates=True)
 
-    assert expected_display == display
+    assert display == expected_display
 
 
 def test_add_stone_lower_case():
-    game = SplineGame()
-    board1 = game.create_board()
+    board1 = SplineState()
     expected_display = """\
   A C E G
 7 . . . . 7
@@ -71,11 +67,11 @@ def test_add_stone_lower_case():
   A C E G
 """
 
-    move = game.parse_move('3e', board1)
-    board2 = game.make_move(board1, move)
-    display = game.display(board2, show_coordinates=True)
+    move = board1.parse_move('3e')
+    board2 = board1.make_move(move)
+    display = board2.display(show_coordinates=True)
 
-    assert expected_display == display
+    assert display == expected_display
 
 
 def test_init_text():
@@ -90,12 +86,11 @@ def test_init_text():
 1 . . . . 1
   A C E G
 """
-    game = SplineGame()
-    board = game.create_board(text=expected_display)
+    board = SplineState(text=expected_display)
 
-    display = game.display(board, show_coordinates=True)
+    display = board.display(show_coordinates=True)
 
-    assert expected_display == display
+    assert display == expected_display
 
 
 def test_init_text_second_level():
@@ -117,12 +112,11 @@ def test_init_text_second_level():
  2 . . . 2
    B D F
 """
-    game = SplineGame()
-    board = game.create_board(text=expected_display)
+    board = SplineState(text=expected_display)
 
-    display = game.display(board, show_coordinates=True)
+    display = board.display(show_coordinates=True)
 
-    assert expected_display == display
+    assert display == expected_display
 
 
 def test_init_text_partial():
@@ -143,12 +137,11 @@ garbage
 1 . . . . 1
   A C E G
 """
-    game = SplineGame()
-    board = game.create_board(text=text)
+    board = SplineState(text=text)
 
-    display = game.display(board, show_coordinates=True)
+    display = board.display(show_coordinates=True)
 
-    assert expected_display == display
+    assert display == expected_display
 
 
 def test_init_text_bad():
@@ -163,14 +156,12 @@ def test_init_text_bad():
 1 . X . . 1
   A C E G
 """
-    game = SplineGame()
     with pytest.raises(ValueError, match="Unexpected 'X' at line 8, column 5."):
-        game.create_board(text=text)
+        SplineState(text=text)
 
 
 def test_add_stone_second_level():
-    game = SplineGame()
-    board1 = game.create_board("""\
+    board1 = SplineState("""\
   A C E G
 7 . . . . 7
 
@@ -200,16 +191,15 @@ def test_add_stone_second_level():
    B D F
 """
 
-    move = game.parse_move('4D', board1)
-    board2 = game.make_move(board1, move)
-    display = game.display(board2, show_coordinates=True)
+    move = board1.parse_move('4D')
+    board2 = board1.make_move(move)
+    display = board2.display(show_coordinates=True)
 
-    assert expected_display == display
+    assert display == expected_display
 
 
 def test_add_stone_third_level():
-    game = SplineGame()
-    board1 = game.create_board("""\
+    board1 = SplineState("""\
   A C E G
 7 . B B W 7
 
@@ -251,16 +241,15 @@ def test_add_stone_third_level():
     C E
 """
 
-    move = game.parse_move('5e', board1)
-    board2 = game.make_move(board1, move)
-    display = game.display(board2, show_coordinates=True)
+    move = board1.parse_move('5e')
+    board2 = board1.make_move(move)
+    display = board2.display(show_coordinates=True)
 
-    assert expected_display == display
+    assert display == expected_display
 
 
 def test_add_stone_occupied_row():
-    game = SplineGame()
-    board1 = game.create_board("""\
+    board1 = SplineState("""\
   A C E G
 7 . . . . 7
 
@@ -273,12 +262,11 @@ def test_add_stone_occupied_row():
 """)
 
     with pytest.raises(ValueError, match='Invalid move: 5C.'):
-        game.parse_move('5C', board1)
+        board1.parse_move('5C')
 
 
 def test_add_stone_bad_column():
-    game = SplineGame()
-    board1 = game.create_board("""\
+    board1 = SplineState("""\
   A C E G
 7 . . . . 7
 
@@ -291,12 +279,11 @@ def test_add_stone_bad_column():
 """)
 
     with pytest.raises(ValueError, match='Invalid move: 5X.'):
-        game.parse_move('5X', board1)
+        board1.parse_move('5X')
 
 
 def test_add_stone_bad_row():
-    game = SplineGame()
-    board1 = game.create_board("""\
+    board1 = SplineState("""\
   A C E G
 7 . . . . 7
 
@@ -309,12 +296,11 @@ def test_add_stone_bad_row():
 """)
 
     with pytest.raises(ValueError, match='Invalid move: 9C.'):
-        game.parse_move('9C', board1)
+        board1.parse_move('9C')
 
 
 def test_full_spaces_valid_moves():
-    game = SplineGame()
-    board = game.create_board("""\
+    board = SplineState("""\
   A C E G
 7 . . . . 7
 
@@ -329,14 +315,13 @@ def test_full_spaces_valid_moves():
     # full spaces are no longer valid moves
     expected_valid_moves[6] = expected_valid_moves[9] = False
 
-    valid_moves = game.get_valid_moves(board)
+    valid_moves = board.get_valid_moves()
 
-    assert expected_valid_moves == valid_moves.tolist()
+    assert valid_moves.tolist() == expected_valid_moves
 
 
 def test_second_level_valid_moves():
-    game = SplineGame()
-    board = game.create_board("""\
+    board = SplineState("""\
   A C E G
 7 . . . . 7
 
@@ -353,14 +338,13 @@ def test_second_level_valid_moves():
     # centre of second level is now supported
     expected_valid_moves[20] = True
 
-    valid_moves = game.get_valid_moves(board)
+    valid_moves = board.get_valid_moves()
 
-    assert expected_valid_moves == valid_moves.tolist()
+    assert valid_moves.tolist() == expected_valid_moves
 
 
 def test_win_row():
-    game = SplineGame()
-    board = game.create_board("""\
+    board = SplineState("""\
   A C E G
 7 . . . . 7
 
@@ -371,16 +355,15 @@ def test_win_row():
 1 . B B . 1
   A C E G
 """)
-    expected_winner = game.WHITE
+    expected_winner = board.WHITE
 
-    winner = game.get_winner(board)
+    winner = board.get_winner()
 
-    assert expected_winner == winner
+    assert winner == expected_winner
 
 
 def test_win_column():
-    game = SplineGame()
-    board = game.create_board("""\
+    board = SplineState("""\
   A C E G
 7 W W B . 7
 
@@ -391,16 +374,15 @@ def test_win_column():
 1 . B B . 1
   A C E G
 """)
-    expected_winner = game.BLACK
+    expected_winner = board.BLACK
 
-    winner = game.get_winner(board)
+    winner = board.get_winner()
 
-    assert expected_winner == winner
+    assert winner == expected_winner
 
 
 def test_win_column_level_2():
-    game = SplineGame()
-    board = game.create_board("""\
+    board = SplineState("""\
   A C E G
 7 W W W . 7
 
@@ -418,16 +400,15 @@ def test_win_column_level_2():
  2 . W . 2
    B D F
 """)
-    expected_winner = game.WHITE
+    expected_winner = board.WHITE
 
-    winner = game.get_winner(board)
+    winner = board.get_winner()
 
-    assert expected_winner == winner
+    assert winner == expected_winner
 
 
 def test_win_diagonal():
-    game = SplineGame()
-    board = game.create_board("""\
+    board = SplineState("""\
   A C E G
 7 W W B . 7
 
@@ -438,16 +419,15 @@ def test_win_diagonal():
 1 . B B W 1
   A C E G
 """)
-    expected_winner = game.WHITE
+    expected_winner = board.WHITE
 
-    winner = game.get_winner(board)
+    winner = board.get_winner()
 
-    assert expected_winner == winner
+    assert winner == expected_winner
 
 
 def test_valid_moves_after_win():
-    game = SplineGame()
-    board = game.create_board("""\
+    board = SplineState("""\
   A C E G
 7 . W B . 7
 
@@ -460,14 +440,13 @@ def test_valid_moves_after_win():
 """)
     expected_valid_moves = [False] * 30
 
-    valid_moves = game.get_valid_moves(board)
+    valid_moves = board.get_valid_moves()
 
-    assert valid_moves.tolist() == expected_valid_moves
+    assert expected_valid_moves == valid_moves.tolist()
 
 
 def test_get_levels():
-    game = SplineGame()
-    board = game.create_board("""\
+    board = SplineState("""\
   A C E G
 7 W W W . 7
 
@@ -485,10 +464,10 @@ def test_get_levels():
  2 . W . 2
    B D F
 """)
-    w = game.WHITE
-    b = game.BLACK
-    n = game.NO_PLAYER
-    u = game.UNUSABLE
+    w = board.WHITE
+    b = board.BLACK
+    n = board.NO_PLAYER
+    u = board.UNUSABLE
     expected_levels = [[[n, b, b, n],
                         [w, b, b, n],
                         [w, w, b, w],
@@ -505,7 +484,7 @@ def test_get_levels():
                         [u, u, u, u],
                         [u, u, u, u],
                         [u, u, u, u]]]
-    assert game.get_levels(board).tolist() == expected_levels
+    assert board.get_levels().tolist() == expected_levels
 
 
 @pytest.mark.parametrize(['move_index', 'expected_display'],
@@ -514,8 +493,7 @@ def test_get_levels():
                           (4, '3A'),
                           (16, '2B')])
 def test_display_move(move_index: int, expected_display: str):
-    game = SplineGame()
-    board = game.create_board("""\
+    board = SplineState("""\
   A C E G
 7 . . . . 7
 
@@ -534,14 +512,13 @@ def test_display_move(move_index: int, expected_display: str):
    B D F
 """)
 
-    display = game.display_move(board, move_index)
+    display = board.display_move(move_index)
 
     assert display == expected_display
 
 
 def test_get_move_count():
-    game = SplineGame()
-    board = game.create_board("""\
+    board = SplineState("""\
   A C E G
 7 . . . . 7
 
@@ -560,6 +537,6 @@ def test_get_move_count():
    B D F
 """)
 
-    move_count = game.get_move_count(board)
+    move_count = board.get_move_count()
 
     assert move_count == 5
