@@ -26,7 +26,9 @@ class SpargoState(ShibumiGameState):
         super().__init__(text, board)
         levels = self.get_levels()
         levels[self.SIZE-1, self.SIZE-1, self.SIZE-1] = player
-        self.history = set()  # {board.bytes} for all previous states
+
+        # {board.bytes} for all previous states
+        self.history: typing.Set[bytes] = set()
 
     def is_ended(self) -> bool:
         valid_moves = self.get_valid_moves()
