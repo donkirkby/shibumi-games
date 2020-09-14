@@ -1,6 +1,4 @@
-import numpy as np
-
-from shibumi.shibumi_game import ShibumiGameState
+from shibumi.shibumi_game_state import ShibumiGameState
 
 
 class SplineState(ShibumiGameState):

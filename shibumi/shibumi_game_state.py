@@ -44,7 +44,9 @@ class ShibumiGameState(GameState, ABC):
         self.board = board
 
     def __eq__(self, other):
-        raise NotImplemented()
+        if not isinstance(other, ShibumiGameState):
+            return False
+        return np.array_equal(self.board, other.board)
 
     def load_text(self, text: str, levels: np.ndarray):
         character_players = {

@@ -1,7 +1,7 @@
 import numpy as np
 import typing
 
-from shibumi.shibumi_game import ShibumiGame, PlayerCode
+from shibumi.shibumi_game_state import ShibumiGameState, PlayerCode
 
 
 class IllegalMoveError(Exception):
@@ -9,10 +9,10 @@ class IllegalMoveError(Exception):
     pass
 
 
-class SpargoGame(ShibumiGame):
-    name = 'Spargo'
+class SpargoState(ShibumiGameState):
+    game_name = 'Spargo'
 
-    def create_board(self, text: str = None) -> np.ndarray:
+    def __init__(self, text: str = None, board: np.ndarray = None):
         if text is None:
             player = self.BLACK
         else:
@@ -23,42 +23,42 @@ class SpargoGame(ShibumiGame):
             else:
                 player = self.BLACK if player_text == '>B' else self.WHITE
                 text = text[:-2]
-        board = super().create_board(text)
-        levels = self.get_levels(board)
+        super().__init__(text, board)
+        levels = self.get_levels()
         levels[self.SIZE-1, self.SIZE-1, self.SIZE-1] = player
-        return board
 
-    def is_ended(self, board: np.ndarray) -> bool:
-        valid_moves = self.get_valid_moves(board)
+    def is_ended(self) -> bool:
+        valid_moves = self.get_valid_moves()
         return valid_moves.sum() == 0
 
-    def is_win(self, board: np.ndarray, player: int) -> bool:
-        if not self.is_ended(board):
+    def is_win(self, player: int) -> bool:
+        if not self.is_ended():
             return False
-        player_count = (board[:-1] == player).sum()
-        opponent_count = (board[:-1] == -player).sum()
+        player_count = (self.board[:-1] == player).sum()
+        opponent_count = (self.board[:-1] == -player).sum()
 
         return player_count > opponent_count
 
-    def display(self, board: np.ndarray, show_coordinates: bool = False) -> str:
-        display = super().display(board, show_coordinates)
-        player = self.get_active_player(board)
+    def display(self, show_coordinates: bool = False) -> str:
+        display = super().display(show_coordinates)
+        player = self.get_active_player()
         player_display = 'W' if player == self.WHITE else 'B'
         display += f'>{player_display}\n'
         return display
 
-    def get_active_player(self, board: np.ndarray) -> int:
-        levels = self.get_levels(board)
+    def get_active_player(self) -> int:
+        levels = self.get_levels()
         player = PlayerCode(levels[self.SIZE-1, self.SIZE-1, self.SIZE-1])
         if player == self.UNUSABLE:
             player = self.BLACK
         return player
 
-    def make_move(self, board: np.ndarray, move: int) -> np.ndarray:
-        new_board = board.copy()
-        levels = self.get_levels(new_board)
+    def make_move(self, move: int) -> 'SpargoState':
+        new_board = self.board.copy()
+        new_state = SpargoState(board=new_board)
+        levels = new_state.get_levels()
         height, row, column = self.get_coordinates(move)
-        player = self.get_active_player(board)
+        player = self.get_active_player()
         levels[height, row, column] = player
         captured = set()  # {(height, row, column)}
         for height2, row2, column2 in self.find_neighbours(height, row, column):
@@ -84,7 +84,7 @@ class SpargoGame(ShibumiGame):
             raise IllegalMoveError('Added piece has no freedom.')
         new_player = self.WHITE if (player == self.BLACK) else self.BLACK
         levels[self.SIZE-1, self.SIZE-1, self.SIZE-1] = new_player
-        return new_board
+        return new_state
 
     def find_neighbours(self,
                         height: int,
@@ -134,15 +134,15 @@ class SpargoGame(ShibumiGame):
 
         return False
 
-    def get_valid_moves(self, board: np.ndarray) -> np.ndarray:
+    def get_valid_moves(self,) -> np.ndarray:
         piece_count = self.calculate_volume(self.SIZE)
         valid_moves = np.full(piece_count, False)
-        self.fill_supported_moves(board, valid_moves)
+        self.fill_supported_moves(valid_moves)
         for move, is_valid in enumerate(valid_moves):
             if not is_valid:
                 continue
             try:
-                self.make_move(board, move)
+                self.make_move(move)
             except IllegalMoveError:
                 valid_moves[move] = False
 

@@ -5,11 +5,12 @@ from PySide2.QtGui import QImage, QPixmap, QFont, QResizeEvent
 from PySide2.QtWidgets import (QGraphicsPixmapItem, QGraphicsSceneHoverEvent,
                                QGraphicsSceneMouseEvent)
 
-from shibumi.shibumi_game import ShibumiGameState
+from shibumi.shibumi_game_state import ShibumiGameState
 from zero_play.game_display import GameDisplay, center_text_item
 
 # noinspection PyUnresolvedReferences
 from shibumi import shibumi_images_rc
+from zero_play.game_state import GameState
 
 
 class GraphicsShibumiPieceItem(QGraphicsPixmapItem):
@@ -70,7 +71,8 @@ class ShibumiDisplay(GameDisplay):
         self.text_x = self.text_y = 0
         self.debug_message = ''
 
-    def update_board(self, game_state: ShibumiGameState):
+    def update_board(self, game_state: GameState):
+        assert isinstance(game_state, ShibumiGameState)
         self.current_state = game_state
         valid_moves = game_state.get_valid_moves()
         is_ended = game_state.is_ended()
@@ -189,6 +191,7 @@ class ShibumiDisplay(GameDisplay):
         self.update_board(self.current_state)
 
     def on_hover_enter(self, piece_item: GraphicsShibumiPieceItem):
+        assert isinstance(self.current_state, ShibumiGameState)
         levels = self.current_state.get_levels()
         piece = levels[piece_item.height][piece_item.row][piece_item.column]
         if piece != self.start_state.NO_PLAYER:
@@ -201,6 +204,7 @@ class ShibumiDisplay(GameDisplay):
         piece_item.setOpacity(0.5)
 
     def on_hover_leave(self, piece_item: GraphicsShibumiPieceItem):
+        assert isinstance(self.current_state, ShibumiGameState)
         levels = self.current_state.get_levels()
         piece = levels[piece_item.height][piece_item.row][piece_item.column]
         if piece == self.start_state.NO_PLAYER:

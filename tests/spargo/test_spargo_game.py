@@ -1,9 +1,8 @@
-from shibumi.spargo.game import SpargoGame
+from shibumi.spargo.game import SpargoState
 
 
 def test_basic_move():
-    game = SpargoGame()
-    board = game.create_board("""\
+    board = SpargoState("""\
   A C E G
 7 . . . . 7
 
@@ -28,14 +27,13 @@ def test_basic_move():
 >B
 """
 
-    board2 = game.make_move(board, 0)
+    board2 = board.make_move(0)
 
-    assert game.display(board2) == expected_board
+    assert board2.display() == expected_board
 
 
 def test_capture():
-    game = SpargoGame()
-    board = game.create_board("""\
+    board = SpargoState("""\
   A C E G
 7 . . . . 7
 
@@ -60,14 +58,13 @@ def test_capture():
 >W
 """
 
-    board2 = game.make_move(board, 4)
+    board2 = board.make_move(4)
 
-    assert game.display(board2) == expected_board
+    assert board2.display() == expected_board
 
 
 def test_capture_in_top_right():
-    game = SpargoGame()
-    board = game.create_board("""\
+    board = SpargoState("""\
   A C E G
 7 . . B W 7
 
@@ -92,14 +89,13 @@ def test_capture_in_top_right():
 >W
 """
 
-    board2 = game.make_move(board, 11)
+    board2 = board.make_move(11)
 
-    assert game.display(board2) == expected_board
+    assert board2.display() == expected_board
 
 
 def test_connected_to_freedom():
-    game = SpargoGame()
-    board = game.create_board("""\
+    board = SpargoState("""\
   A C E G
 7 . . . . 7
 
@@ -124,14 +120,13 @@ def test_connected_to_freedom():
 >B
 """
 
-    board2 = game.make_move(board, 4)
+    board2 = board.make_move(4)
 
-    assert game.display(board2) == expected_board
+    assert board2.display() == expected_board
 
 
 def test_capture_group():
-    game = SpargoGame()
-    board = game.create_board("""\
+    board = SpargoState("""\
   A C E G
 7 . . . . 7
 
@@ -156,14 +151,13 @@ def test_capture_group():
 >B
 """
 
-    board2 = game.make_move(board, 4)
+    board2 = board.make_move(4)
 
-    assert game.display(board2) == expected_board
+    assert board2.display() == expected_board
 
 
 def test_climb_to_freedom():
-    game = SpargoGame()
-    board = game.create_board("""\
+    board = SpargoState("""\
   A C E G
 7 . . . . 7
 
@@ -202,14 +196,13 @@ def test_climb_to_freedom():
 >B
 """
 
-    board2 = game.make_move(board, 4)
+    board2 = board.make_move(4)
 
-    assert game.display(board2) == expected_board
+    assert board2.display() == expected_board
 
 
 def test_capture_up():
-    game = SpargoGame()
-    board = game.create_board("""\
+    board = SpargoState("""\
   A C E G
 7 . . . . 7
 
@@ -241,14 +234,13 @@ def test_capture_up():
 >B
 """
 
-    board2 = game.make_move(board, 4)
+    board2 = board.make_move(4)
 
-    assert game.display(board2) == expected_board
+    assert board2.display() == expected_board
 
 
 def test_zombie():
-    game = SpargoGame()
-    board = game.create_board("""\
+    board = SpargoState("""\
   A C E G
 7 . . . . 7
 
@@ -287,14 +279,13 @@ def test_zombie():
 >B
 """
 
-    board2 = game.make_move(board, 4)
+    board2 = board.make_move(4)
 
-    assert game.display(board2) == expected_board
+    assert board2.display() == expected_board
 
 
 def test_suicide_invalid():
-    game = SpargoGame()
-    board = game.create_board("""\
+    board = SpargoState("""\
   A C E G
 7 . . . . 7
 
@@ -307,7 +298,7 @@ def test_suicide_invalid():
 >W
 """)
 
-    valid_moves = game.get_valid_moves(board)
+    valid_moves = board.get_valid_moves()
 
     is_second_level_valid = valid_moves[16]
     is_bottom_left_valid = valid_moves[0]
@@ -316,8 +307,7 @@ def test_suicide_invalid():
 
 
 def test_winner():
-    game = SpargoGame()
-    board = game.create_board("""\
+    board = SpargoState("""\
   A C E G
 7 . B B . 7
 
@@ -330,15 +320,14 @@ def test_winner():
 >W
 """)
 
-    assert game.is_ended(board)
-    assert game.is_win(board, game.BLACK)
-    assert not game.is_win(board, game.WHITE)
-    assert game.get_winner(board) == game.BLACK
+    assert board.is_ended()
+    assert board.is_win(board.BLACK)
+    assert not board.is_win(board.WHITE)
+    assert board.get_winner() == board.BLACK
 
 
 def test_draw():
-    game = SpargoGame()
-    board = game.create_board("""\
+    board = SpargoState("""\
   A C E G
 7 . W W . 7
 
@@ -363,15 +352,14 @@ def test_draw():
 >B
 """)
 
-    assert game.is_ended(board)
-    assert not game.is_win(board, game.BLACK)
-    assert not game.is_win(board, game.WHITE)
-    assert game.get_winner(board) == game.NO_PLAYER
+    assert board.is_ended()
+    assert not board.is_win(board.BLACK)
+    assert not board.is_win(board.WHITE)
+    assert board.get_winner() == board.NO_PLAYER
 
 
 def test_blocked_player_wins():
-    game = SpargoGame()
-    board = game.create_board("""\
+    board = SpargoState("""\
   A C E G
 7 . W W . 7
 
@@ -396,7 +384,7 @@ def test_blocked_player_wins():
 >B
 """)
 
-    assert game.is_ended(board)
-    assert game.is_win(board, game.BLACK)
-    assert not game.is_win(board, game.WHITE)
-    assert game.get_winner(board) == game.BLACK
+    assert board.is_ended()
+    assert board.is_win(board.BLACK)
+    assert not board.is_win(board.WHITE)
+    assert board.get_winner() == board.BLACK
