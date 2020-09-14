@@ -388,3 +388,39 @@ def test_blocked_player_wins():
     assert board.is_win(board.BLACK)
     assert not board.is_win(board.WHITE)
     assert board.get_winner() == board.BLACK
+
+
+def test_ko_rule():
+    text1 = """\
+  A C E G
+7 . . . . 7
+
+5 . . . . 5
+
+3 . W B . 3
+
+1 W B . B 1
+  A C E G
+>W
+"""
+    text2 = """\
+  A C E G
+7 . . . . 7
+
+5 . . . . 5
+
+3 . W B . 3
+
+1 W . W B 1
+  A C E G
+>B
+"""
+
+    board1 = SpargoState(text1)
+    board2 = board1.make_move(2)
+
+    display = board2.display(show_coordinates=True)
+    valid_moves = board2.get_valid_moves()
+
+    assert display == text2
+    assert not valid_moves[1]

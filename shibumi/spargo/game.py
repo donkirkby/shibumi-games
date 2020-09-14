@@ -26,6 +26,7 @@ class SpargoState(ShibumiGameState):
         super().__init__(text, board)
         levels = self.get_levels()
         levels[self.SIZE-1, self.SIZE-1, self.SIZE-1] = player
+        self.history = set()  # {board.bytes} for all previous states
 
     def is_ended(self) -> bool:
         valid_moves = self.get_valid_moves()
@@ -84,6 +85,9 @@ class SpargoState(ShibumiGameState):
             raise IllegalMoveError('Added piece has no freedom.')
         new_player = self.WHITE if (player == self.BLACK) else self.BLACK
         levels[self.SIZE-1, self.SIZE-1, self.SIZE-1] = new_player
+        if new_state.board.tobytes() in self.history:
+            raise IllegalMoveError('Cannot repeat a position.')
+        new_state.history = self.history | {self.board.tobytes()}
         return new_state
 
     def find_neighbours(self,
