@@ -36,6 +36,10 @@ I also converted the web site to my new favourite template: Bulma Clean Theme.
 [First GUI for Spline]: 2020/first_spline_gui.png
 
 ### Sep 2020
+The weird moves were caused by a bug I found in most of the games: reporting
+valid moves even after the game had ended. That stopped the AI from taking
+advantage of the wins it found.
+
 Added Spargo to the collection, and got the AI working. It kept getting stuck in
 infinite loops, until I added the superko rule. Unfortunately, that required a
 major rewrite. Instead of writing `Game` classes that passed around numpy arrays
