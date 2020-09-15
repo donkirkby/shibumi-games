@@ -37,10 +37,14 @@ class SpargoState(ShibumiGameState):
     def is_win(self, player: int) -> bool:
         if not self.is_ended():
             return False
-        player_count = (self.board[:-1] == player).sum()
-        opponent_count = (self.board[:-1] == -player).sum()
+        player_count = self.get_piece_count(player)
+        opponent_count = self.get_piece_count(-player)
 
         return player_count > opponent_count
+
+    def get_piece_count(self, player: int):
+        player_count = (self.board[:-1] == player).sum()
+        return player_count
 
     def display(self, show_coordinates: bool = False) -> str:
         display = super().display(show_coordinates)
