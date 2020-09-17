@@ -1,8 +1,0 @@
-<!DOCTYPE RCC><RCC version="1.0">
-<qresource>
-<file>./ball-b-shadow-1.png</file>
-<file>./ball-w-shadow-1.png</file>
-<file>./board-1.png</file>
-<file>./shibumi_images.qrc</file>
-</qresource>
-</RCC>

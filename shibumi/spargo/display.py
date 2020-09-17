@@ -9,6 +9,8 @@ from zero_play.game_state import GameState
 
 
 class SpargoDisplay(ShibumiDisplay):
+    rules_path = ':/shibumi_rules/spargo.md'
+
     def __init__(self):
         super().__init__(SpargoState())
         scene = self.scene()

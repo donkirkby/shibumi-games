@@ -1,9 +1,11 @@
 remote_theme: chrisrhymes/bulma-clean-theme
 title: Shibumi Games
 google_analytics: UA-4644630-2
+baseurl: /shibumi-games
 
-#defaults:
-#  - scope:
-#      path: ""
-#    values:
-#      hero_image: images/index_hero.jpg
+defaults:
+  - scope:
+      path: ""
+    values:
+      hero_image: /shibumi-games/images/index_hero.jpg
+      hero_darken: true

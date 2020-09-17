@@ -5,6 +5,8 @@ from shibumi.spline.game import SplineState
 
 
 class SplineDisplay(ShibumiDisplay):
+    rules_path = ':/shibumi_rules/spline.md'
+
     def __init__(self):
         super().__init__(SplineState())
 

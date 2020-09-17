@@ -62,18 +62,12 @@ Games with pip. Releasing a new version means publishing it on the
 ## PySide2 Tools
 See the Zero Play project for other useful tools in PySide2, but the main one
 that is useful for working on this project is the resource compiler that
-packages up the images into `shibumi_images_rc.py`
+packages up the images and rules. After installing the `zero-play` library,
+you can use its helper command to run the resource compiler.
 
-You can update the `images.qrc` file by hand, or you can generate it:
-
-    cd shibumi_images
-    pyside2-rcc --project > shibumi_images.qrc
-    cd ..
-
-After changing the `images.qrc` file or the image files, recompile the resource
-file. Run this from the project's root folder:
-
-    pyside2-rcc -o shibumi/shibumi_images_rc.py --root /shibumi_images shibumi_images/shibumi_images.qrc
+    cd shibumi
+    zero_play_rcc --name shibumi_rules ../docs/rules/
+    zero_play_rcc ../shibumi_images/
 
 ## Testing GitHub Pages locally
 The web site uses the [Bulma Clean theme], which is based on [Bulma]. The

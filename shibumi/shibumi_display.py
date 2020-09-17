@@ -7,10 +7,12 @@ from PySide2.QtWidgets import (QGraphicsPixmapItem, QGraphicsSceneHoverEvent,
 
 from shibumi.shibumi_game_state import ShibumiGameState
 from zero_play.game_display import GameDisplay, center_text_item
+from zero_play.game_state import GameState
 
 # noinspection PyUnresolvedReferences
 from shibumi import shibumi_images_rc
-from zero_play.game_state import GameState
+# noinspection PyUnresolvedReferences
+import shibumi.shibumi_rules_rc
 
 
 class GraphicsShibumiPieceItem(QGraphicsPixmapItem):
