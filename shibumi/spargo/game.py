@@ -104,6 +104,7 @@ class SpargoState(ShibumiGameState):
                                                                       int],
                                                          None,
                                                          None]:
+        levels = self.get_levels()
         for dh in range(-1, 2):
             neighbour_height = height + dh
             if not 0 <= neighbour_height < self.SIZE:
@@ -119,6 +120,25 @@ class SpargoState(ShibumiGameState):
                     if dh == 0:
                         if abs(dr) == abs(dc):
                             continue
+                        overpass_height = neighbour_height + 1
+                        if overpass_height < self.SIZE:
+                            if dr:
+                                overpass_row1 = overpass_row2 = row + (dr-1) // 2
+                                overpass_col1 = column-1
+                                overpass_col2 = column
+                            else:
+                                overpass_row1 = row-1
+                                overpass_row2 = row
+                                overpass_col1 = overpass_col2 = column + (dc-1) // 2
+                            overpass_piece1 = levels[overpass_height,
+                                                     overpass_row1,
+                                                     overpass_col1]
+                            overpass_piece2 = levels[overpass_height,
+                                                     overpass_row2,
+                                                     overpass_col2]
+                            if (overpass_piece1 != self.NO_PLAYER and
+                                    overpass_piece2 != self.NO_PLAYER):
+                                continue
                     else:
                         if dh in (dr, dc):
                             continue

@@ -424,3 +424,56 @@ def test_ko_rule():
 
     assert display == text2
     assert not valid_moves[1]
+
+
+def test_overpass():
+    """ Overpass should cut underpass.
+
+    Playing black at 5G should capture 3G and 1G, because the black overpass
+    cuts off their connection to 3C. 3C and 3E survive as zombies, because they
+    are supporting pieces on level 2.
+    """
+    start_state = SpargoState("""\
+  A C E G
+7 . . . . 7
+
+5 . B B . 5
+
+3 . W W W 3
+
+1 . B B W 1
+  A C E G
+   B D F
+ 6 . . . 6
+
+ 4 . B . 4
+
+ 2 . B . 2
+   B D F
+>B
+""")
+    expected_display = """\
+  A C E G
+7 . . . . 7
+
+5 . B B B 5
+
+3 . W W . 3
+
+1 . B B . 1
+  A C E G
+   B D F
+ 6 . . . 6
+
+ 4 . B . 4
+
+ 2 . B . 2
+   B D F
+>W
+"""
+
+    new_state = start_state.make_move(11)
+
+    display = new_state.display(show_coordinates=True)
+
+    assert display == expected_display
