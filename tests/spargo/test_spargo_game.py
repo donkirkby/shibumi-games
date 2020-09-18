@@ -477,3 +477,56 @@ def test_overpass():
     display = new_state.display(show_coordinates=True)
 
     assert display == expected_display
+
+
+def test_overpass_at_edge():
+    """ The edge should not contribute to overpasses.
+
+    Playing white at 3G should not capture black, because it has a freedom at
+    1A. The white at 2D doesn't cut it off, because it's only one side of an
+    overpass.
+    """
+    start_state = SpargoState("""\
+  A C E G
+7 . . . . 7
+
+5 . . . . 5
+
+3 . W W . 3
+
+1 . B B B 1
+  A C E G
+   B D F
+ 6 . . . 6
+
+ 4 . . . 4
+
+ 2 . W . 2
+   B D F
+>W
+""")
+    expected_display = """\
+  A C E G
+7 . . . . 7
+
+5 . . . . 5
+
+3 . W W W 3
+
+1 . B B B 1
+  A C E G
+   B D F
+ 6 . . . 6
+
+ 4 . . . 4
+
+ 2 . W . 2
+   B D F
+>B
+"""
+
+    new_state = start_state.make_move(7)
+
+    display = new_state.display(show_coordinates=True)
+
+    assert display == expected_display

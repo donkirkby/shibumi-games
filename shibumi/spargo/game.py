@@ -130,15 +130,22 @@ class SpargoState(ShibumiGameState):
                                 overpass_row1 = row-1
                                 overpass_row2 = row
                                 overpass_col1 = overpass_col2 = column + (dc-1) // 2
-                            overpass_piece1 = levels[overpass_height,
-                                                     overpass_row1,
-                                                     overpass_col1]
-                            overpass_piece2 = levels[overpass_height,
-                                                     overpass_row2,
-                                                     overpass_col2]
-                            if (overpass_piece1 != self.NO_PLAYER and
-                                    overpass_piece2 != self.NO_PLAYER):
-                                continue
+                            if not (0 <= overpass_col1 and
+                                    overpass_col2 < self.SIZE-overpass_height):
+                                pass  # Next to the edge, no possible overpass.
+                            elif not(0 <= overpass_row1 and
+                                     overpass_row2 < self.SIZE-overpass_height):
+                                pass  # Next to the edge, no possible overpass.
+                            else:
+                                overpass_piece1 = levels[overpass_height,
+                                                         overpass_row1,
+                                                         overpass_col1]
+                                overpass_piece2 = levels[overpass_height,
+                                                         overpass_row2,
+                                                         overpass_col2]
+                                if (overpass_piece1 != self.NO_PLAYER and
+                                        overpass_piece2 != self.NO_PLAYER):
+                                    continue
                     else:
                         if dh in (dr, dc):
                             continue
