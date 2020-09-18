@@ -19,7 +19,7 @@ Even though Shibumi Games has a graphical display, it is a regular Python packag
 so you can install it with `pip install shibumi-games`. If you haven't installed
 Python packages before, read Brett Cannon's [quick-and-dirty guide].
 
-Then run it with the `zero_play_gui` command.
+Then run it with the `shibumi` command.
 
 The default installation generates some errors about `bdist_wheel` that don't
 seem to actually cause any problems. You can either ignore them, or install
@@ -27,7 +27,7 @@ seem to actually cause any problems. You can either ignore them, or install
 
     pip install wheel
     pip install shibumi-games
-    zero_play_gui
+    shibumi
 
 Known bug on Ubuntu 20.04:
 

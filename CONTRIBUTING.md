@@ -22,7 +22,9 @@ Games with pip. Releasing a new version means publishing it on the
 [Python package index] where pip can find it. The details are at
 [packaging.python.org], but the main steps are:
 
-1. Activate the project's Python virtual environment.
+1. Update the version number in `shibumi/__init__.py` and development status
+    in `setup.py`.
+2. Activate the project's Python virtual environment.
 
         pipenv shell
 
@@ -41,7 +43,7 @@ Games with pip. Releasing a new version means publishing it on the
 
 6. Check that the new version is on the [package page], and try installing it.
 
-        pip install --no-cache zero-play
+        pip install --no-cache shibumi
 
 7. Remove the uploaded files, deactivate the virtual environment, and recreate
     it.
