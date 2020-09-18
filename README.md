@@ -18,7 +18,7 @@ structure of the games.
 
 ## Installing Shibumi Games
 Even though Shibumi Games has a graphical display, it is a regular Python package,
-so you can install it with `pip install shibumi-games`. If you haven't installed
+so you can install it with `pip install shibumi`. If you haven't installed
 Python packages before, read Brett Cannon's [quick-and-dirty guide].
 
 Then run it with the `shibumi` command.
@@ -28,7 +28,7 @@ seem to actually cause any problems. You can either ignore them, or install
 `wheel` before installing Shibumi Games.
 
     pip install wheel
-    pip install shibumi-games
+    pip install shibumi
     shibumi
 
 Known bug on Ubuntu 20.04:
