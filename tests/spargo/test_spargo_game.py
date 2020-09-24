@@ -530,3 +530,50 @@ def test_overpass_at_edge():
     display = new_state.display(show_coordinates=True)
 
     assert display == expected_display
+
+
+def test_count_new_piece_in_overpass():
+    start_state = SpargoState("""\
+  A C E G
+7 . B W . 7
+
+5 . B W W 5
+
+3 B B B W 3
+
+1 . W B B 1
+  A C E G
+   B D F
+ 6 . . . 6
+
+ 4 . W . 4
+
+ 2 . . . 2
+   B D F
+>W
+""")
+    expected_display = """\
+  A C E G
+7 . B W . 7
+
+5 . B W W 5
+
+3 B B B W 3
+
+1 . W B . 1
+  A C E G
+   B D F
+ 6 . . . 6
+
+ 4 . W . 4
+
+ 2 . W . 2
+   B D F
+>B
+"""
+
+    new_state = start_state.make_move(17)
+
+    display = new_state.display(show_coordinates=True)
+
+    assert display == expected_display

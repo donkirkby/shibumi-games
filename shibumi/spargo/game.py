@@ -68,16 +68,24 @@ class SpargoState(ShibumiGameState):
         player = self.get_active_player()
         levels[height, row, column] = player
         captured = set()  # {(height, row, column)}
-        for height2, row2, column2 in self.find_neighbours(height, row, column):
+        for height2, row2, column2 in new_state.find_neighbours(height,
+                                                                row,
+                                                                column):
             neighbour_piece = levels[height2, row2, column2]
             group: typing.Set[typing.Tuple[int, int, int]] = set()
             if (neighbour_piece not in (player, self.NO_PLAYER) and
-                    not self.has_freedom(levels, height2, row2, column2, group)):
+                    not new_state.has_freedom(levels,
+                                              height2,
+                                              row2,
+                                              column2,
+                                              group)):
                 captured |= group
 
         sorted_capture = sorted(captured, reverse=True)  # Check from top down.
         for height2, row2, column2 in sorted_capture:
-            for height3, row3, column3 in self.find_neighbours(height2, row2, column2):
+            for height3, row3, column3 in new_state.find_neighbours(height2,
+                                                                    row2,
+                                                                    column2):
                 if height3 != height2 + 1:
                     # Not the level above.
                     continue
@@ -87,7 +95,7 @@ class SpargoState(ShibumiGameState):
             else:
                 # not supporting any pieces, can be removed.
                 levels[height2, row2, column2] = self.NO_PLAYER
-        if not self.has_freedom(levels, height, row, column, set()):
+        if not new_state.has_freedom(levels, height, row, column, set()):
             raise IllegalMoveError('Added piece has no freedom.')
         new_player = self.WHITE if (player == self.BLACK) else self.BLACK
         levels[self.SIZE-1, self.SIZE-1, self.SIZE-1] = new_player
