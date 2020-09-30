@@ -40,7 +40,8 @@ def test_empty(pixmap_differ: PixmapDiffer):
         display.scene().render(actual)
 
 
-def test(pixmap_differ: PixmapDiffer):
+# noinspection DuplicatedCode
+def test_update(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
     with pixmap_differ.create_painters(300, 240, 'spargo_update') as (

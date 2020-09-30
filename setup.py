@@ -34,15 +34,12 @@ setup(name='shibumi',
                       'ml-gpu': ['zero-play[ml-gpu]']},
       entry_points={
           'gui_scripts': ['shibumi=shibumi.shibumi:main'],
-          # The game entry point lets you add rules for new games.
-          # The zero_play.game.Game class is a useful base class.
-          'zero_play.game': ['spline=shibumi.spline.game:SplineGame',
-                             'spargo=shibumi.spargo.game:SpargoGame'],
           # The game_display entry point lets you add screens for new games.
           # The zero_play.game_display.GameDisplay class is a useful base class.
           'zero_play.game_display': [
-              'spline=shibumi.spline.display:SplineDisplay',
-              'spargo=shibumi.spargo.display:SpargoDisplay']},
+              'margo=shibumi.margo.display:MargoDisplay',
+              'spargo=shibumi.spargo.display:SpargoDisplay',
+              'spline=shibumi.spline.display:SplineDisplay']},
       project_urls={
           'Bug Reports': 'https://github.com/donkirkby/shibumi-games/issues',
           'Source': 'https://github.com/donkirkby/shibumi-games'})

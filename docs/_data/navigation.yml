@@ -1,3 +1,10 @@
+- name: Rules
+  link: /rules/spargo.html
+  dropdown:
+    - name: Spargo
+      link: /rules/spargo.html
+    - name: Spline
+      link: /rules/spline.html
 - name: Journal
   link: /journal
   dropdown:

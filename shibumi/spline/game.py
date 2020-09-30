@@ -17,8 +17,8 @@ class SplineState(ShibumiGameState):
 
     def is_diagonal_winner(self, player_pieces):
         """Checks if player_pieces contains a diagonal win."""
-        for height in range(self.SIZE):
-            level_size = self.SIZE - height
+        for height in range(self.size):
+            level_size = self.size - height
             level_pieces = player_pieces[height, :level_size, :level_size]
             diagonal_pieces = level_pieces.diagonal()
             if diagonal_pieces.all():
@@ -31,8 +31,8 @@ class SplineState(ShibumiGameState):
 
     def is_straight_winner(self, player_pieces):
         """Checks if player_pieces contains a vertical or horizontal win."""
-        for height in range(self.SIZE):
-            level_size = self.SIZE - height
+        for height in range(self.size):
+            level_size = self.size - height
             for row in range(level_size):
                 row_pieces = player_pieces[height, row, :level_size]
                 if row_pieces.all():

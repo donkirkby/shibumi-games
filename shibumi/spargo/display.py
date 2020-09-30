@@ -11,8 +11,8 @@ from zero_play.game_state import GameState
 class SpargoDisplay(ShibumiDisplay):
     rules_path = ':/shibumi_rules/spargo.md'
 
-    def __init__(self):
-        super().__init__(SpargoState())
+    def __init__(self, size: int = 4):
+        super().__init__(SpargoState(size=size))
         scene = self.scene()
         self.small_black_item = scene.addPixmap(self.black_pixmap)
         self.small_white_item = scene.addPixmap(self.white_pixmap)
@@ -22,7 +22,7 @@ class SpargoDisplay(ShibumiDisplay):
 
     def resizeEvent(self, event: QResizeEvent):
         super().resizeEvent(event)
-        small_size = self.black_scaled.width() // 2
+        small_size = self.black_player.width() // 2
         small_black = self.black_pixmap.scaled(small_size,
                                                small_size,
                                                Qt.KeepAspectRatio,
@@ -33,8 +33,8 @@ class SpargoDisplay(ShibumiDisplay):
                                                Qt.SmoothTransformation)
         self.small_black_item.setPixmap(small_black)
         self.small_white_item.setPixmap(small_white)
-        x0 = self.background_item.x()
-        y0 = self.background_item.y()
+        x0 = int(self.background_item.x())
+        y0 = int(self.background_item.y())
         large_size = self.background_item.pixmap().width()
         self.small_black_item.setPos(x0+large_size*81//80, y0+large_size//9)
         self.small_white_item.setPos(x0+large_size*91//80, y0+large_size//9)

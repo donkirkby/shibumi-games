@@ -8,6 +8,8 @@ from zero_play.zero_play import ZeroPlayWindow
 
 
 class ShibumiWindow(ZeroPlayWindow):
+    icon_path = ":/shibumi_images/main_icon.png"
+
     @staticmethod
     def get_collection_name() -> str:
         return 'Shibumi'

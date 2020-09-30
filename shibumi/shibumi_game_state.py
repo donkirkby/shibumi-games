@@ -26,19 +26,21 @@ class ShibumiGameState(GameState, ABC):
                           RED: 'R',
                           GameState.NO_PLAYER: '.',
                           UNUSABLE: ' '}
-    SIZE = 4
 
-    def __init__(self, text: str = None, board: np.ndarray = None):
-
+    def __init__(self,
+                 text: str = None,
+                 board: np.ndarray = None,
+                 size: int = 4):
+        self.size = size
         if board is None:
-            r = np.arange(self.SIZE, dtype=np.int8)
-            heights = r.reshape((self.SIZE, 1, 1))
-            rows = r.reshape((1, self.SIZE, 1))
-            columns = r.reshape((1, 1, self.SIZE))
-            level_sizes = self.SIZE - heights
+            r = np.arange(self.size, dtype=np.int8)
+            heights = r.reshape((self.size, 1, 1))
+            rows = r.reshape((1, self.size, 1))
+            columns = r.reshape((1, 1, self.size))
+            level_sizes = self.size - heights
             levels = self.UNUSABLE * np.logical_or(rows >= level_sizes,
                                                    columns >= level_sizes)
-            board = levels.reshape(self.SIZE*self.SIZE//2, self.SIZE*2)
+            board = levels
             if text is not None:
                 self.load_text(text, levels)
         self.board = board
@@ -53,8 +55,8 @@ class ShibumiGameState(GameState, ABC):
             character: player
             for player, character in self.display_characters.items()}
         lines = text.splitlines()
-        for height in range(self.SIZE):
-            level_size = self.SIZE - height
+        for height in range(self.size):
+            level_size = self.size - height
             for i in reversed(range(level_size)):
                 line_index = (level_size - 1 - i) * 2 + 1
                 if line_index >= len(lines):
@@ -76,7 +78,7 @@ class ShibumiGameState(GameState, ABC):
             lines = lines[level_size*2 + 1:]
 
     def get_valid_moves(self) -> np.ndarray:
-        piece_count = self.calculate_volume(self.SIZE)
+        piece_count = self.calculate_volume(self.size)
         valid_moves = np.full(piece_count, False)
         if self.is_win(self.BLACK) or self.is_win(self.WHITE):
             return valid_moves
@@ -92,8 +94,8 @@ class ShibumiGameState(GameState, ABC):
         """
         levels = self.get_levels()
         piece_index = 0
-        for height in range(self.SIZE):
-            level_size = self.SIZE - height
+        for height in range(self.size):
+            level_size = self.size - height
             for row in range(level_size):
                 for column in range(level_size):
                     if height == 0:
@@ -114,12 +116,12 @@ class ShibumiGameState(GameState, ABC):
     def display(self, show_coordinates: bool = False) -> str:
         levels = self.get_levels()
         lines = []
-        for height in range(self.SIZE):
-            level_pieces = levels[height, :self.SIZE-height, :self.SIZE-height]
+        for height in range(self.size):
+            level_pieces = levels[height, :self.size - height, :self.size - height]
             # noinspection PyUnresolvedReferences
             if height > 0 and (level_pieces == self.NO_PLAYER).all():
                 break
-            level_size = self.SIZE - height
+            level_size = self.size - height
             header = ''
             for column in range(level_size):
                 column_name = chr(self.FIRST_COLUMN_ORD + height + column*2)
@@ -141,7 +143,7 @@ class ShibumiGameState(GameState, ABC):
         return '\n'.join(lines)
 
     def get_levels(self) -> np.ndarray:
-        return self.board.reshape((self.SIZE, self.SIZE, self.SIZE))
+        return self.board.reshape((self.size, self.size, self.size))
 
     def display_move(self, move: int) -> str:
         height, row, column = self.get_coordinates(move)
@@ -151,7 +153,7 @@ class ShibumiGameState(GameState, ABC):
 
     def get_move_count(self) -> int:
         """ The number of moves that have already been made in the start_state. """
-        pieces = self.board.reshape(self.SIZE * self.SIZE * self.SIZE)
+        pieces = self.board.reshape(self.size * self.size * self.size)
         return sum(piece in (self.WHITE, self.BLACK)
                    for piece in pieces)
 
@@ -160,8 +162,8 @@ class ShibumiGameState(GameState, ABC):
         return self.get_levels()
 
     def get_index(self, height, row=0, column=0):
-        level_size = self.SIZE - height
-        level_start = self.calculate_volume(self.SIZE) - self.calculate_volume(level_size)
+        level_size = self.size - height
+        level_start = self.calculate_volume(self.size) - self.calculate_volume(level_size)
         return level_start + row*level_size + column
 
     def get_move_index(self,
@@ -174,11 +176,11 @@ class ShibumiGameState(GameState, ABC):
         column_index = column // 2
         height = row % 2
         while True:
-            if height >= self.SIZE:
+            if height >= self.size:
                 break
-            if not 0 <= column_index < self.SIZE - height:
+            if not 0 <= column_index < self.size - height:
                 break
-            if not 0 <= row_index < self.SIZE - height:
+            if not 0 <= row_index < self.size - height:
                 break
             piece_index = self.get_index(height, row_index, column_index)
             if valid_moves[piece_index]:
@@ -194,8 +196,8 @@ class ShibumiGameState(GameState, ABC):
         return self.get_move_index(row_name, column_name)
 
     def get_coordinates(self, move_index):
-        for height in range(self.SIZE):
-            level_size = self.SIZE - height
+        for height in range(self.size):
+            level_size = self.size - height
             level_area = level_size * level_size
             if move_index < level_area:
                 row = move_index // level_size

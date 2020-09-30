@@ -577,3 +577,20 @@ def test_count_new_piece_in_overpass():
     display = new_state.display(show_coordinates=True)
 
     assert display == expected_display
+
+
+def test_piece_count_tiny_board():
+    board_text = """\
+  A C
+3 B W 3
+
+1 W B 1
+  A C
+   B
+ 2 B 2
+   B
+>W
+"""
+    start_state = SpargoState(board_text, size=2)
+
+    assert start_state.get_piece_count(SpargoState.BLACK) == 3
