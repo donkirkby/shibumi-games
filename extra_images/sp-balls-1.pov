@@ -1,9 +1,9 @@
 #include "colors.inc"  
 #include "woods.inc"
 #include "shapes.inc"
-  
-background{White}
-  
+
+// background{White}
+
 camera 
 {       
     orthographic
@@ -327,11 +327,13 @@ object
 	sphere 
 	{
    		<0, 0, 0>, 1
-   		//pigment {color <.05, 0, .0> }   
-   		pigment {color <.15, .1333, .1333> }   
-   		//finish { ambient 0.2 diffuse 0.3 phong 0.3 phong_size 10 specular .4 roughness .05 reflection .025 } //specular .9 roughness .005 reflection .05 }  
-   		//finish { ambient 0.5 diffuse 0.3 phong 0.15 phong_size 5 specular .3 roughness .075 reflection .025 }  
-   		finish { ambient 0.5 diffuse 0.35 specular .9 roughness .005 reflection .025 }  
+   		pigment {color <.06, .03, .03> }
+   		//pigment {color <.05, 0, .0> }
+   		//pigment {color <0.098, 0.098, 0.4392> }
+   		//pigment {color <.15, .1333, .1333> }
+   		//finish { ambient 0.2 diffuse 0.3 phong 0.3 phong_size 10 specular .4 roughness .05 reflection .025 } //specular .9 roughness .005 reflection .05 }
+   		//finish { ambient 0.5 diffuse 0.3 phong 0.15 phong_size 5 specular .3 roughness .075 reflection .025 }
+   		finish { ambient 0.5 diffuse 0.35 specular .9 roughness .005 reflection .025 }
    		//no_shadow
 	}
 	
