@@ -1,0 +1,375 @@
+%!PS-Adobe-3.0
+%%Creator: Cameron Browne
+%%Title: fig-2-25
+%%CreationDate: 3/1/99
+%%BoundingBox: 0 0 294 211
+%%Pages: 1
+%%Page: 1 1
+%%EndComments
+
+%---------------- Constants -------------------
+
+/Radius 21 def
+
+/OriginX Radius 1.1 mul def
+/OriginY Radius 1.1 mul def
+
+/TextHeight Radius 1.333 mul def
+
+/W 1 def  % White
+/B 2 def  % Black
+/R 3 def  % Red
+
+% ------------- Functions -------------
+
+/X
+{   % call: i X
+    /i exch def
+
+    OriginX i Radius mul add
+} def
+
+/Y
+{   % call: j HexX
+    /j exch def
+
+    OriginY j Radius mul add
+} def
+
+/XY
+{
+    /j exch def
+    /i exch def
+
+    i X j Y
+} def
+
+%--------------------------------------
+% Pieces
+
+/Piece
+{  % call: i j who White
+   3 dict begin
+   /who exch def
+   /j exch def
+   /i exch def
+
+   gsave
+   i X j Y translate
+   who W eq 
+   {  % White
+      /r0 0.666 def  /g0 0.666 def  /b0 0.6 def
+      /r1 1.0 def  /g1 1.0 def /b1 0.9 def
+   } if
+   who B eq 
+   {  % Black
+      /r0 0.25 def  /g0 0.25 def /b0 0.25 def
+      /r1 0.0 def  /g1 0.0 def /b1 0.0 def
+   } if
+   who R eq 
+   {  % Red
+      /r0 0.6 def  /g0 0.0 def /b0 0.0 def
+      /r1 1.0 def  /g1 0.1 def  /b1 0.1 def
+   } if
+
+   0 1 Radius 1 sub
+   {
+      /i exch def
+      /r Radius i sub def
+      /t i Radius div def
+      %/lerp t sqrt def
+      /lerp t 90 mul sin sqrt def
+      
+      r0 r1 r0 sub lerp mul add 
+      g0 g1 g0 sub lerp mul add 
+      b0 b1 b0 sub lerp mul add  
+      setrgbcolor
+      
+      newpath 0 0 r 0 360 arc fill
+   } for
+
+   % Highlights
+   who W eq 
+   {  % White
+      /rh0 1.0 def  /gh0 1.0 def  /bh0 1.0 def
+      /rh1 1.0 def  /gh1 .95 def  /bh1 .95 def
+   } if
+   who B eq 
+   {  % Black
+      /rh0 0.75 def  /gh0 0.75 def  /bh0 0.75 def
+      /rh1 0.25 def  /gh1 0.25 def  /bh1 0.25 def
+   } if
+   who R eq 
+   {  % Red
+      /rh0 1.0 def  /gh0 0.8 def  /bh0 0.7 def
+      /rh1 1.0 def  /gh1 0.2 def  /bh1 0.2 def
+   } if
+
+   %1 setgray
+   %r1 .75 add g1 .75 add b1 .75 add setrgbcolor
+   rh0 gh0 bh0 setrgbcolor
+   newpath .1 Radius mul  .2 Radius mul .125 Radius mul 0 360 arc fill  
+   
+   r1 .6 add g1 .6 add b1 .6 add setrgbcolor
+   %newpath .25 Radius mul -.05 Radius mul .1 Radius mul 0 360 arc fill  
+   
+   .2 Radius mul setlinewidth   
+   %r1 .1 add g1 .1 add b1 .1 add setrgbcolor
+   rh1 gh1 bh1 setrgbcolor
+   newpath 0 0 .6 Radius mul 200 230 arc stroke  
+   newpath 0 0 .6 Radius mul 235 265 arc stroke  
+
+   grestore
+   end
+} def
+
+%--------------------------------------
+% Board
+
+/Board
+{
+  2 dict begin
+  /axes exch def
+  /dim exch def
+
+  gsave
+  1 setlinejoin
+
+  %0.8 setgray
+  %1 .875 0 setrgbcolor
+  .6 .85 1 setrgbcolor
+  dim BoardArea
+  fill
+
+  0.5 setgray
+  1 setlinewidth
+  dim BoardArea
+  stroke
+
+  0 1 dim 1 sub
+  { 
+    /j_loop exch def
+    0 1 dim 1 sub
+    { 
+        /i_loop exch def
+        i_loop 2 mul j_loop 2 mul Hole
+    } for
+  } for
+  
+  axes
+  {
+    /Helvetica findfont Radius 0.7 mul scalefont setfont
+    0 setgray
+    newpath 0 X -0.15 Radius mul add -2 Y -0.3 Radius mul add moveto (a) show  
+    newpath 2 X -0.15 Radius mul add -2 Y -0.3 Radius mul add moveto (b) show  
+    newpath 4 X -0.15 Radius mul add -2 Y -0.3 Radius mul add moveto (c) show  
+    newpath 6 X -0.15 Radius mul add -2 Y -0.3 Radius mul add moveto (d) show  
+
+    0 setgray
+    newpath -2 X -0.3 Radius mul add 0 Y -0.25 Radius mul add moveto (1) show  
+    newpath -2 X -0.3 Radius mul add 2 Y -0.25 Radius mul add moveto (2) show  
+    newpath -2 X -0.3 Radius mul add 4 Y -0.25 Radius mul add moveto (3) show  
+    newpath -2 X -0.3 Radius mul add 6 Y -0.25 Radius mul add moveto (4) show  
+  
+    0.75 setgray
+    newpath 1 X -0.15 Radius mul add -2 Y -0.3 Radius mul add moveto (e) show  
+    newpath 3 X -0.13 Radius mul add -2 Y -0.3 Radius mul add moveto (f) show  
+    newpath 5 X -0.15 Radius mul add -2 Y -0.3 Radius mul add moveto (g) show  
+   
+    newpath -2 X -0.3 Radius mul add 1 Y -0.25 Radius mul add moveto (5) show  
+    newpath -2 X -0.3 Radius mul add 3 Y -0.25 Radius mul add moveto (6) show  
+    newpath -2 X -0.3 Radius mul add 5 Y -0.25 Radius mul add moveto (7) show  
+  } if
+
+  grestore
+  end
+} def
+
+/Board2
+{
+  2 dict begin
+  /axes exch def
+  /dim exch def
+
+  gsave
+  1 setlinejoin
+
+  gsave
+  0 -.25 Radius mul translate
+  .0 .1 .5 setrgbcolor  dim BoardArea fill
+  grestore
+
+  .25 .6 1 setrgbcolor  dim BoardArea fill
+
+%  0.5 setgray
+%  1 setlinewidth
+%  dim BoardArea
+%  stroke
+
+%  0 1 dim 1 sub
+%  { 
+%    /j_loop exch def
+%    0 1 dim 1 sub
+%    { 
+%        /i_loop exch def
+%        i_loop 2 mul j_loop 2 mul Hole
+%    } for
+%  } for
+  
+  axes
+  {
+    /Helvetica findfont Radius 0.7 mul scalefont setfont
+    0 setgray
+    newpath 0 X -0.15 Radius mul add -2 Y -0.3 Radius mul add moveto (a) show  
+    newpath 2 X -0.15 Radius mul add -2 Y -0.3 Radius mul add moveto (b) show  
+    newpath 4 X -0.15 Radius mul add -2 Y -0.3 Radius mul add moveto (c) show  
+    newpath 6 X -0.15 Radius mul add -2 Y -0.3 Radius mul add moveto (d) show  
+
+    0 setgray
+    newpath -2 X -0.3 Radius mul add 0 Y -0.25 Radius mul add moveto (1) show  
+    newpath -2 X -0.3 Radius mul add 2 Y -0.25 Radius mul add moveto (2) show  
+    newpath -2 X -0.3 Radius mul add 4 Y -0.25 Radius mul add moveto (3) show  
+    newpath -2 X -0.3 Radius mul add 6 Y -0.25 Radius mul add moveto (4) show  
+  
+    0.75 setgray
+    newpath 1 X -0.15 Radius mul add -2 Y -0.3 Radius mul add moveto (e) show  
+    newpath 3 X -0.13 Radius mul add -2 Y -0.3 Radius mul add moveto (f) show  
+    newpath 5 X -0.15 Radius mul add -2 Y -0.3 Radius mul add moveto (g) show  
+   
+    newpath -2 X -0.3 Radius mul add 1 Y -0.25 Radius mul add moveto (5) show  
+    newpath -2 X -0.3 Radius mul add 3 Y -0.25 Radius mul add moveto (6) show  
+    newpath -2 X -0.3 Radius mul add 5 Y -0.25 Radius mul add moveto (7) show  
+  } if
+
+  grestore
+  end
+} def
+
+/BoardArea
+{
+    1 dict begin
+    /dim exch def
+    /dim2 dim 2 mul 1 sub def
+    
+    /round 1.25 Radius mul def
+    /r .6 Radius mul def
+
+    newpath
+    0 0 XY round 270 180 arcn
+    0 dim2 1 sub XY round 180  90 arcn
+    dim2 1 sub dim2 1 sub XY round  90   0 arcn
+    dim2 1 sub 0 XY round 360 270 arcn
+    closepath 
+
+    0 1 dim 1 sub
+    { 
+      /j_loop exch def
+      0 1 dim 1 sub
+      { 
+        /i_loop exch def
+        /x i_loop 2 mul X def
+        /y j_loop 2 mul Y def
+        x r add y moveto
+        x y r 0 360 arc 
+      } for
+    } for
+  
+    closepath
+    end
+} def
+
+/Hole
+{   % call: i j White
+    /j exch def
+    /i exch def
+
+    0.5 setlinewidth
+    newpath i X j Y 0.4 Radius mul 0 360 arc 
+    %gsave .95 .8 0 setrgbcolor fill grestore .75 .6 0 setrgbcolor stroke
+    gsave .5 .75 .9 setrgbcolor fill grestore .4 .65 .8 setrgbcolor stroke
+} def
+
+%--------------------------------------
+
+/Arrow
+{   % call: i0 j0 angle length width Arrow
+    /width exch def
+    /length exch def
+    /angle exch def
+    /j0 exch def
+    /i0 exch def
+
+    % set up the graphics state
+    gsave
+    i0 X j0 Y translate
+    angle rotate
+    0 setgray
+
+    % draw the arrow head
+    0 setlinewidth
+    length Radius 2 div sub 0 moveto
+    width 9 mul neg width 3.5 mul rlineto
+    width 2 mul width 3.5 mul neg rlineto
+    width 2 mul neg width 3.5 mul neg rlineto
+    closepath
+    fill
+
+    % draw the arrow shaft
+    width setlinewidth
+    Radius 2 div 0 moveto
+    length Radius sub width 3 mul sub 0 rlineto
+    stroke
+
+    grestore
+} def
+
+/Label
+{   % call: i j str Label
+    /shade exch def
+    /str exch def
+    /j   exch def
+    /i   exch def
+    
+    /Times-Italic findfont Radius 1.2 mul scalefont setfont
+    shade setgray
+    i X -0.275 Radius mul add j Y -0.28 Radius mul add moveto 
+    str show
+} def
+
+%-------------- Program --------------
+
+27 32 translate
+
+%------------- Left side -------------
+
+gsave
+
+4 true Board2
+
+%0 0 W Piece
+%2 0 B Piece
+%4 0 R Piece
+%6 0 W Piece
+
+%0 2 B Piece
+%2 2 R Piece
+%4 2 W Piece
+%6 2 B Piece
+
+%1 1 W Piece
+%3 1 B Piece
+%5 1 R Piece
+
+9 5.5 W Piece
+9 3   B Piece
+9 0.5 R Piece
+
+/Helvetica-Bold findfont 12 scalefont setfont
+
+newpath 239  30 moveto (x 16) show
+newpath 239  83 moveto (x 16) show
+newpath 239 136 moveto (x 16) show
+
+grestore
+
+showpage
