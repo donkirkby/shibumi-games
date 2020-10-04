@@ -452,8 +452,8 @@ def test_coordinates(pixmap_differ: PixmapDiffer):
         black_ball = SplineDisplay.load_pixmap('ball-b-shadow-1.png',
                                                QSize(40, 40))
 
-        expected_scene.addPixmap(black_ball).setPos(196, 59)
-        add_text(expected_scene, 'to move', 216, 103, 7)
+        expected_scene.addPixmap(black_ball).setPos(195, 59)
+        add_text(expected_scene, 'to move', 215, 103, 7)
         for i in range(7):
             add_text(expected_scene, str(7-i), 15+i % 2*10, i*17+27, 10)
             add_text(expected_scene, chr(65+i), i*17+64, 178-i % 2*10, 10)

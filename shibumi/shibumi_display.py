@@ -221,11 +221,9 @@ class ShibumiDisplay(GameDisplay):
             # Leave room for active player
             x_scale = 1.25
             y_scale = 1
-        scaled_pixmap = self.background_pixmap.scaled(
-            view_size.width() // x_scale,
-            view_size.height() // y_scale,
-            Qt.KeepAspectRatio,
-            Qt.SmoothTransformation)  # type: ignore
+        scaled_pixmap = self.scale_pixmap(self.background_pixmap,
+                                          int(view_size.width() // x_scale),
+                                          int(view_size.height() // y_scale))
         self.background_item.setPixmap(scaled_pixmap)
         display_width = scaled_pixmap.width() // .795
         if self.show_coordinates:
@@ -234,39 +232,31 @@ class ShibumiDisplay(GameDisplay):
         else:
             full_width = display_width
             full_height = scaled_pixmap.height()
-        x0 = (view_size.width() - full_width) // 2
-        y0 = (view_size.height() - full_height) // 2
+        board_x = (view_size.width() - full_width) // 2
+        board_y = (view_size.height() - full_height) // 2
 
         raw_cell_size = scaled_pixmap.width() / 4.5
         cell_size = floor(scaled_pixmap.width()/(0.541+board_size))
         raw_cell_size = floor(raw_cell_size)
         if self.show_coordinates:
-            x0 += raw_cell_size
-        self.background_item.setPos(x0, y0)
+            board_x += raw_cell_size
+        self.background_item.setPos(board_x, board_y)
         ball_size = floor(cell_size * 1.154)
-        self.black_scaled = self.black_pixmap.scaled(
-            ball_size,
-            ball_size,
-            Qt.KeepAspectRatio,
-            Qt.SmoothTransformation)
-        self.white_scaled = self.white_pixmap.scaled(
-            ball_size,
-            ball_size,
-            Qt.KeepAspectRatio,
-            Qt.SmoothTransformation)
+        self.black_scaled = self.scale_pixmap(self.black_pixmap,
+                                              ball_size,
+                                              ball_size)
+        self.white_scaled = self.scale_pixmap(self.white_pixmap,
+                                              ball_size,
+                                              ball_size)
         player_size = display_width // 4.9
-        self.black_player = self.black_pixmap.scaled(
-            player_size,
-            player_size,
-            Qt.KeepAspectRatio,
-            Qt.SmoothTransformation)
-        self.white_player = self.white_pixmap.scaled(
-            player_size,
-            player_size,
-            Qt.KeepAspectRatio,
-            Qt.SmoothTransformation)
-        x0 += floor(scaled_pixmap.width()*0.046/(0.119+0.22*board_size))
-        y0 += floor(scaled_pixmap.height()*0.045/(0.15+0.21*board_size))
+        self.black_player = self.scale_pixmap(self.black_pixmap,
+                                              player_size,
+                                              player_size)
+        self.white_player = self.scale_pixmap(self.white_pixmap,
+                                              player_size,
+                                              player_size)
+        x0 = board_x + floor(scaled_pixmap.width()*0.046/(0.119+0.22*board_size))
+        y0 = board_y + floor(scaled_pixmap.height()*0.045/(0.15+0.21*board_size))
         for height, level in enumerate(self.item_levels):
             for row, row_items in enumerate(level):
                 row = self.start_state.size - row - height - 1
@@ -274,27 +264,37 @@ class ShibumiDisplay(GameDisplay):
                 for column, piece_item in enumerate(row_items):
                     piece_item.setPos(x0+(height + 2*column)*cell_size // 2,
                                       y0+(height + 2*row)*cell_size // 2)
-        self.player_item.setPos(x0 + scaled_pixmap.width() // 1.032,
-                                y0 + scaled_pixmap.height() // 3.05)
+        self.player_item.setPos(board_x + scaled_pixmap.width() // 0.99,
+                                board_y + scaled_pixmap.height() // 2.7)
         font = QFont(self.default_font)
         font.setPointSize(raw_cell_size * 2 // 9)
         self.move_text.setFont(font)
-        self.text_x = x0 + scaled_pixmap.width() + raw_cell_size // 2.3
-        self.text_y = y0 + scaled_pixmap.height() // 1.65
+        self.text_x = board_x + scaled_pixmap.width() + raw_cell_size // 1.6
+        self.text_y = board_y + scaled_pixmap.height() // 1.54
         font.setPointSize(raw_cell_size//3.4)
         for i, label in enumerate(self.row_labels):
             label.setVisible(self.show_coordinates)
             label.setFont(font)
-            center_text_item(label,
-                             x0 - raw_cell_size//1.25 + i % 2 * raw_cell_size//3.5,
-                             y0 + raw_cell_size//1.67 + (6-i)*(raw_cell_size // 2))
+            center_text_item(
+                label,
+                board_x - raw_cell_size//1.6 + i % 2 * raw_cell_size//3.5,
+                y0 + cell_size//1.7 + (self.start_state.size*2-2-i)*(cell_size // 2))
         for i, label in enumerate(self.column_labels):
             label.setVisible(self.show_coordinates)
             label.setFont(font)
             center_text_item(label,
-                             x0 + raw_cell_size//1.65 + i*(raw_cell_size // 2),
-                             y0 + full_height - raw_cell_size//1.25 - i % 2 * raw_cell_size//3.5)
+                             x0 + cell_size//1.6 + i*(cell_size // 2),
+                             board_y + full_height - raw_cell_size//1.6 - i % 2 * raw_cell_size//3.5)
         self.update_board(self.current_state)
+
+    @staticmethod
+    def scale_pixmap(pixmap: QPixmap, width: int, height: int):
+        scaled_pixmap = pixmap.scaled(
+            width,
+            height,
+            Qt.KeepAspectRatio,
+            Qt.SmoothTransformation)
+        return scaled_pixmap
 
     def on_hover_enter(self, piece_item: GraphicsShibumiPieceItem):
         assert isinstance(self.current_state, ShibumiGameState)
@@ -332,5 +332,7 @@ class ShibumiDisplay(GameDisplay):
             raise ValueError(f'Unable to load image {file_path}.')
         pixmap = QPixmap(image)
         if size is not None:
-            pixmap = pixmap.scaled(size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            pixmap = ShibumiDisplay.scale_pixmap(pixmap,
+                                                 size.width(),
+                                                 size.height())
         return pixmap

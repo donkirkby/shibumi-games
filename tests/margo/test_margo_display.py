@@ -70,12 +70,12 @@ def test_board_size_2(pixmap_differ: PixmapDiffer):
 
         expected_scene.addPixmap(white_ball).setPos(20, 108)
         expected_scene.addPixmap(black_ball).setPos(110, 18)
-        expected_scene.addPixmap(black_player).setPos(243, 96)
+        expected_scene.addPixmap(black_player).setPos(234, 88)
         expected_scene.addPixmap(mini_black).setPos(234, 25)
         expected_scene.addPixmap(mini_white).setPos(263, 25)
         add_text(expected_scene, '1', 249, 63, 11)
         add_text(expected_scene, '1', 278, 63, 11)
-        add_text(expected_scene, 'to move', 273, 163, 11)
+        add_text(expected_scene, 'to move', 263, 155, 11)
         expected_scene.render(expected)
 
         display = MargoDisplay(size=2)
@@ -188,12 +188,12 @@ def test_board_size_3(pixmap_differ: PixmapDiffer):
 
         expected_scene.addPixmap(white_ball).setPos(12, 145)
         expected_scene.addPixmap(black_ball).setPos(77, 80)
-        expected_scene.addPixmap(black_player).setPos(237, 92)
+        expected_scene.addPixmap(black_player).setPos(234, 89)
         expected_scene.addPixmap(mini_black).setPos(234, 27)
         expected_scene.addPixmap(mini_white).setPos(264, 27)
         add_text(expected_scene, '1', 249, 66, 11)
         add_text(expected_scene, '1', 278, 66, 11)
-        add_text(expected_scene, 'to move', 267, 158, 11)
+        add_text(expected_scene, 'to move', 263, 155, 11)
         expected_scene.render(expected)
 
         display = MargoDisplay(size=3)
@@ -210,5 +210,41 @@ def test_board_size_3(pixmap_differ: PixmapDiffer):
 >B
 """
         display.update_board(SpargoState(board_text, size=3))
+
+        display.scene().render(actual)
+
+
+# noinspection DuplicatedCode
+def test_coordinates(pixmap_differ: PixmapDiffer):
+    actual: QPainter
+    expected: QPainter
+    with pixmap_differ.create_painters(360, 240, 'margo_coordinates') as (
+            actual,
+            expected):
+        expected_scene = QGraphicsScene(0, 0, 360, 240)
+        display = MargoDisplay(size=2)
+        full_board = display.assemble_board()
+        scaled_board = display.scale_pixmap(full_board, 185, 192)
+        expected_scene.addPixmap(scaled_board).setPos(82, 0)
+        black_player = display.scale_pixmap(display.black_pixmap, 47, 47)
+        expected_scene.addPixmap(black_player).setPos(268, 71)
+        small_black = display.scale_pixmap(display.black_pixmap, 23, 23)
+        expected_scene.addPixmap(small_black).setPos(269, 20)
+        small_white = display.scale_pixmap(display.white_pixmap, 23, 23)
+        expected_scene.addPixmap(small_white).setPos(292, 20)
+        add_text(expected_scene, '0', 280, 50, 9)
+        add_text(expected_scene, '0', 304, 50, 9)
+        add_text(expected_scene, 'to move', 292, 124, 9)
+        add_text(expected_scene, '3', 57, 57, 12)
+        add_text(expected_scene, '2', 68, 93, 12)
+        add_text(expected_scene, '1', 57, 129, 12)
+        add_text(expected_scene, 'A', 141, 214, 12)
+        add_text(expected_scene, 'B', 177, 203, 12)
+        add_text(expected_scene, 'C', 213, 214, 12)
+        expected_scene.render(expected)
+
+        trigger_resize(display, 360, 240)
+        display.show_coordinates = True
+        # display.move_text.setText(f'{display.text_y}')
 
         display.scene().render(actual)
