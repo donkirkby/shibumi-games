@@ -38,6 +38,7 @@ setup(name='shibumi',
           # The zero_play.game_display.GameDisplay class is a useful base class.
           'zero_play.game_display': [
               'margo=shibumi.margo.display:MargoDisplay',
+              'sandbox=shibumi.sandbox.display:SandboxDisplay',
               'spargo=shibumi.spargo.display:SpargoDisplay',
               'spline=shibumi.spline.display:SplineDisplay']},
       project_urls={

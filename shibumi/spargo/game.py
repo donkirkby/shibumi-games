@@ -47,11 +47,6 @@ class SpargoState(ShibumiGameState):
 
         return player_count > opponent_count
 
-    def get_piece_count(self, player: int):
-        spaces = self.board.reshape(self.size*self.size*self.size)[:-1]
-        player_count = (spaces == player).sum()
-        return player_count
-
     def display(self, show_coordinates: bool = False) -> str:
         display = super().display(show_coordinates)
         player = self.get_active_player()

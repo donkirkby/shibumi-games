@@ -5,9 +5,10 @@ from zero_play.pixmap_differ import PixmapDiffer
 
 
 @pytest.fixture(scope='session')
-def pixmap_differ():
-    app = QApplication()
+def application():
+    yield QApplication()
 
+
+@pytest.fixture(scope='session')
+def pixmap_differ(application):
     yield PixmapDiffer()
-
-    assert app

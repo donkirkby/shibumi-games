@@ -3,11 +3,12 @@ from math import floor
 
 from PySide2.QtCore import QSize
 from PySide2.QtCore import Qt
-from PySide2.QtGui import QImage, QPixmap, QFont, QResizeEvent, QPainter
+from PySide2.QtGui import (QImage, QPixmap, QFont, QResizeEvent, QPainter,
+                           QPainterPath, QColor)
 from PySide2.QtWidgets import (QGraphicsPixmapItem, QGraphicsSceneHoverEvent,
                                QGraphicsSceneMouseEvent)
 
-from shibumi.shibumi_game_state import ShibumiGameState
+from shibumi.shibumi_game_state import ShibumiGameState, PlayerCode
 from zero_play.game_display import GameDisplay, center_text_item
 from zero_play.game_state import GameState
 from shibumi import shibumi_images_rc
@@ -43,6 +44,17 @@ class GraphicsShibumiPieceItem(QGraphicsPixmapItem):
                 f'{self.column})')
 
 
+class GraphicsColourSelectorItem(QGraphicsPixmapItem):
+    def __init__(self, colour: PlayerCode, colour_listener):
+        super().__init__()
+        self.colour = colour
+        self.colour_listener = colour_listener
+
+    def mousePressEvent(self, event: QGraphicsSceneMouseEvent):
+        super().mousePressEvent(event)
+        self.colour_listener.on_colour_selected(self.colour)
+
+
 class ShibumiDisplay(GameDisplay):
     def __init__(self, start_state: ShibumiGameState):
         super().__init__(start_state)
@@ -73,9 +85,68 @@ class ShibumiDisplay(GameDisplay):
             self.row_labels.append(scene.addSimpleText(str(i + 1)))
             self.column_labels.append(scene.addSimpleText(chr(i + 65)))
         self.player_item = scene.addPixmap(QPixmap())
+        self.black_count_pixmap = scene.addPixmap(self.black_pixmap)
+        self.white_count_pixmap = scene.addPixmap(self.white_pixmap)
+        self.black_count_text = scene.addSimpleText('0')
+        self.white_count_text = scene.addSimpleText('0')
+        highlight_path = QPainterPath()
+        self.colour_highlight = scene.addPath(highlight_path,
+                                              brush=QColor('blue'))
+        self.black_colour_pixmap = GraphicsColourSelectorItem(start_state.BLACK,
+                                                              self)
+        self.white_colour_pixmap = GraphicsColourSelectorItem(start_state.WHITE,
+                                                              self)
+        scene.addItem(self.black_colour_pixmap)
+        scene.addItem(self.white_colour_pixmap)
+        self._selected_colour = start_state.BLACK
+        self.black_count_x = self.white_count_x = self.count_y = 0
+        self._show_counts = False
+        self._show_colours = False
+        self.black_count_pixmap.setVisible(False)
+        self.white_count_pixmap.setVisible(False)
+        self.black_count_text.setVisible(False)
+        self.white_count_text.setVisible(False)
+        self.colour_highlight.setVisible(False)
+        self.black_colour_pixmap.setVisible(False)
+        self.white_colour_pixmap.setVisible(False)
         self.move_text = scene.addSimpleText('')
         self.text_x = self.text_y = 0
         self.debug_message = ''
+
+    @property
+    def show_counts(self) -> bool:
+        return self._show_counts
+
+    @show_counts.setter
+    def show_counts(self, value: bool):
+        self._show_counts = value
+        self.black_count_pixmap.setVisible(value)
+        self.white_count_pixmap.setVisible(value)
+        self.black_count_text.setVisible(value)
+        self.white_count_text.setVisible(value)
+
+    @property
+    def show_colours(self) -> bool:
+        return self._show_colours
+
+    @show_colours.setter
+    def show_colours(self, value: bool):
+        self._show_colours = value
+        self.colour_highlight.setVisible(value)
+        self.black_colour_pixmap.setVisible(value)
+        self.white_colour_pixmap.setVisible(value)
+
+    @property
+    def selected_colour(self) -> PlayerCode:
+        return self._selected_colour
+
+    @selected_colour.setter
+    def selected_colour(self, value: PlayerCode):
+        self._selected_colour = value
+        self.update_colour_positions()
+
+    def on_colour_selected(self, colour: PlayerCode):
+        self.selected_colour = colour
 
     def assemble_board(self) -> QPixmap:
         full_board = self.load_pixmap('board-1.png')
@@ -199,7 +270,9 @@ class ShibumiDisplay(GameDisplay):
             self.player_item.setPixmap(self.white_player)
         elif displayed_player == game_state.BLACK:
             self.player_item.setPixmap(self.black_player)
-        self.player_item.setVisible(displayed_player is not None)
+        self.player_item.setVisible(displayed_player != game_state.NO_PLAYER)
+        if self.show_counts:
+            self.update_count_text()
 
     def update_move_text(self, text: str = None):
         if self.debug_message:
@@ -284,8 +357,76 @@ class ShibumiDisplay(GameDisplay):
             label.setFont(font)
             center_text_item(label,
                              x0 + cell_size//1.6 + i*(cell_size // 2),
-                             board_y + full_height - raw_cell_size//1.6 - i % 2 * raw_cell_size//3.5)
+                             board_y + full_height - raw_cell_size//1.6 -
+                             i % 2 * raw_cell_size//3.5)
+        self.update_count_positions()
+        self.update_colour_positions()
         self.update_board(self.current_state)
+
+    def update_count_positions(self):
+        if not self.show_counts:
+            return
+        self.update_marble_indicator_positions(9, self.black_count_pixmap, self.white_count_pixmap)
+        x0 = int(self.background_item.x())
+        y0 = int(self.background_item.y())
+        large_size = self.background_item.pixmap().width()
+        self.count_y = y0 + large_size*55//200
+        self.black_count_x = x0 + large_size*86//80
+        self.white_count_x = x0 + large_size*96//80
+        font = self.move_text.font()
+        self.black_count_text.setFont(font)
+        self.white_count_text.setFont(font)
+        self.update_count_text()
+
+    def update_colour_positions(self):
+        if not self.show_colours:
+            return
+        y_portion = 1.31
+        self.update_marble_indicator_positions(y_portion,
+                                               self.black_colour_pixmap,
+                                               self.white_colour_pixmap)
+        selected_pixmap = (self.black_colour_pixmap
+                           if self.selected_colour == self.start_state.BLACK
+                           else self.white_colour_pixmap)
+        x = selected_pixmap.x()
+        y = selected_pixmap.y()
+        size = selected_pixmap.pixmap().width()
+        highlight_path = QPainterPath()
+        highlight_path.addRoundedRect(x, y,
+                                      size-1, size-1,
+                                      size//10, size//10)
+        self.colour_highlight.setPath(highlight_path)
+
+    def update_marble_indicator_positions(self,
+                                          y_portion: float,
+                                          black_target: QGraphicsPixmapItem,
+                                          white_target: QGraphicsPixmapItem):
+        small_size = self.black_player.width() // 2
+        small_black = self.scale_pixmap(self.black_pixmap,
+                                        small_size,
+                                        small_size)
+        small_white = self.scale_pixmap(self.white_pixmap,
+                                        small_size,
+                                        small_size)
+        black_target.setPixmap(small_black)
+        white_target.setPixmap(small_white)
+        x0 = int(self.background_item.x())
+        y0 = int(self.background_item.y())
+        large_size = self.background_item.pixmap().width()
+        black_target.setPos(x0 + large_size * 81 // 80,
+                            y0 + large_size // y_portion)
+        white_target.setPos(x0 + large_size * 91 // 80,
+                            y0 + large_size // y_portion)
+
+    def update_count_text(self):
+        black_count = self.current_state.get_piece_count(
+            self.current_state.BLACK)
+        white_count = self.current_state.get_piece_count(
+            self.current_state.WHITE)
+        self.black_count_text.setText(f'{black_count}')
+        self.white_count_text.setText(f'{white_count}')
+        center_text_item(self.black_count_text, self.black_count_x, self.count_y)
+        center_text_item(self.white_count_text, self.white_count_x, self.count_y)
 
     @staticmethod
     def scale_pixmap(pixmap: QPixmap, width: int, height: int):
@@ -302,8 +443,11 @@ class ShibumiDisplay(GameDisplay):
         piece = levels[piece_item.height][piece_item.row][piece_item.column]
         if piece != self.start_state.NO_PLAYER:
             return
-        player = self.current_state.get_active_player()
-        if player == self.start_state.BLACK:
+        if self.show_colours:
+            piece_colour = self.selected_colour
+        else:
+            piece_colour = PlayerCode(self.current_state.get_active_player())
+        if piece_colour == self.start_state.BLACK:
             piece_item.setPixmap(self.black_scaled)
         else:
             piece_item.setPixmap(self.white_scaled)

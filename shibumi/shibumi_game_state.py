@@ -109,8 +109,9 @@ class ShibumiGameState(GameState, ABC):
                     valid_moves[piece_index] = is_valid
                     piece_index += 1
 
-    @staticmethod
-    def calculate_volume(base_size):
+    def calculate_volume(self, base_size: int = None):
+        if base_size is None:
+            base_size = self.size
         return base_size * (base_size + 1) * (2 * base_size + 1) // 6
 
     def display(self, show_coordinates: bool = False) -> str:
@@ -157,6 +158,12 @@ class ShibumiGameState(GameState, ABC):
         return sum(piece in (self.WHITE, self.BLACK)
                    for piece in pieces)
 
+    def get_piece_count(self, player: int):
+        end_spaces = self.size * self.size - 1
+        spaces = self.board.reshape(self.size*self.size*self.size)[:-end_spaces]
+        player_count = (spaces == player).sum()
+        return player_count
+
     def get_spaces(self) -> np.ndarray:
         """ Extract the board spaces from the complete game state. """
         return self.get_levels()
@@ -195,15 +202,17 @@ class ShibumiGameState(GameState, ABC):
         row_name, column_name = text[0], text[1]
         return self.get_move_index(row_name, column_name)
 
-    def get_coordinates(self, move_index):
+    def get_coordinates(self, move_index: int):
+        level_index = move_index
         for height in range(self.size):
             level_size = self.size - height
             level_area = level_size * level_size
-            if move_index < level_area:
-                row = move_index // level_size
-                column = move_index % level_size
+            if level_index < level_area:
+                row = level_index // level_size
+                column = level_index % level_size
                 return height, row, column
-            move_index -= level_area
+            level_index -= level_area
+        raise ValueError(f'Invalid move index: {move_index}.')
 
     def make_move(self, move: int) -> 'ShibumiGameState':
         new_board = self.__class__(board=self.board.copy())
