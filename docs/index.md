@@ -59,6 +59,11 @@ Challenge.
 The marble and board graphics were designed by Cameron Browne, and are used with
 permission.
 
+Some of the buttons combine Cameron's POV-Ray graphics with icons from the
+[Open Iconic] project.
+
+[Open Iconic]: https://useiconic.com/open
+
 ## More Information
 If you'd like to help out with the project, or add your own games, see the
 `CONTRIBUTING.md` file in the source code. For all the details, look through the
