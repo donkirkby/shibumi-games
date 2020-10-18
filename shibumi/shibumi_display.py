@@ -6,8 +6,9 @@ from PySide2.QtCore import Qt
 from PySide2.QtGui import (QImage, QPixmap, QFont, QResizeEvent, QPainter,
                            QPainterPath, QColor)
 from PySide2.QtWidgets import (QGraphicsPixmapItem, QGraphicsSceneHoverEvent,
-                               QGraphicsSceneMouseEvent)
+                               QGraphicsSceneMouseEvent, QGraphicsScene)
 
+from shibumi.shibumi_display_ui import Ui_ShibumiDisplay
 from shibumi.shibumi_game_state import ShibumiGameState, PlayerCode
 from zero_play.game_display import GameDisplay, center_text_item
 from zero_play.game_state import GameState
@@ -59,8 +60,12 @@ class ShibumiDisplay(GameDisplay):
     def __init__(self, start_state: ShibumiGameState):
         super().__init__(start_state)
         self.start_state = start_state
+
+        ui = self.ui = Ui_ShibumiDisplay()
+        ui.setupUi(self)
+        scene = QGraphicsScene()
+        ui.game_display.setScene(scene)
         self.background_pixmap = self.assemble_board()
-        scene = self.scene()
         self.background_item = scene.addPixmap(self.background_pixmap)
         self.white_scaled = self.white_pixmap = self.load_pixmap(
             'ball-w-shadow-1.png')
@@ -87,8 +92,6 @@ class ShibumiDisplay(GameDisplay):
         self.player_item = scene.addPixmap(QPixmap())
         self.black_count_pixmap = scene.addPixmap(self.black_pixmap)
         self.white_count_pixmap = scene.addPixmap(self.white_pixmap)
-        self.black_count_text = scene.addSimpleText('0')
-        self.white_count_text = scene.addSimpleText('0')
         highlight_path = QPainterPath()
         self.colour_highlight = scene.addPath(highlight_path,
                                               brush=QColor('blue'))
@@ -98,19 +101,28 @@ class ShibumiDisplay(GameDisplay):
                                                               self)
         scene.addItem(self.black_colour_pixmap)
         scene.addItem(self.white_colour_pixmap)
+        self.ui.move_black.clicked.connect(
+            lambda: self.on_colour_selected(PlayerCode.BLACK))
+        self.ui.move_white.clicked.connect(
+            lambda: self.on_colour_selected(PlayerCode.WHITE))
         self._selected_colour = start_state.BLACK
         self.black_count_x = self.white_count_x = self.count_y = 0
         self._show_counts = False
         self._show_colours = False
         self.black_count_pixmap.setVisible(False)
         self.white_count_pixmap.setVisible(False)
-        self.black_count_text.setVisible(False)
-        self.white_count_text.setVisible(False)
         self.colour_highlight.setVisible(False)
         self.black_colour_pixmap.setVisible(False)
         self.white_colour_pixmap.setVisible(False)
-        self.move_text = scene.addSimpleText('')
-        self.text_x = self.text_y = 0
+        self.ui.black_count_pixmap.setText('')
+        self.ui.white_count_pixmap.setText('')
+        self.ui.red_count_pixmap.setText('')
+        self.ui.move_black.setIcon(self.black_pixmap)
+        self.ui.move_white.setIcon(self.white_pixmap)
+        self.ui.move_red.setVisible(False)
+        self.ui.remove.setVisible(False)
+        self.show_counts = False
+        self.show_colours = False
         self.debug_message = ''
 
     @property
@@ -120,10 +132,16 @@ class ShibumiDisplay(GameDisplay):
     @show_counts.setter
     def show_counts(self, value: bool):
         self._show_counts = value
-        self.black_count_pixmap.setVisible(value)
-        self.white_count_pixmap.setVisible(value)
-        self.black_count_text.setVisible(value)
-        self.white_count_text.setVisible(value)
+        if value:
+            self.ui.black_count_pixmap.setPixmap(self.black_pixmap)
+            self.ui.white_count_pixmap.setPixmap(self.white_pixmap)
+            self.update_count_text()
+        else:
+            self.ui.black_count_pixmap.setPixmap(None)
+            self.ui.white_count_pixmap.setPixmap(None)
+            self.ui.black_count.setText('')
+            self.ui.white_count.setText('')
+            self.ui.red_count.setText('')
 
     @property
     def show_colours(self) -> bool:
@@ -132,9 +150,8 @@ class ShibumiDisplay(GameDisplay):
     @show_colours.setter
     def show_colours(self, value: bool):
         self._show_colours = value
-        self.colour_highlight.setVisible(value)
-        self.black_colour_pixmap.setVisible(value)
-        self.white_colour_pixmap.setVisible(value)
+        self.ui.move_black.setVisible(value)
+        self.ui.move_white.setVisible(value)
 
     @property
     def selected_colour(self) -> PlayerCode:
@@ -143,7 +160,10 @@ class ShibumiDisplay(GameDisplay):
     @selected_colour.setter
     def selected_colour(self, value: PlayerCode):
         self._selected_colour = value
-        self.update_colour_positions()
+        colour_controls = {PlayerCode.WHITE: self.ui.move_white,
+                           PlayerCode.BLACK: self.ui.move_black,
+                           PlayerCode.RED: self.ui.move_red}
+        colour_controls[value].setChecked(True)
 
     def on_colour_selected(self, colour: PlayerCode):
         self.selected_colour = colour
@@ -267,38 +287,39 @@ class ShibumiDisplay(GameDisplay):
             displayed_player = game_state.get_active_player()
             self.update_move_text(self.choose_active_text())
         if displayed_player == game_state.WHITE:
-            self.player_item.setPixmap(self.white_player)
+            self.ui.player_pixmap.setPixmap(self.white_pixmap)
         elif displayed_player == game_state.BLACK:
-            self.player_item.setPixmap(self.black_player)
-        self.player_item.setVisible(displayed_player != game_state.NO_PLAYER)
+            self.ui.player_pixmap.setPixmap(self.black_pixmap)
+        self.ui.player_pixmap.setVisible(displayed_player != game_state.NO_PLAYER)
         if self.show_counts:
             self.update_count_text()
 
     def update_move_text(self, text: str = None):
         if self.debug_message:
-            self.move_text.setText(self.debug_message)
+            self.ui.move_text.setText(self.debug_message)
         elif text is not None:
-            self.move_text.setText(text)
-        center_text_item(self.move_text, self.text_x, self.text_y)
+            self.ui.move_text.setText(text)
+    
+    def scene(self) -> QGraphicsScene:
+        return self.ui.game_display.scene()
 
     def resizeEvent(self, event: QResizeEvent):
         super().resizeEvent(event)
-        view_size = event.size()
+        view_size = self.ui.game_display.contentsRect().size()
         self.start_state: ShibumiGameState
         board_size = self.start_state.size
         if self.show_coordinates:
-            # Leave room for active player and coordinates
-            x_scale = 1.5
+            # Leave room for coordinates
+            x_scale = 1.25
             y_scale = 1.25
         else:
-            # Leave room for active player
-            x_scale = 1.25
+            x_scale = 1
             y_scale = 1
         scaled_pixmap = self.scale_pixmap(self.background_pixmap,
                                           int(view_size.width() // x_scale),
                                           int(view_size.height() // y_scale))
         self.background_item.setPixmap(scaled_pixmap)
-        display_width = scaled_pixmap.width() // .795
+        display_width = scaled_pixmap.width()
         if self.show_coordinates:
             full_width = scaled_pixmap.width() // 0.666
             full_height = scaled_pixmap.height() // 0.8
@@ -337,13 +358,7 @@ class ShibumiDisplay(GameDisplay):
                 for column, piece_item in enumerate(row_items):
                     piece_item.setPos(x0+(height + 2*column)*cell_size // 2,
                                       y0+(height + 2*row)*cell_size // 2)
-        self.player_item.setPos(board_x + scaled_pixmap.width() // 0.99,
-                                board_y + scaled_pixmap.height() // 2.7)
         font = QFont(self.default_font)
-        font.setPointSize(raw_cell_size * 2 // 9)
-        self.move_text.setFont(font)
-        self.text_x = board_x + scaled_pixmap.width() + raw_cell_size // 1.6
-        self.text_y = board_y + scaled_pixmap.height() // 1.54
         font.setPointSize(raw_cell_size//3.4)
         for i, label in enumerate(self.row_labels):
             label.setVisible(self.show_coordinates)
@@ -360,8 +375,8 @@ class ShibumiDisplay(GameDisplay):
                              board_y + full_height - raw_cell_size//1.6 -
                              i % 2 * raw_cell_size//3.5)
         self.update_count_positions()
-        self.update_colour_positions()
         self.update_board(self.current_state)
+        self.scene().setSceneRect(0, 0, view_size.width(), view_size.height())
 
     def update_count_positions(self):
         if not self.show_counts:
@@ -373,9 +388,6 @@ class ShibumiDisplay(GameDisplay):
         self.count_y = y0 + large_size*55//200
         self.black_count_x = x0 + large_size*86//80
         self.white_count_x = x0 + large_size*96//80
-        font = self.move_text.font()
-        self.black_count_text.setFont(font)
-        self.white_count_text.setFont(font)
         self.update_count_text()
 
     def update_colour_positions(self):
@@ -423,10 +435,8 @@ class ShibumiDisplay(GameDisplay):
             self.current_state.BLACK)
         white_count = self.current_state.get_piece_count(
             self.current_state.WHITE)
-        self.black_count_text.setText(f'{black_count}')
-        self.white_count_text.setText(f'{white_count}')
-        center_text_item(self.black_count_text, self.black_count_x, self.count_y)
-        center_text_item(self.white_count_text, self.white_count_x, self.count_y)
+        self.ui.black_count.setText(f'{black_count}')
+        self.ui.white_count.setText(f'{white_count}')
 
     @staticmethod
     def scale_pixmap(pixmap: QPixmap, width: int, height: int):
@@ -480,3 +490,6 @@ class ShibumiDisplay(GameDisplay):
                                                  size.width(),
                                                  size.height())
         return pixmap
+
+    def close(self):
+        self.scene().clear()

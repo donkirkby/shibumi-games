@@ -4,74 +4,56 @@ from PySide2.QtWidgets import QGraphicsScene
 
 from shibumi.spargo.display import SpargoDisplay
 from shibumi.spargo.game import SpargoState
-from tests.spline.test_spline_display import add_text, trigger_resize
-from zero_play.pixmap_differ import PixmapDiffer
+from zero_play.pixmap_differ import PixmapDiffer, render_display
 
 
 def test_empty(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
-    with pixmap_differ.create_painters(300, 240, 'spargo_empty') as (
+    with pixmap_differ.create_painters(240, 240, 'spargo_empty') as (
             actual,
             expected):
-        expected_scene = QGraphicsScene(0, 0, 300, 240)
+        expected_scene = QGraphicsScene(0, 0, 240, 240)
         expected_scene.addPixmap(
             SpargoDisplay.load_pixmap('board-1.png',
                                       QSize(240, 240))).setPos(1, 0)
-        black_ball = SpargoDisplay.load_pixmap('ball-b-shadow-1.png',
-                                               QSize(60, 60))
-        small_black = SpargoDisplay.load_pixmap('ball-b-shadow-1.png',
-                                                QSize(30, 30))
-        small_white = SpargoDisplay.load_pixmap('ball-w-shadow-1.png',
-                                                QSize(30, 30))
 
-        expected_scene.addPixmap(black_ball).setPos(240, 88)
-        add_text(expected_scene, 'to move', 270, 155, 11)
-        expected_scene.addPixmap(small_black).setPos(240, 26)
-        expected_scene.addPixmap(small_white).setPos(270, 26)
-        add_text(expected_scene, '0', 255, 65, 11)
-        add_text(expected_scene, '0', 285, 65, 11)
         expected_scene.render(expected)
 
         display = SpargoDisplay()
+        display.resize(336, 264)
 
-        trigger_resize(display, 300, 240)
-
-        display.scene().render(actual)
+        render_display(display, actual)
+    assert display.ui.move_text.text() == 'to move'
+    assert display.ui.black_count.text() == '0'
+    assert display.ui.white_count.text() == '0'
+    black_icon = display.black_pixmap.toImage()
+    assert display.ui.black_count_pixmap.pixmap().toImage() == black_icon
+    assert display.ui.player_pixmap.pixmap().toImage() == black_icon
+    white_icon = display.white_pixmap.toImage()
+    assert display.ui.white_count_pixmap.pixmap().toImage() == white_icon
 
 
 # noinspection DuplicatedCode
 def test_update(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
-    with pixmap_differ.create_painters(300, 240, 'spargo_update') as (
+    with pixmap_differ.create_painters(240, 240, 'spargo_update') as (
             actual,
             expected):
-        expected_scene = QGraphicsScene(0, 0, 300, 240)
+        expected_scene = QGraphicsScene(0, 0, 240, 240)
         expected_scene.addPixmap(
             SpargoDisplay.load_pixmap('board-1.png',
                                       QSize(240, 240))).setPos(1, 0)
         black_ball = SpargoDisplay.load_pixmap('ball-b-shadow-1.png',
                                                QSize(60, 60))
-        white_ball = SpargoDisplay.load_pixmap('ball-w-shadow-1.png',
-                                               QSize(60, 60))
-        small_black = SpargoDisplay.load_pixmap('ball-b-shadow-1.png',
-                                                QSize(30, 30))
-        small_white = SpargoDisplay.load_pixmap('ball-w-shadow-1.png',
-                                                QSize(30, 30))
 
         expected_scene.addPixmap(black_ball).setPos(63, 166)
-        expected_scene.addPixmap(white_ball).setPos(240, 88)
-        add_text(expected_scene, 'to move', 270, 155, 11)
-        expected_scene.addPixmap(small_black).setPos(240, 26)
-        expected_scene.addPixmap(small_white).setPos(270, 26)
-        add_text(expected_scene, '1', 255, 65, 11)
-        add_text(expected_scene, '0', 285, 65, 11)
         expected_scene.render(expected)
 
         display = SpargoDisplay()
 
-        trigger_resize(display, 300, 240)
+        display.resize(336, 264)
         display.update_board(SpargoState("""\
   A C E G
 7 . . . . 7
@@ -85,4 +67,6 @@ def test_update(pixmap_differ: PixmapDiffer):
 >W
 """))
 
-        display.scene().render(actual)
+        render_display(display, actual)
+    assert display.ui.black_count.text() == '1'
+    assert display.ui.white_count.text() == '0'

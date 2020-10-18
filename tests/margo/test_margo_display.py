@@ -5,17 +5,17 @@ from PySide2.QtWidgets import QGraphicsScene
 from shibumi.margo.display import MargoDisplay
 from shibumi.spargo.game import SpargoState
 from tests.spline.test_spline_display import trigger_resize, add_text
-from zero_play.pixmap_differ import PixmapDiffer
+from zero_play.pixmap_differ import PixmapDiffer, render_display
 
 
 # noinspection DuplicatedCode
 def test_board_size_2(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
-    with pixmap_differ.create_painters(360, 240, 'margo_board_size_2') as (
+    with pixmap_differ.create_painters(240, 240, 'margo_board_size_2') as (
             actual,
             expected):
-        expected_scene = QGraphicsScene(0, 0, 360, 240)
+        expected_scene = QGraphicsScene(0, 0, 240, 240)
         full_board = MargoDisplay.load_pixmap('board-1.png')
         width = full_board.width()
         height = full_board.height()
@@ -56,31 +56,20 @@ def test_board_size_2(pixmap_differ: PixmapDiffer):
                                               Qt.KeepAspectRatio,
                                               Qt.SmoothTransformation)
         board_item = expected_scene.addPixmap(scaled_board)
-        board_item.setPos(1, 0)
+        board_item.setPos(4, 0)
         white_ball = MargoDisplay.load_pixmap('ball-w-shadow-1.png',
                                               QSize(103, 103))
         black_ball = MargoDisplay.load_pixmap('ball-b-shadow-1.png',
                                               QSize(103, 103))
-        black_player = MargoDisplay.load_pixmap('ball-b-shadow-1.png',
-                                                QSize(59, 59))
-        mini_white = MargoDisplay.load_pixmap('ball-w-shadow-1.png',
-                                              QSize(29, 29))
-        mini_black = MargoDisplay.load_pixmap('ball-b-shadow-1.png',
-                                              QSize(29, 29))
 
-        expected_scene.addPixmap(white_ball).setPos(20, 108)
-        expected_scene.addPixmap(black_ball).setPos(110, 18)
-        expected_scene.addPixmap(black_player).setPos(234, 88)
-        expected_scene.addPixmap(mini_black).setPos(234, 25)
-        expected_scene.addPixmap(mini_white).setPos(263, 25)
-        add_text(expected_scene, '1', 249, 63, 11)
-        add_text(expected_scene, '1', 278, 63, 11)
-        add_text(expected_scene, 'to move', 263, 155, 11)
+        expected_scene.addPixmap(white_ball).setPos(23, 108)
+        expected_scene.addPixmap(black_ball).setPos(113, 18)
         expected_scene.render(expected)
 
         display = MargoDisplay(size=2)
 
         trigger_resize(display, 292, 240)
+        display.resize(336, 264)
         board_text = """\
   A C
 3 . B 3
@@ -91,17 +80,17 @@ def test_board_size_2(pixmap_differ: PixmapDiffer):
 """
         display.update_board(SpargoState(board_text, size=2))
 
-        display.scene().render(actual)
+        render_display(display, actual)
 
 
 # noinspection DuplicatedCode
 def test_board_size_3(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
-    with pixmap_differ.create_painters(360, 240, 'margo_board_size_3') as (
+    with pixmap_differ.create_painters(240, 240, 'margo_board_size_3') as (
             actual,
             expected):
-        expected_scene = QGraphicsScene(0, 0, 360, 240)
+        expected_scene = QGraphicsScene(0, 0, 240, 240)
         full_board = MargoDisplay.load_pixmap('board-1.png')
         width = full_board.width()
         height = full_board.height()
@@ -170,35 +159,23 @@ def test_board_size_3(pixmap_differ: PixmapDiffer):
                                      width-right_width, height-bottom_height,
                                      right_width, bottom_height)
         assembled_painter.end()
-        scaled_board = assembled_board.scaled(233, 238,
+        scaled_board = assembled_board.scaled(240, 240,
                                               Qt.KeepAspectRatio,
                                               Qt.SmoothTransformation)
         board_item = expected_scene.addPixmap(scaled_board)
-        board_item.setPos(-1, 2)
+        board_item.setPos(2, 0)
         white_ball = MargoDisplay.load_pixmap('ball-w-shadow-1.png',
-                                              QSize(75, 75))
+                                              QSize(76, 76))
         black_ball = MargoDisplay.load_pixmap('ball-b-shadow-1.png',
-                                              QSize(75, 75))
-        black_player = MargoDisplay.load_pixmap('ball-b-shadow-1.png',
-                                                QSize(59, 59))
-        mini_white = MargoDisplay.load_pixmap('ball-w-shadow-1.png',
-                                              QSize(29, 29))
-        mini_black = MargoDisplay.load_pixmap('ball-b-shadow-1.png',
-                                              QSize(29, 29))
+                                              QSize(76, 76))
 
-        expected_scene.addPixmap(white_ball).setPos(12, 145)
-        expected_scene.addPixmap(black_ball).setPos(77, 80)
-        expected_scene.addPixmap(black_player).setPos(234, 89)
-        expected_scene.addPixmap(mini_black).setPos(234, 27)
-        expected_scene.addPixmap(mini_white).setPos(264, 27)
-        add_text(expected_scene, '1', 249, 66, 11)
-        add_text(expected_scene, '1', 278, 66, 11)
-        add_text(expected_scene, 'to move', 263, 155, 11)
+        expected_scene.addPixmap(white_ball).setPos(15, 145)
+        expected_scene.addPixmap(black_ball).setPos(81, 79)
         expected_scene.render(expected)
 
         display = MargoDisplay(size=3)
+        display.resize(336, 264)
 
-        trigger_resize(display, 292, 240)
         board_text = """\
   A C E
 5 . . . 5
@@ -211,7 +188,7 @@ def test_board_size_3(pixmap_differ: PixmapDiffer):
 """
         display.update_board(SpargoState(board_text, size=3))
 
-        display.scene().render(actual)
+        render_display(display, actual)
 
 
 # noinspection DuplicatedCode
@@ -226,15 +203,6 @@ def test_coordinates(pixmap_differ: PixmapDiffer):
         full_board = display.assemble_board()
         scaled_board = display.scale_pixmap(full_board, 185, 192)
         expected_scene.addPixmap(scaled_board).setPos(82, 0)
-        black_player = display.scale_pixmap(display.black_pixmap, 47, 47)
-        expected_scene.addPixmap(black_player).setPos(268, 71)
-        small_black = display.scale_pixmap(display.black_pixmap, 23, 23)
-        expected_scene.addPixmap(small_black).setPos(269, 20)
-        small_white = display.scale_pixmap(display.white_pixmap, 23, 23)
-        expected_scene.addPixmap(small_white).setPos(292, 20)
-        add_text(expected_scene, '0', 280, 50, 9)
-        add_text(expected_scene, '0', 304, 50, 9)
-        add_text(expected_scene, 'to move', 292, 124, 9)
         add_text(expected_scene, '3', 57, 57, 12)
         add_text(expected_scene, '2', 68, 93, 12)
         add_text(expected_scene, '1', 57, 129, 12)
@@ -243,8 +211,8 @@ def test_coordinates(pixmap_differ: PixmapDiffer):
         add_text(expected_scene, 'C', 213, 214, 12)
         expected_scene.render(expected)
 
-        trigger_resize(display, 360, 240)
-        display.show_coordinates = True
-        # display.move_text.setText(f'{display.text_y}')
+        display.resize(480, 264)
 
-        display.scene().render(actual)
+        display.show_coordinates = True
+
+        render_display(display, actual)
