@@ -2,6 +2,7 @@ from abc import ABC
 from enum import IntEnum
 
 import numpy as np
+import typing
 
 from zero_play.game_state import GameState
 
@@ -12,6 +13,13 @@ class PlayerCode(IntEnum):
     NO_PLAYER = GameState.NO_PLAYER
     RED = 2
     UNUSABLE = -2
+
+
+class MoveType(IntEnum):
+    BLACK = PlayerCode.BLACK
+    WHITE = PlayerCode.WHITE
+    RED = PlayerCode.RED
+    REMOVE = 3
 
 
 class ShibumiGameState(GameState, ABC):
@@ -109,6 +117,76 @@ class ShibumiGameState(GameState, ABC):
                     valid_moves[piece_index] = is_valid
                     piece_index += 1
 
+    def find_neighbours(self,
+                        height: int,
+                        row: int,
+                        column: int,
+                        dh_start: int = -1,
+                        dh_end: int = 2) -> typing.Generator[typing.Tuple[int,
+                                                                          int,
+                                                                          int],
+                                                             None,
+                                                             None]:
+        """ Generate all neighbour positions to the starting position.
+
+        :param height: height of starting position
+        :param row: row of starting position
+        :param column: column of starting position
+        :param dh_start: difference from starting height to start searching. For
+            example, 0 means start searching for neighbours at the same height
+            as the starting position.
+        :param dh_end: difference from ending height to stop searching
+            (excluded). For example, 2 means to search one height above the
+            starting position, and then stop.
+        :return:
+        """
+        levels = self.get_levels()
+        for dh in range(dh_start, dh_end):
+            neighbour_height = height + dh
+            if not 0 <= neighbour_height < self.size:
+                continue
+            for dr in range(-1, 2):
+                neighbour_row = row + dr
+                if not 0 <= neighbour_row < self.size - neighbour_height:
+                    continue
+                for dc in range(-1, 2):
+                    neighbour_column = column + dc
+                    if not 0 <= neighbour_column < self.size - neighbour_height:
+                        continue
+                    if dh == 0:
+                        if abs(dr) == abs(dc):
+                            continue
+                        overpass_height = neighbour_height + 1
+                        if overpass_height < self.size:
+                            if dr:
+                                overpass_row1 = overpass_row2 = row + (dr-1) // 2
+                                overpass_col1 = column-1
+                                overpass_col2 = column
+                            else:
+                                overpass_row1 = row-1
+                                overpass_row2 = row
+                                overpass_col1 = overpass_col2 = column + (dc-1) // 2
+                            if not (0 <= overpass_col1 and
+                                    overpass_col2 < self.size - overpass_height):
+                                pass  # Next to the edge, no possible overpass.
+                            elif not(0 <= overpass_row1 and
+                                     overpass_row2 < self.size - overpass_height):
+                                pass  # Next to the edge, no possible overpass.
+                            else:
+                                overpass_piece1 = levels[overpass_height,
+                                                         overpass_row1,
+                                                         overpass_col1]
+                                overpass_piece2 = levels[overpass_height,
+                                                         overpass_row2,
+                                                         overpass_col2]
+                                if (overpass_piece1 != self.NO_PLAYER and
+                                        overpass_piece2 != self.NO_PLAYER):
+                                    continue
+                    else:
+                        if dh in (dr, dc):
+                            continue
+                    yield neighbour_height, neighbour_row, neighbour_column
+
     def calculate_volume(self, base_size: int = None):
         if base_size is None:
             base_size = self.size
@@ -168,7 +246,22 @@ class ShibumiGameState(GameState, ABC):
         """ Extract the board spaces from the complete game state. """
         return self.get_levels()
 
-    def get_index(self, height, row=0, column=0):
+    def get_index(self, height: int,
+                  row: int = 0,
+                  column: int = 0,
+                  move_type: MoveType = MoveType.BLACK):
+        """ Get the index of a move, based on the details.
+
+        :param height: the height of the move
+        :param row: the row of the move
+        :param column: the column of the move
+        :param move_type: the type of move, for games that allow multiple types
+            of moves. Unless a subclass overrides this method, move_type must be
+            black.
+        :return: the calculated index
+        """
+        if move_type != MoveType.BLACK:
+            raise ValueError(f'Unsupported move type: {move_type!s}.')
         level_size = self.size - height
         level_start = self.calculate_volume(self.size) - self.calculate_volume(level_size)
         return level_start + row*level_size + column

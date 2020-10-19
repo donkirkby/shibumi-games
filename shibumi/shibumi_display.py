@@ -3,13 +3,12 @@ from math import floor
 
 from PySide2.QtCore import QSize
 from PySide2.QtCore import Qt
-from PySide2.QtGui import (QImage, QPixmap, QFont, QResizeEvent, QPainter,
-                           QPainterPath, QColor)
+from PySide2.QtGui import QImage, QPixmap, QFont, QResizeEvent, QPainter
 from PySide2.QtWidgets import (QGraphicsPixmapItem, QGraphicsSceneHoverEvent,
                                QGraphicsSceneMouseEvent, QGraphicsScene)
 
 from shibumi.shibumi_display_ui import Ui_ShibumiDisplay
-from shibumi.shibumi_game_state import ShibumiGameState, PlayerCode
+from shibumi.shibumi_game_state import ShibumiGameState, MoveType
 from zero_play.game_display import GameDisplay, center_text_item
 from zero_play.game_state import GameState
 from shibumi import shibumi_images_rc
@@ -30,30 +29,23 @@ class GraphicsShibumiPieceItem(QGraphicsPixmapItem):
 
     def hoverEnterEvent(self, event: QGraphicsSceneHoverEvent):
         super().hoverEnterEvent(event)
-        self.hover_listener.on_hover_enter(self)
+        if self.hover_listener:
+            self.hover_listener.on_hover_enter(self)
 
     def hoverLeaveEvent(self, event: QGraphicsSceneHoverEvent):
         super().hoverLeaveEvent(event)
-        self.hover_listener.on_hover_leave(self)
+        if self.hover_listener:
+            self.hover_listener.on_hover_leave(self)
 
     def mousePressEvent(self, event: QGraphicsSceneMouseEvent):
         super().mousePressEvent(event)
-        self.hover_listener.on_click(self)
+        if self.hover_listener:
+            self.hover_listener.on_click(self)
+            event.accept()
 
     def __repr__(self):
         return (f'GraphicsShibumiPieceItem({self.height}, {self.row}, '
                 f'{self.column})')
-
-
-class GraphicsColourSelectorItem(QGraphicsPixmapItem):
-    def __init__(self, colour: PlayerCode, colour_listener):
-        super().__init__()
-        self.colour = colour
-        self.colour_listener = colour_listener
-
-    def mousePressEvent(self, event: QGraphicsSceneMouseEvent):
-        super().mousePressEvent(event)
-        self.colour_listener.on_colour_selected(self.colour)
 
 
 class ShibumiDisplay(GameDisplay):
@@ -71,8 +63,9 @@ class ShibumiDisplay(GameDisplay):
             'ball-w-shadow-1.png')
         self.black_scaled = self.black_pixmap = self.load_pixmap(
             'ball-b-shadow-1.png')
-        self.black_player = self.black_pixmap
-        self.white_player = self.white_pixmap
+        self.red_scaled = self.red_pixmap = self.load_pixmap(
+            'ball-r-shadow-1.png')
+        self.remove_pixmap = self.load_pixmap('ball-x-shadow-1.png')
         self.item_levels = []
         for height in range(self.start_state.size):
             item_level = []
@@ -89,40 +82,30 @@ class ShibumiDisplay(GameDisplay):
         for i in range(self.start_state.size * 2 - 1):
             self.row_labels.append(scene.addSimpleText(str(i + 1)))
             self.column_labels.append(scene.addSimpleText(chr(i + 65)))
-        self.player_item = scene.addPixmap(QPixmap())
-        self.black_count_pixmap = scene.addPixmap(self.black_pixmap)
-        self.white_count_pixmap = scene.addPixmap(self.white_pixmap)
-        highlight_path = QPainterPath()
-        self.colour_highlight = scene.addPath(highlight_path,
-                                              brush=QColor('blue'))
-        self.black_colour_pixmap = GraphicsColourSelectorItem(start_state.BLACK,
-                                                              self)
-        self.white_colour_pixmap = GraphicsColourSelectorItem(start_state.WHITE,
-                                                              self)
-        scene.addItem(self.black_colour_pixmap)
-        scene.addItem(self.white_colour_pixmap)
         self.ui.move_black.clicked.connect(
-            lambda: self.on_colour_selected(PlayerCode.BLACK))
+            lambda: self.on_move_type_selected(MoveType.BLACK))
         self.ui.move_white.clicked.connect(
-            lambda: self.on_colour_selected(PlayerCode.WHITE))
-        self._selected_colour = start_state.BLACK
-        self.black_count_x = self.white_count_x = self.count_y = 0
+            lambda: self.on_move_type_selected(MoveType.WHITE))
+        self.ui.move_red.clicked.connect(
+            lambda: self.on_move_type_selected(MoveType.RED))
+        self.ui.remove.clicked.connect(
+            lambda: self.on_move_type_selected(MoveType.REMOVE))
+        self._selected_move_type = MoveType.BLACK
         self._show_counts = False
-        self._show_colours = False
-        self.black_count_pixmap.setVisible(False)
-        self.white_count_pixmap.setVisible(False)
-        self.colour_highlight.setVisible(False)
-        self.black_colour_pixmap.setVisible(False)
-        self.white_colour_pixmap.setVisible(False)
+        self._show_move_types = False
         self.ui.black_count_pixmap.setText('')
         self.ui.white_count_pixmap.setText('')
         self.ui.red_count_pixmap.setText('')
+        self.ui.move_black.setText('')
+        self.ui.move_white.setText('')
+        self.ui.move_red.setText('')
+        self.ui.remove.setText('')
         self.ui.move_black.setIcon(self.black_pixmap)
         self.ui.move_white.setIcon(self.white_pixmap)
-        self.ui.move_red.setVisible(False)
-        self.ui.remove.setVisible(False)
+        self.ui.move_red.setIcon(self.red_pixmap)
+        self.ui.remove.setIcon(self.remove_pixmap)
         self.show_counts = False
-        self.show_colours = False
+        self.show_move_types = False
         self.debug_message = ''
 
     @property
@@ -144,29 +127,33 @@ class ShibumiDisplay(GameDisplay):
             self.ui.red_count.setText('')
 
     @property
-    def show_colours(self) -> bool:
-        return self._show_colours
+    def show_move_types(self) -> bool:
+        return self._show_move_types
 
-    @show_colours.setter
-    def show_colours(self, value: bool):
-        self._show_colours = value
+    @show_move_types.setter
+    def show_move_types(self, value: bool):
+        self._show_move_types = value
         self.ui.move_black.setVisible(value)
         self.ui.move_white.setVisible(value)
+        self.ui.move_red.setVisible(value)
+        self.ui.remove.setVisible(value)
 
     @property
-    def selected_colour(self) -> PlayerCode:
-        return self._selected_colour
+    def selected_move_type(self) -> MoveType:
+        return self._selected_move_type
 
-    @selected_colour.setter
-    def selected_colour(self, value: PlayerCode):
-        self._selected_colour = value
-        colour_controls = {PlayerCode.WHITE: self.ui.move_white,
-                           PlayerCode.BLACK: self.ui.move_black,
-                           PlayerCode.RED: self.ui.move_red}
-        colour_controls[value].setChecked(True)
+    @selected_move_type.setter
+    def selected_move_type(self, value: MoveType):
+        self._selected_move_type = value
+        move_type_controls = {MoveType.WHITE: self.ui.move_white,
+                              MoveType.BLACK: self.ui.move_black,
+                              MoveType.RED: self.ui.move_red,
+                              MoveType.REMOVE: self.ui.remove}
+        move_type_controls[value].setChecked(True)
 
-    def on_colour_selected(self, colour: PlayerCode):
-        self.selected_colour = colour
+    def on_move_type_selected(self, move_type: MoveType):
+        self.selected_move_type = move_type
+        self.update_board(self.current_state)
 
     def assemble_board(self) -> QPixmap:
         full_board = self.load_pixmap('board-1.png')
@@ -255,21 +242,29 @@ class ShibumiDisplay(GameDisplay):
         self.current_state = game_state
         valid_moves = game_state.get_valid_moves()
         is_ended = game_state.is_ended()
+        pixmaps = {game_state.BLACK: self.black_scaled,
+                   game_state.WHITE: self.white_scaled,
+                   game_state.RED: self.red_scaled,
+                   game_state.NO_PLAYER: self.black_scaled}
+        if self.show_move_types:
+            move_type = self.selected_move_type
+        else:
+            move_type = MoveType.BLACK
         for level, item_level in zip(game_state.get_levels(),
                                      self.item_levels):
             for row_pieces, row_items in zip(level, item_level):
-                piece_item: QGraphicsPixmapItem
+                piece_item: GraphicsShibumiPieceItem
                 for piece, piece_item in zip(row_pieces, row_items):
                     move_index = game_state.get_index(piece_item.height,
                                                       piece_item.row,
-                                                      piece_item.column)
+                                                      piece_item.column,
+                                                      move_type)
                     is_valid = valid_moves[move_index] and not is_ended
                     piece_item.setVisible(bool(piece != game_state.NO_PLAYER or
                                                is_valid))
-                    if piece == game_state.WHITE:
-                        piece_item.setPixmap(self.white_scaled)
-                    else:
-                        piece_item.setPixmap(self.black_scaled)
+                    piece_item.hover_listener = self if is_valid else None
+                    pixmap = pixmaps[piece]
+                    piece_item.setPixmap(pixmap)
                     piece_item.setOpacity(0.001
                                           if piece == game_state.NO_PLAYER
                                           else 1)
@@ -342,13 +337,9 @@ class ShibumiDisplay(GameDisplay):
         self.white_scaled = self.scale_pixmap(self.white_pixmap,
                                               ball_size,
                                               ball_size)
-        player_size = display_width // 4.9
-        self.black_player = self.scale_pixmap(self.black_pixmap,
-                                              player_size,
-                                              player_size)
-        self.white_player = self.scale_pixmap(self.white_pixmap,
-                                              player_size,
-                                              player_size)
+        self.red_scaled = self.scale_pixmap(self.red_pixmap,
+                                            ball_size,
+                                            ball_size)
         x0 = board_x + floor(scaled_pixmap.width()*0.046/(0.119+0.22*board_size))
         y0 = board_y + floor(scaled_pixmap.height()*0.045/(0.15+0.21*board_size))
         for height, level in enumerate(self.item_levels):
@@ -374,61 +365,8 @@ class ShibumiDisplay(GameDisplay):
                              x0 + cell_size//1.6 + i*(cell_size // 2),
                              board_y + full_height - raw_cell_size//1.6 -
                              i % 2 * raw_cell_size//3.5)
-        self.update_count_positions()
         self.update_board(self.current_state)
         self.scene().setSceneRect(0, 0, view_size.width(), view_size.height())
-
-    def update_count_positions(self):
-        if not self.show_counts:
-            return
-        self.update_marble_indicator_positions(9, self.black_count_pixmap, self.white_count_pixmap)
-        x0 = int(self.background_item.x())
-        y0 = int(self.background_item.y())
-        large_size = self.background_item.pixmap().width()
-        self.count_y = y0 + large_size*55//200
-        self.black_count_x = x0 + large_size*86//80
-        self.white_count_x = x0 + large_size*96//80
-        self.update_count_text()
-
-    def update_colour_positions(self):
-        if not self.show_colours:
-            return
-        y_portion = 1.31
-        self.update_marble_indicator_positions(y_portion,
-                                               self.black_colour_pixmap,
-                                               self.white_colour_pixmap)
-        selected_pixmap = (self.black_colour_pixmap
-                           if self.selected_colour == self.start_state.BLACK
-                           else self.white_colour_pixmap)
-        x = selected_pixmap.x()
-        y = selected_pixmap.y()
-        size = selected_pixmap.pixmap().width()
-        highlight_path = QPainterPath()
-        highlight_path.addRoundedRect(x, y,
-                                      size-1, size-1,
-                                      size//10, size//10)
-        self.colour_highlight.setPath(highlight_path)
-
-    def update_marble_indicator_positions(self,
-                                          y_portion: float,
-                                          black_target: QGraphicsPixmapItem,
-                                          white_target: QGraphicsPixmapItem):
-        small_size = self.black_player.width() // 2
-        small_black = self.scale_pixmap(self.black_pixmap,
-                                        small_size,
-                                        small_size)
-        small_white = self.scale_pixmap(self.white_pixmap,
-                                        small_size,
-                                        small_size)
-        black_target.setPixmap(small_black)
-        white_target.setPixmap(small_white)
-        x0 = int(self.background_item.x())
-        y0 = int(self.background_item.y())
-        large_size = self.background_item.pixmap().width()
-        black_target.setPos(x0 + large_size * 81 // 80,
-                            y0 + large_size // y_portion)
-        white_target.setPos(x0 + large_size * 91 // 80,
-                            y0 + large_size // y_portion)
 
     def update_count_text(self):
         black_count = self.current_state.get_piece_count(
@@ -451,29 +389,34 @@ class ShibumiDisplay(GameDisplay):
         assert isinstance(self.current_state, ShibumiGameState)
         levels = self.current_state.get_levels()
         piece = levels[piece_item.height][piece_item.row][piece_item.column]
-        if piece != self.start_state.NO_PLAYER:
-            return
-        if self.show_colours:
-            piece_colour = self.selected_colour
+        if self.show_move_types:
+            move_type = self.selected_move_type
+            if move_type == MoveType.REMOVE:
+                move_type = MoveType(piece)
         else:
-            piece_colour = PlayerCode(self.current_state.get_active_player())
-        if piece_colour == self.start_state.BLACK:
+            move_type = MoveType(self.current_state.get_active_player())
+        if move_type == self.start_state.BLACK:
             piece_item.setPixmap(self.black_scaled)
-        else:
+        elif move_type == self.start_state.WHITE:
             piece_item.setPixmap(self.white_scaled)
+        else:
+            assert move_type == MoveType.RED
+            piece_item.setPixmap(self.red_scaled)
         piece_item.setOpacity(0.5)
 
     def on_hover_leave(self, piece_item: GraphicsShibumiPieceItem):
         assert isinstance(self.current_state, ShibumiGameState)
         levels = self.current_state.get_levels()
         piece = levels[piece_item.height][piece_item.row][piece_item.column]
-        if piece == self.start_state.NO_PLAYER:
-            piece_item.setOpacity(0.001)
+        piece_item.setOpacity(0.001
+                              if piece == self.start_state.NO_PLAYER
+                              else 1.0)
 
     def on_click(self, piece_item: GraphicsShibumiPieceItem):
         move_index = self.start_state.get_index(piece_item.height,
                                                 piece_item.row,
-                                                piece_item.column)
+                                                piece_item.column,
+                                                self.selected_move_type)
         valid_moves = self.current_state.get_valid_moves()
         if valid_moves[move_index]:
             self.make_move(move_index)

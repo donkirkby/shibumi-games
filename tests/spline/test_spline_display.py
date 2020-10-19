@@ -287,48 +287,6 @@ def test_hover_leave(pixmap_differ: PixmapDiffer):
 
 
 # noinspection DuplicatedCode
-def test_hover_enter_existing(pixmap_differ: PixmapDiffer):
-    actual: QPainter
-    expected: QPainter
-    with pixmap_differ.create_painters(240, 240, 'spline_hover_enter_existing') as (
-            actual,
-            expected):
-        expected_scene = QGraphicsScene(0, 0, 240, 240)
-        expected_scene.addPixmap(
-            SplineDisplay.load_pixmap('board-1.png',
-                                      QSize(240, 240))).setPos(1, 0)
-        black_ball = SplineDisplay.load_pixmap('ball-b-shadow-1.png',
-                                               QSize(60, 60))
-
-        expected_scene.addPixmap(black_ball).setPos(115, 114)
-        expected_scene.render(expected)
-
-        display = SplineDisplay()
-        display.update_board(SplineState("""\
-  A C E G
-7 . . . . 7
-
-5 . . . . 5
-
-3 . . B . 3
-
-1 . . . . 1
-  A C E G
-"""))
-        height = 0
-        row = 1
-        column = 2
-        piece_item = display.item_levels[height][row][column]
-
-        display.resize(336, 264)
-        display.grab()  # Force layout to recalculate.
-
-        display.on_hover_enter(piece_item)
-
-        render_display(display, actual)
-
-
-# noinspection DuplicatedCode
 def test_hover_leave_existing(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
