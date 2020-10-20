@@ -9,7 +9,7 @@ class SpargoDisplay(ShibumiDisplay):
 
     def __init__(self, size: int = 4):
         super().__init__(SpargoState(size=size))
-        self.show_counts = True
+        self.visible_counts = SpargoState.BLACK, SpargoState.WHITE
 
     @property
     def credit_pairs(self) -> typing.Iterable[typing.Tuple[str, str]]:

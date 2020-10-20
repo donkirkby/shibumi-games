@@ -27,9 +27,19 @@ def test_empty(pixmap_differ: PixmapDiffer):
         display.resize(336, 264)
 
         render_display(display, actual)
-    assert not display.ui.move_black.icon().isNull()
-    assert not display.ui.move_white.icon().isNull()
+    for widget in (display.ui.move_black,
+                   display.ui.move_white,
+                   display.ui.move_red,
+                   display.ui.remove,
+                   display.ui.black_count_pixmap,
+                   display.ui.white_count_pixmap,
+                   display.ui.red_count_pixmap,
+                   display.ui.black_count,
+                   display.ui.white_count,
+                   display.ui.red_count):
+        assert widget.isVisibleTo(display)
     assert display.ui.move_black.isChecked()
+    assert display.ui.red_count.text() == '0'
 
 
 # noinspection DuplicatedCode

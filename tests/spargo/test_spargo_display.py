@@ -26,6 +26,7 @@ def test_empty(pixmap_differ: PixmapDiffer):
         render_display(display, actual)
     assert display.ui.move_text.text() == 'to move'
     assert display.ui.black_count.text() == '0'
+    assert display.ui.red_count.text() == ''
     assert display.ui.white_count.text() == '0'
     black_icon = display.black_pixmap.toImage()
     assert display.ui.black_count_pixmap.pixmap().toImage() == black_icon

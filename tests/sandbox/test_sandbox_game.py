@@ -185,3 +185,5 @@ def test_display_move():
 
     assert board.display_move(2) == 'B1E'
     assert board.display_move(32) == 'W1E'
+    assert board.display_move(62) == 'R1E'
+    assert board.display_move(92) == 'x1E'

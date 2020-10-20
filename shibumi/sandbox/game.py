@@ -69,8 +69,13 @@ class SandboxState(ShibumiGameState):
 
     def display_move(self, move: int) -> str:
         volume = self.calculate_volume()
-        colour = 'W' if move // volume else 'B'
+        section = move // volume
+        move_type = [MoveType.BLACK,
+                     MoveType.WHITE,
+                     MoveType.RED,
+                     MoveType.REMOVE][section]
+        prefix = 'x' if move_type == MoveType.REMOVE else move_type.name[0]
         position_index = move % volume
         base_display = super().display_move(position_index)
 
-        return colour + base_display
+        return prefix + base_display

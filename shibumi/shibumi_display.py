@@ -8,7 +8,7 @@ from PySide2.QtWidgets import (QGraphicsPixmapItem, QGraphicsSceneHoverEvent,
                                QGraphicsSceneMouseEvent, QGraphicsScene)
 
 from shibumi.shibumi_display_ui import Ui_ShibumiDisplay
-from shibumi.shibumi_game_state import ShibumiGameState, MoveType
+from shibumi.shibumi_game_state import ShibumiGameState, MoveType, PlayerCode
 from zero_play.game_display import GameDisplay, center_text_item
 from zero_play.game_state import GameState
 from shibumi import shibumi_images_rc
@@ -91,7 +91,7 @@ class ShibumiDisplay(GameDisplay):
         self.ui.remove.clicked.connect(
             lambda: self.on_move_type_selected(MoveType.REMOVE))
         self._selected_move_type = MoveType.BLACK
-        self._show_counts = False
+        self._visible_counts: typing.FrozenSet[PlayerCode] = frozenset()
         self._show_move_types = False
         self.ui.black_count_pixmap.setText('')
         self.ui.white_count_pixmap.setText('')
@@ -109,22 +109,40 @@ class ShibumiDisplay(GameDisplay):
         self.debug_message = ''
 
     @property
+    def visible_counts(self) -> typing.Iterable[PlayerCode]:
+        return self._visible_counts
+
+    @visible_counts.setter
+    def visible_counts(self, value: typing.Iterable[PlayerCode]):
+        self._visible_counts = frozenset(value)
+        for code, pixmap, count_pixmap in (
+                (PlayerCode.BLACK,
+                 self.black_pixmap,
+                 self.ui.black_count_pixmap),
+                (PlayerCode.WHITE,
+                 self.white_pixmap,
+                 self.ui.white_count_pixmap),
+                (PlayerCode.RED,
+                 self.red_pixmap,
+                 self.ui.red_count_pixmap)):
+            if code in value:
+                count_pixmap.setPixmap(pixmap)
+            else:
+                count_pixmap.setPixmap(None)
+        self.update_count_text()
+
+    @property
     def show_counts(self) -> bool:
-        return self._show_counts
+        return bool(self.visible_counts)
 
     @show_counts.setter
     def show_counts(self, value: bool):
-        self._show_counts = value
         if value:
-            self.ui.black_count_pixmap.setPixmap(self.black_pixmap)
-            self.ui.white_count_pixmap.setPixmap(self.white_pixmap)
-            self.update_count_text()
+            self.visible_counts = (PlayerCode.BLACK,
+                                   PlayerCode.RED,
+                                   PlayerCode.WHITE)
         else:
-            self.ui.black_count_pixmap.setPixmap(None)
-            self.ui.white_count_pixmap.setPixmap(None)
-            self.ui.black_count.setText('')
-            self.ui.white_count.setText('')
-            self.ui.red_count.setText('')
+            self.visible_counts = ()
 
     @property
     def show_move_types(self) -> bool:
@@ -369,12 +387,15 @@ class ShibumiDisplay(GameDisplay):
         self.scene().setSceneRect(0, 0, view_size.width(), view_size.height())
 
     def update_count_text(self):
-        black_count = self.current_state.get_piece_count(
-            self.current_state.BLACK)
-        white_count = self.current_state.get_piece_count(
-            self.current_state.WHITE)
-        self.ui.black_count.setText(f'{black_count}')
-        self.ui.white_count.setText(f'{white_count}')
+        visible_counts = self.visible_counts
+        for code, count in ((PlayerCode.BLACK, self.ui.black_count),
+                            (PlayerCode.WHITE, self.ui.white_count),
+                            (PlayerCode.RED, self.ui.red_count)):
+            if code in visible_counts:
+                piece_count = self.current_state.get_piece_count(code)
+                count.setText(str(piece_count))
+            else:
+                count.setText('')
 
     @staticmethod
     def scale_pixmap(pixmap: QPixmap, width: int, height: int):
@@ -435,4 +456,5 @@ class ShibumiDisplay(GameDisplay):
         return pixmap
 
     def close(self):
+        super().close()
         self.scene().clear()
