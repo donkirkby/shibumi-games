@@ -594,3 +594,55 @@ def test_piece_count_tiny_board():
     start_state = SpargoState(board_text, size=2)
 
     assert start_state.get_piece_count(SpargoState.BLACK) == 3
+
+
+def test_covered_piece_not_connected():
+    start_state = SpargoState("""\
+  A C E G
+7 . W . . 7
+
+5 B W B . 5
+
+3 B W B B 3
+
+1 B W W W 1
+  A C E G
+   B D F
+ 6 . . . 6
+
+ 4 W B . 4
+
+ 2 B W . 2
+   B D F
+>B
+""")
+    expected_display = """\
+  A C E G
+7 . W . . 7
+
+5 B W B . 5
+
+3 B W B B 3
+
+1 B W W . 1
+  A C E G
+   B D F
+ 6 . . . 6
+
+ 4 W B . 4
+
+ 2 B W . 2
+   B D F
+    C E
+  5 . . 5
+
+  3 B . 3
+    C E
+>W
+"""
+
+    new_state = start_state.make_move(25)
+
+    display = new_state.display(show_coordinates=True)
+
+    assert display == expected_display

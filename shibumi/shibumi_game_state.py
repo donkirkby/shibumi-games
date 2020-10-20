@@ -153,6 +153,17 @@ class ShibumiGameState(GameState, ABC):
                     neighbour_column = column + dc
                     if not 0 <= neighbour_column < self.size - neighbour_height:
                         continue
+                    cover_height = neighbour_height + 2
+                    cover_row = neighbour_row - 1
+                    cover_column = neighbour_column - 1
+                    if (0 <= cover_height < self.size and
+                            0 <= cover_row < self.size and
+                            0 <= cover_column < self.size):
+                        cover_piece = (
+                            levels[cover_height][cover_row][cover_column])
+                        if cover_piece not in (self.NO_PLAYER,
+                                               self.UNUSABLE):
+                            continue
                     if dh == 0:
                         if abs(dr) == abs(dc):
                             continue
