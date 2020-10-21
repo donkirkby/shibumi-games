@@ -237,6 +237,10 @@ class ShibumiGameState(GameState, ABC):
 
     def display_move(self, move: int) -> str:
         height, row, column = self.get_coordinates(move)
+        return self.display_coordinates(height, row, column)
+
+    @staticmethod
+    def display_coordinates(height, row, column):
         row_text = str(height + 1 + 2*row)
         column_text = chr(height + 65 + column*2)
         return row_text + column_text
@@ -247,7 +251,7 @@ class ShibumiGameState(GameState, ABC):
         return sum(piece in (self.WHITE, self.BLACK)
                    for piece in pieces)
 
-    def get_piece_count(self, player: int):
+    def get_piece_count(self, player: int) -> int:
         end_spaces = self.size * self.size - 1
         spaces = self.board.reshape(self.size*self.size*self.size)[:-end_spaces]
         player_count = (spaces == player).sum()

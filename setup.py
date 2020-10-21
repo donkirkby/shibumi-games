@@ -39,6 +39,7 @@ setup(name='shibumi',
           'zero_play.game_display': [
               'margo=shibumi.margo.display:MargoDisplay',
               'sandbox=shibumi.sandbox.display:SandboxDisplay',
+              'spaiji=shibumi.spaiji.display:SpaijiDisplay',
               'spargo=shibumi.spargo.display:SpargoDisplay',
               'spline=shibumi.spline.display:SplineDisplay']},
       project_urls={
