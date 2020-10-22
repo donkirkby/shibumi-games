@@ -92,7 +92,7 @@ class ShibumiDisplay(GameDisplay):
             lambda: self.on_move_type_selected(MoveType.REMOVE))
         self._selected_move_type = MoveType.BLACK
         self._visible_counts: typing.FrozenSet[PlayerCode] = frozenset()
-        self._show_move_types = False
+        self._visible_move_types: typing.FrozenSet[MoveType] = frozenset()
         self.ui.black_count_pixmap.setText('')
         self.ui.white_count_pixmap.setText('')
         self.ui.red_count_pixmap.setText('')
@@ -145,16 +145,45 @@ class ShibumiDisplay(GameDisplay):
             self.visible_counts = ()
 
     @property
+    def visible_move_types(self) -> typing.Iterable[MoveType]:
+        return self._visible_move_types
+
+    @visible_move_types.setter
+    def visible_move_types(self, value: typing.Iterable[MoveType]):
+        self._visible_move_types = frozenset(value)
+        first_visible = None
+        old_move_type = self.selected_move_type
+        is_selected_visible = False
+        for move_type, radio_button in ((MoveType.BLACK, self.ui.move_black),
+                                        (MoveType.WHITE, self.ui.move_white),
+                                        (MoveType.RED, self.ui.move_red),
+                                        (MoveType.REMOVE, self.ui.remove)):
+            is_visible = move_type in value
+            radio_button.setVisible(is_visible)
+            if is_visible:
+                if first_visible is None:
+                    first_visible = move_type
+                if move_type == old_move_type:
+                    is_selected_visible = True
+
+        if is_selected_visible:
+            self.selected_move_type = old_move_type
+        elif first_visible is not None:
+            self.selected_move_type = first_visible
+
+    @property
     def show_move_types(self) -> bool:
-        return self._show_move_types
+        return bool(self.visible_move_types)
 
     @show_move_types.setter
     def show_move_types(self, value: bool):
-        self._show_move_types = value
-        self.ui.move_black.setVisible(value)
-        self.ui.move_white.setVisible(value)
-        self.ui.move_red.setVisible(value)
-        self.ui.remove.setVisible(value)
+        if value:
+            self.visible_move_types = (MoveType.BLACK,
+                                       MoveType.WHITE,
+                                       MoveType.RED,
+                                       MoveType.REMOVE)
+        else:
+            self.visible_move_types = ()
 
     @property
     def selected_move_type(self) -> MoveType:

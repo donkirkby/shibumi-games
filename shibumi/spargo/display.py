@@ -13,6 +13,5 @@ class SpargoDisplay(ShibumiDisplay):
 
     @property
     def credit_pairs(self) -> typing.Iterable[typing.Tuple[str, str]]:
-        return [('Shibumi Graphics:', 'Cameron Browne'),
-                ('Spargo Game:', 'Cameron Browne'),
-                ('Spargo Implementation:', 'Don Kirkby')]
+        return [('Spargo / Margo Game:', 'Cameron Browne'),
+                ('Spargo / Margo Implementation:', 'Don Kirkby')]

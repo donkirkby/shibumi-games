@@ -11,5 +11,4 @@ class MargoDisplay(SpargoDisplay):
 
     @property
     def credit_pairs(self) -> typing.Iterable[typing.Tuple[str, str]]:
-        return [('Margo Game:', 'Cameron Browne'),
-                ('Margo Implementation:', 'Don Kirkby')]
+        return []

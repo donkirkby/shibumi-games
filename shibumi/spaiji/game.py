@@ -88,9 +88,10 @@ class SpaijiState(ShibumiGameState):
         return new_board
 
     def get_valid_moves(self) -> np.ndarray:
-        valid_spaces = super().get_valid_moves()
         volume = self.calculate_volume()
         valid_moves = np.ndarray(2*volume, bool)
+        valid_spaces = valid_moves[:volume]
+        self.fill_supported_moves(valid_spaces)
         levels = self.get_levels()
         old_height, old_row, old_column = levels[-1, -1, 0:3]
         if old_column < 0:
@@ -102,7 +103,7 @@ class SpaijiState(ShibumiGameState):
                         # Choosing this move would leave no neighbours to
                         # complete the turn.
                         valid_spaces[move] = False
-            valid_moves[:volume] = valid_spaces
+            # Now copy the same valid moves for white.
             valid_moves[volume:] = valid_spaces
         else:
             old_move_type = levels[old_height, old_row, old_column]
@@ -145,7 +146,8 @@ class SpaijiState(ShibumiGameState):
         return colour + base_move
 
     def is_ended(self) -> bool:
-        return self.get_levels()[-1, 0, 0] != self.NO_PLAYER
+        valid_moves = self.get_valid_moves()
+        return not valid_moves.any()
 
     def is_win(self, player: int) -> bool:
         if not self.is_ended():
@@ -159,7 +161,8 @@ class SpaijiState(ShibumiGameState):
         return score > opponent_score
 
     def get_scores(self):
-        if self.is_ended():
+        levels = self.get_levels()
+        if levels[-1, 0, 0] != self.NO_PLAYER:
             unvisited = [(0, 0, 0)]
         else:
             unvisited = [(0, row, column)
@@ -167,7 +170,6 @@ class SpaijiState(ShibumiGameState):
                          for column in range(self.size)]
 
         groups = defaultdict(set)
-        levels = self.get_levels()
         while unvisited:
             position = unvisited.pop()
             start_piece = levels[position]

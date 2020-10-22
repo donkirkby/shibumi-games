@@ -1,7 +1,9 @@
 - name: Rules
   link: /rules/spargo.html
   dropdown:
-    - name: Spargo
+    - name: Spaiji
+      link: /rules/spaiji.html
+    - name: Spargo / Margo
       link: /rules/spargo.html
     - name: Spline
       link: /rules/spline.html

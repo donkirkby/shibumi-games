@@ -276,3 +276,33 @@ def test_first_move_no_neighbours():
     valid_moves = board.get_valid_moves()
 
     assert not valid_moves[16]
+
+
+def test_early_end():
+    """ End game when there are no valid moves. """
+    board = SpaijiState('''\
+  A C E G
+7 B W B W 7
+
+5 W B W B 5
+
+3 B W B W 3
+
+1 W B W B 1
+  A C E G
+   B D F
+ 6 . W . 6
+
+ 4 B . B 4
+
+ 2 . W . 2
+   B D F
+>W
+''')
+
+    assert board.get_piece_count(board.WHITE) == 3
+    assert board.get_piece_count(board.BLACK) == 3
+    assert board.is_ended()
+    # Tie goes to black
+    assert not board.is_win(board.WHITE)
+    assert board.is_win(board.BLACK)

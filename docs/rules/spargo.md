@@ -1,5 +1,5 @@
 ---
-title: Spargo Rules
+title: Spargo / Margo Rules
 
 ---
 
@@ -7,7 +7,7 @@ title: Spargo Rules
 * 2 players
 
 Spargo is a 3D extension of Go, in which pinned pieces remain active in the game
-following capture.
+following capture. Spargo uses a 4x4 board, and Margo uses 6x6.
 
 ### Start
 The board starts empty.
