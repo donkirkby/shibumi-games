@@ -165,9 +165,11 @@ class SpaijiState(ShibumiGameState):
         if levels[-1, 0, 0] != self.NO_PLAYER:
             unvisited = [(0, 0, 0)]
         else:
+            edges = (0, self.size-1)
             unvisited = [(0, row, column)
                          for row in range(self.size)
-                         for column in range(self.size)]
+                         for column in range(self.size)
+                         if row in edges or column in edges]
 
         groups = defaultdict(set)
         while unvisited:
