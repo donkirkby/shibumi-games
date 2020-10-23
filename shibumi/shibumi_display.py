@@ -437,6 +437,8 @@ class ShibumiDisplay(GameDisplay):
 
     def on_hover_enter(self, piece_item: GraphicsShibumiPieceItem):
         assert isinstance(self.current_state, ShibumiGameState)
+        if not self.can_move():
+            return
         levels = self.current_state.get_levels()
         piece = levels[piece_item.height][piece_item.row][piece_item.column]
         if self.show_move_types:
@@ -463,6 +465,8 @@ class ShibumiDisplay(GameDisplay):
                               else 1.0)
 
     def on_click(self, piece_item: GraphicsShibumiPieceItem):
+        if not self.can_move():
+            return
         move_index = self.start_state.get_index(piece_item.height,
                                                 piece_item.row,
                                                 piece_item.column,
