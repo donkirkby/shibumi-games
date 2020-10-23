@@ -1,5 +1,6 @@
 import typing
 
+import shibumi
 from shibumi.shibumi_display import ShibumiDisplay
 from shibumi.spline.game import SplineState
 
@@ -13,4 +14,5 @@ class SplineDisplay(ShibumiDisplay):
     @property
     def credit_pairs(self) -> typing.Iterable[typing.Tuple[str, str]]:
         return [('Spline Game:', 'Néstor Romeral Andrés'),
-                ('Spline Implementation:', 'Don Kirkby')]
+                ('Spline Implementation:', 'Don Kirkby'),
+                ('Shibumi Version', shibumi.__version__)]
