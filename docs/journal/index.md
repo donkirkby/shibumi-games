@@ -108,3 +108,18 @@ to victory.
 [Spargo no ko]: 2020/spargo-no-ko.png
 [Spargo doomed]: 2020/spargo-doomed.png
 [Spargo wait]: 2020/spargo-wait.png
+
+### Oct 2020
+Added Margo as 6x6 version of Spargo, and fixed a few bugs by breaking
+connections with covered marbles. Also added a sandbox mode. As the sandbox
+mode added more features, I decided to move a bunch of controls out of the
+graphics scene and into regular widgets.
+
+Added Spaiji game, and the ability to choose which colour to play.
+
+Now attempting to improve Spargo performance. I'm running 100 iterations, and
+the current code takes 11 seconds per move. I used `cProfile`, and found that
+the `find_neighbours()` function was a hot spot. I split that into
+`find_possible_neighbours()` and `find_neighbours()`, where
+`find_possible_neighbours()` is static and caches the results. That was a big
+improvement, and brought it down to 7 seconds per move.

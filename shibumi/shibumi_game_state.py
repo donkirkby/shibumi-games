@@ -1,5 +1,6 @@
 from abc import ABC
 from enum import IntEnum
+import functools
 
 import numpy as np
 import typing
@@ -117,6 +118,39 @@ class ShibumiGameState(GameState, ABC):
                     valid_moves[piece_index] = is_valid
                     piece_index += 1
 
+    @staticmethod
+    @functools.lru_cache(maxsize=None)
+    def find_possible_neighbours(
+            size: int,
+            height: int,
+            row: int,
+            column: int,
+            dh_start: int = -1,
+            dh_end: int = 2) -> typing.Tuple[typing.Tuple[int, int, int], ...]:
+        neighbours = []
+        for dh in range(dh_start, dh_end):
+            neighbour_height = height + dh
+            if not 0 <= neighbour_height < size:
+                continue
+            for dr in range(-1, 2):
+                neighbour_row = row + dr
+                if not 0 <= neighbour_row < size - neighbour_height:
+                    continue
+                for dc in range(-1, 2):
+                    neighbour_column = column + dc
+                    if not 0 <= neighbour_column < size - neighbour_height:
+                        continue
+                    if dh == 0:
+                        if abs(dr) == abs(dc):
+                            continue
+                    else:
+                        if dh in (dr, dc):
+                            continue
+                    neighbours.append((neighbour_height,
+                                       neighbour_row,
+                                       neighbour_column))
+        return tuple(neighbours)
+
     def find_neighbours(self,
                         height: int,
                         row: int,
@@ -140,63 +174,57 @@ class ShibumiGameState(GameState, ABC):
             starting position, and then stop.
         :return:
         """
+        possible_neighbours = self.find_possible_neighbours(self.size,
+                                                            height,
+                                                            row,
+                                                            column,
+                                                            dh_start,
+                                                            dh_end)
         levels = self.get_levels()
-        for dh in range(dh_start, dh_end):
-            neighbour_height = height + dh
-            if not 0 <= neighbour_height < self.size:
-                continue
-            for dr in range(-1, 2):
-                neighbour_row = row + dr
-                if not 0 <= neighbour_row < self.size - neighbour_height:
+        for (neighbour_height,
+             neighbour_row,
+             neighbour_column) in possible_neighbours:
+            cover_height = neighbour_height + 2
+            cover_row = neighbour_row - 1
+            cover_column = neighbour_column - 1
+            if (0 <= cover_height < self.size and
+                    0 <= cover_row < self.size and
+                    0 <= cover_column < self.size):
+                cover_piece = (
+                    levels[cover_height][cover_row][cover_column])
+                if cover_piece not in (self.NO_PLAYER,
+                                       self.UNUSABLE):
                     continue
-                for dc in range(-1, 2):
-                    neighbour_column = column + dc
-                    if not 0 <= neighbour_column < self.size - neighbour_height:
-                        continue
-                    cover_height = neighbour_height + 2
-                    cover_row = neighbour_row - 1
-                    cover_column = neighbour_column - 1
-                    if (0 <= cover_height < self.size and
-                            0 <= cover_row < self.size and
-                            0 <= cover_column < self.size):
-                        cover_piece = (
-                            levels[cover_height][cover_row][cover_column])
-                        if cover_piece not in (self.NO_PLAYER,
-                                               self.UNUSABLE):
-                            continue
-                    if dh == 0:
-                        if abs(dr) == abs(dc):
-                            continue
-                        overpass_height = neighbour_height + 1
-                        if overpass_height < self.size:
-                            if dr:
-                                overpass_row1 = overpass_row2 = row + (dr-1) // 2
-                                overpass_col1 = column-1
-                                overpass_col2 = column
-                            else:
-                                overpass_row1 = row-1
-                                overpass_row2 = row
-                                overpass_col1 = overpass_col2 = column + (dc-1) // 2
-                            if not (0 <= overpass_col1 and
-                                    overpass_col2 < self.size - overpass_height):
-                                pass  # Next to the edge, no possible overpass.
-                            elif not(0 <= overpass_row1 and
-                                     overpass_row2 < self.size - overpass_height):
-                                pass  # Next to the edge, no possible overpass.
-                            else:
-                                overpass_piece1 = levels[overpass_height,
-                                                         overpass_row1,
-                                                         overpass_col1]
-                                overpass_piece2 = levels[overpass_height,
-                                                         overpass_row2,
-                                                         overpass_col2]
-                                if (overpass_piece1 != self.NO_PLAYER and
-                                        overpass_piece2 != self.NO_PLAYER):
-                                    continue
+            if neighbour_height == height:
+                overpass_height = neighbour_height + 1
+                if overpass_height < self.size:
+                    dr = neighbour_row - row
+                    dc = neighbour_column - column
+                    if dr:
+                        overpass_row1 = overpass_row2 = row + (dr-1) // 2
+                        overpass_col1 = column-1
+                        overpass_col2 = column
                     else:
-                        if dh in (dr, dc):
+                        overpass_row1 = row-1
+                        overpass_row2 = row
+                        overpass_col1 = overpass_col2 = column + (dc-1) // 2
+                    if not (0 <= overpass_col1 and
+                            overpass_col2 < self.size - overpass_height):
+                        pass  # Next to the edge, no possible overpass.
+                    elif not(0 <= overpass_row1 and
+                             overpass_row2 < self.size - overpass_height):
+                        pass  # Next to the edge, no possible overpass.
+                    else:
+                        overpass_piece1 = levels[overpass_height,
+                                                 overpass_row1,
+                                                 overpass_col1]
+                        overpass_piece2 = levels[overpass_height,
+                                                 overpass_row2,
+                                                 overpass_col2]
+                        if (overpass_piece1 != self.NO_PLAYER and
+                                overpass_piece2 != self.NO_PLAYER):
                             continue
-                    yield neighbour_height, neighbour_row, neighbour_column
+            yield neighbour_height, neighbour_row, neighbour_column
 
     def calculate_volume(self, base_size: int = None):
         if base_size is None:
