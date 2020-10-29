@@ -123,3 +123,9 @@ the `find_neighbours()` function was a hot spot. I split that into
 `find_possible_neighbours()` and `find_neighbours()`, where
 `find_possible_neighbours()` is static and caches the results. That was a big
 improvement, and brought it down to 7 seconds per move.
+
+I tried a couple of other cached methods, but they weren't significant. What
+was surprisingly effective was switching some `IntEnum` values to `int`. I
+noticed that about 7% of the run time was being spent in `EnumMeta.__getattr__()`,
+so I switched several references. That brings the performance to a little under
+4 seconds per move.

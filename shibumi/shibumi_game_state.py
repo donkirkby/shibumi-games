@@ -25,11 +25,11 @@ class MoveType(IntEnum):
 
 class ShibumiGameState(GameState, ABC):
     FIRST_COLUMN_ORD = ord('A')
-    RED = PlayerCode.RED
-    WHITE = PlayerCode.WHITE
-    BLACK = PlayerCode.BLACK
-    NO_PLAYER = PlayerCode.NO_PLAYER
-    UNUSABLE = PlayerCode.UNUSABLE
+    RED = int(PlayerCode.RED)
+    WHITE = int(PlayerCode.WHITE)
+    BLACK = int(PlayerCode.BLACK)
+    NO_PLAYER = int(PlayerCode.NO_PLAYER)
+    UNUSABLE = int(PlayerCode.UNUSABLE)
     display_characters = {BLACK: 'B',
                           WHITE: 'W',
                           RED: 'R',
@@ -174,7 +174,9 @@ class ShibumiGameState(GameState, ABC):
             starting position, and then stop.
         :return:
         """
-        possible_neighbours = self.find_possible_neighbours(self.size,
+        size = self.size
+        no_player = int(self.NO_PLAYER)
+        possible_neighbours = self.find_possible_neighbours(size,
                                                             height,
                                                             row,
                                                             column,
@@ -187,17 +189,16 @@ class ShibumiGameState(GameState, ABC):
             cover_height = neighbour_height + 2
             cover_row = neighbour_row - 1
             cover_column = neighbour_column - 1
-            if (0 <= cover_height < self.size and
-                    0 <= cover_row < self.size and
-                    0 <= cover_column < self.size):
+            if (0 <= cover_height < size and
+                    0 <= cover_row < size -cover_height and
+                    0 <= cover_column < size -cover_height):
                 cover_piece = (
                     levels[cover_height][cover_row][cover_column])
-                if cover_piece not in (self.NO_PLAYER,
-                                       self.UNUSABLE):
+                if cover_piece != no_player:
                     continue
             if neighbour_height == height:
                 overpass_height = neighbour_height + 1
-                if overpass_height < self.size:
+                if overpass_height < size:
                     dr = neighbour_row - row
                     dc = neighbour_column - column
                     if dr:
@@ -209,10 +210,10 @@ class ShibumiGameState(GameState, ABC):
                         overpass_row2 = row
                         overpass_col1 = overpass_col2 = column + (dc-1) // 2
                     if not (0 <= overpass_col1 and
-                            overpass_col2 < self.size - overpass_height):
+                            overpass_col2 < size - overpass_height):
                         pass  # Next to the edge, no possible overpass.
                     elif not(0 <= overpass_row1 and
-                             overpass_row2 < self.size - overpass_height):
+                             overpass_row2 < size - overpass_height):
                         pass  # Next to the edge, no possible overpass.
                     else:
                         overpass_piece1 = levels[overpass_height,
@@ -221,8 +222,8 @@ class ShibumiGameState(GameState, ABC):
                         overpass_piece2 = levels[overpass_height,
                                                  overpass_row2,
                                                  overpass_col2]
-                        if (overpass_piece1 != self.NO_PLAYER and
-                                overpass_piece2 != self.NO_PLAYER):
+                        if (overpass_piece1 != no_player and
+                                overpass_piece2 != no_player):
                             continue
             yield neighbour_height, neighbour_row, neighbour_column
 
