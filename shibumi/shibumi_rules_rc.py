@@ -79,7 +79,7 @@ d group wins.\x0a\x0aI\
 f tied, the seco\
 nd player (Black\
 ) wins.\x0a\
-\x00\x00\x00\xae\
+\x00\x00\x00\xc6\
 <\
 !DOCTYPE RCC><RC\
 C version=\x221.0\x22>\
@@ -89,9 +89,11 @@ es.qrc</file>\x0a<f\
 ile>./spaiji.md<\
 /file>\x0a<file>./s\
 pargo.md</file>\x0a\
-<file>./spline.m\
-d</file>\x0a</qreso\
-urce>\x0a</RCC>\x0a\
+<file>./spire.md\
+</file>\x0a<file>./\
+spline.md</file>\
+\x0a</qresource>\x0a</\
+RCC>\x0a\
 \x00\x00\x03\xfd\
 -\
 --\x0atitle: Spargo\
@@ -158,6 +160,78 @@ s,\x0aand is won by\
  the most balls \
 in play (countin\
 g zombies).\x0a\
+\x00\x00\x04T\
+-\
+--\x0atitle: Spire \
+Rules\x0a\x0a---\x0a\x0a* de\
+signed by Dieter\
+ Stein\x0a* 2 playe\
+rs\x0a\x0aTwo players,\
+ White and Black\
+, place their ow\
+n colour or red,\
+ without making\x0a\
+clusters of thre\
+e.\x0a\x0a### Start\x0aTh\
+e board starts e\
+mpty.\x0a\x0a### Play\x0a\
+On each turn, th\
+e player places \
+**a ball of thei\
+r colour or a re\
+d ball**. It can\
+\x0abe placed eithe\
+r on an empty bo\
+ard hole or stac\
+king on a 2 \xc3\x97 2\
+ platform.\x0a\x0aIf a\
+ **red** ball is\
+ placed then the\
+ player **must**\
+ play another ba\
+ll **of\x0atheir ow\
+n colour** in th\
+e same turn.\x0a\x0a##\
+# Placement\x0a**No\
+** single 2 \xc3\x97 2\
+ square of ball \
+locations may in\
+clude **more tha\
+n 2\x0alike-coloure\
+d balls**.\x0a\x0aPlay\
+ing on a platfor\
+m is only possib\
+le if the colour\
+ to be played **\
+is not\x0aalready u\
+sed twice** in t\
+he base.\x0a\x0aIn oth\
+er words: each a\
+nd every small 5\
+-ball pyramid ma\
+y not include mo\
+re than\x0atwo ball\
+s of the same co\
+lour.\x0a\x0a### End\x0aP\
+layers **must** \
+place a ball of \
+their own colour\
+. If there is no\
+ placement\x0aavail\
+able (in the beg\
+inning of their \
+turn or after a \
+red ball was pla\
+yed) the\x0acurrent\
+ player **loses*\
+* the game immed\
+iately.\x0a\x0aOtherwi\
+se, the player w\
+ho played his ow\
+n colour on top \
+(the **spire bal\
+l**) wins\x0athe ga\
+me.\
 "
 
 qt_resource_name = b"\
@@ -182,21 +256,27 @@ qt_resource_name = b"\
 \x08\x8f\x11\xf4\
 \x00s\
 \x00p\x00a\x00r\x00g\x00o\x00.\x00m\x00d\
+\x00\x08\
+\x07\x08\x8at\
+\x00s\
+\x00p\x00i\x00r\x00e\x00.\x00m\x00d\
 "
 
 qt_resource_struct = b"\
 \x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x01\
 \x00\x00\x00\x00\x00\x00\x00\x00\
-\x00\x00\x00\x00\x00\x02\x00\x00\x00\x04\x00\x00\x00\x02\
+\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x02\
 \x00\x00\x00\x00\x00\x00\x00\x00\
 \x00\x00\x00 \x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\
 \x00\x00\x01t\x95i\x8e\x9e\
+\x00\x00\x00\x90\x00\x00\x00\x00\x00\x01\x00\x00\x09\x0e\
+\x00\x00\x01u\x85Y\xd2\xab\
 \x00\x00\x008\x00\x00\x00\x00\x00\x01\x00\x00\x02\x06\
 \x00\x00\x01uM\xf0c\x04\
-\x00\x00\x00x\x00\x00\x00\x00\x00\x01\x00\x00\x04\xf5\
+\x00\x00\x00x\x00\x00\x00\x00\x00\x01\x00\x00\x05\x0d\
 \x00\x00\x01uM\xf9\xf0\xc6\
 \x00\x00\x00P\x00\x00\x00\x00\x00\x01\x00\x00\x04C\
-\x00\x00\x01uM\xfa\x1d\xbe\
+\x00\x00\x01u\x85[%\x18\
 "
 
 def qInitResources():

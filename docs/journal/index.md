@@ -115,7 +115,18 @@ connections with covered marbles. Also added a sandbox mode. As the sandbox
 mode added more features, I decided to move a bunch of controls out of the
 graphics scene and into regular widgets.
 
-Added Spaiji game, and the ability to choose which colour to play.
+Added Spaiji game, and the ability to choose which colour to play. The most fun
+part of Spaiji was discovering a scenario not covered in the rules, and
+discussing a solution with Néstor. While I was testing, it crashed when it found
+positions with no valid moves, like this:
+
+![No valid moves](2020/spaiji_blocked.png)
+
+In that position, you can play one marble, but then there are no neighbouring
+spaces that you can play the second one. After discussion with Néstor, we
+decided that the game should end immediately, and then the winner is decided as
+usual by the biggest connected group. In this case, they are tied at 3, so Black
+wins the tie.
 
 Now attempting to improve Spargo performance. I'm running 100 iterations, and
 the current code takes 11 seconds per move. I used `cProfile`, and found that
@@ -129,3 +140,9 @@ was surprisingly effective was switching some `IntEnum` values to `int`. I
 noticed that about 7% of the run time was being spent in `EnumMeta.__getattr__()`,
 so I switched several references. That brings the performance to a little under
 4 seconds per move.
+
+### Nov 2020
+Finished adding Spire. New games now take about two days, if they don't require
+any new features. I have yet to achieve an ideal game where a player places
+their own colour on the peak of the pyramid. I did manage to place a red on the
+peak, but that's a loss.
