@@ -41,6 +41,7 @@ setup(name='shibumi',
               'sandbox=shibumi.sandbox.display:SandboxDisplay',
               'spaiji=shibumi.spaiji.display:SpaijiDisplay',
               'spargo=shibumi.spargo.display:SpargoDisplay',
+              'spire=shibumi.spire.display:SpireDisplay',
               'spline=shibumi.spline.display:SplineDisplay']},
       project_urls={
           'Bug Reports': 'https://github.com/donkirkby/shibumi-games/issues',
