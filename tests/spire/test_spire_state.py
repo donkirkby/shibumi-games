@@ -258,3 +258,17 @@ def test_get_coordinates():
     assert height == 0
     assert row == 0
     assert column == 1
+
+
+def test_display_move():
+    state1 = SpireState()
+
+    move1_display = state1.display_move(2)
+    move2_display = state1.display_move(32)
+
+    state2 = state1.make_move(1)
+    move3_display = state2.display_move(2)
+
+    assert move1_display == 'B1E'
+    assert move2_display == 'R1E'
+    assert move3_display == 'W1E'

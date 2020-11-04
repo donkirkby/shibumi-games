@@ -52,6 +52,17 @@ class SpireState(ShibumiGameState):
         text += f'>{player_display}{red_display}\n'
         return text
 
+    def display_move(self, move: int) -> str:
+        move_space = move % self.calculate_volume()
+        space_display = super().display_move(move_space)
+        if move_space != move:
+            colour_display = 'R'
+        elif self.get_active_player() == self.BLACK:
+            colour_display = 'B'
+        else:
+            colour_display = 'W'
+        return colour_display + space_display
+
     def get_active_player(self) -> int:
         return self.board[-1, -1, -1]
 
