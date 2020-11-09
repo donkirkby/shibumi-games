@@ -12,7 +12,7 @@ mypy = "*"
 [packages]
 zero-play = "*"
 numpy = "<1.19.0"
-pyside2 = "==5.15.0"
+pyside2 = "==5.15.1"
 pip = "*"
 
 [requires]
