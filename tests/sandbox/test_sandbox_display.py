@@ -217,6 +217,65 @@ def test_hover_enter_remove(pixmap_differ: PixmapDiffer):
 
 
 # noinspection DuplicatedCode
+def test_hover_enter_remove_update(pixmap_differ: PixmapDiffer):
+    actual: QPainter
+    expected: QPainter
+    with pixmap_differ.create_painters(240, 240,
+                                       'sandbox_hover_enter_remove_update') as (
+            actual,
+            expected):
+        expected_scene = QGraphicsScene(0, 0, 240, 240)
+        expected_scene.addPixmap(
+            SandboxDisplay.load_pixmap('board-1.png',
+                                       QSize(240, 240))).setPos(1, 0)
+        red_ball = SandboxDisplay.load_pixmap('ball-r-shadow-1.png',
+                                              QSize(60, 60))
+
+        new_piece = expected_scene.addPixmap(red_ball)
+        new_piece.setPos(115, 114)
+        new_piece.setOpacity(0.5)
+        expected_scene.render(expected)
+
+        display = SandboxDisplay()
+        state1 = SandboxState('''\
+  A C E G
+7 . . . . 7
+
+5 . . . . 5
+
+3 . . W . 3
+
+1 . . . . 1
+  A C E G
+''')
+        state2 = SandboxState('''\
+  A C E G
+7 . . . . 7
+
+5 . . . . 5
+
+3 . . R . 3
+
+1 . . . . 1
+  A C E G
+''')
+        display.update_board(state1)
+        display.selected_move_type = MoveType.REMOVE
+        height = 0
+        row = 1
+        column = 2
+        piece_item = display.item_levels[height][row][column]
+
+        display.resize(336, 264)
+        display.grab()  # Force layout to recalculate.
+
+        display.on_hover_enter(piece_item)
+        display.update_board(state2)
+
+        render_display(display, actual)
+
+
+# noinspection DuplicatedCode
 def test_hover_enter_leave(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter

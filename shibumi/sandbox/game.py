@@ -22,7 +22,10 @@ class SandboxState(ShibumiGameState):
                   self.NO_PLAYER][move // volume]
         position_index = move % volume
         height, row, column = self.get_coordinates(position_index)
-        levels[height, row, column] = player
+        if player != self.NO_PLAYER:
+            levels[height, row, column] = player
+        else:
+            new_board.remove(height, row, column)
         return new_board
 
     def get_valid_moves(self) -> np.ndarray:
@@ -31,6 +34,8 @@ class SandboxState(ShibumiGameState):
         valid_moves = np.ndarray(volume*4, dtype=bool)
         for section in range(3):
             valid_moves[section*volume:(section+1)*volume] = valid_spaces
+
+        # Removal section
         section_start = volume*3
         levels = self.get_levels()
         for move_index in range(volume):
@@ -40,17 +45,7 @@ class SandboxState(ShibumiGameState):
                 is_valid = False
             else:
                 # Piece found, see if it's supporting any neighbours above.
-                for height2, row2, column2 in self.find_neighbours(
-                        height,
-                        row,
-                        column,
-                        dh_start=1):
-                    neighbour_piece = levels[height2][row2][column2]
-                    if neighbour_piece != self.NO_PLAYER:
-                        is_valid = False  # Supporting a neighbour.
-                        break
-                else:
-                    is_valid = True
+                is_valid = not self.is_pinned(height, row, column)
             valid_moves[section_start+move_index] = is_valid
         return valid_moves
 

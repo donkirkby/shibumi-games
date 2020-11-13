@@ -190,8 +190,8 @@ class ShibumiGameState(GameState, ABC):
             cover_row = neighbour_row - 1
             cover_column = neighbour_column - 1
             if (0 <= cover_height < size and
-                    0 <= cover_row < size -cover_height and
-                    0 <= cover_column < size -cover_height):
+                    0 <= cover_row < size - cover_height and
+                    0 <= cover_column < size - cover_height):
                 cover_piece = (
                     levels[cover_height][cover_row][cover_column])
                 if cover_piece != no_player:
@@ -358,3 +358,34 @@ class ShibumiGameState(GameState, ABC):
         player = self.get_active_player()
         levels[height, row, column] = player
         return new_board
+
+    def remove(self, height: int, row: int, column: int):
+        upper_height = height+1
+        levels = self.board
+        for upper_row in (row-1, row):
+            if not 0 <= upper_row < self.size - upper_height:
+                continue
+            for upper_column in (column-1, column):
+                if not 0 <= upper_column < self.size - upper_height:
+                    continue
+                upper_piece = levels[upper_height, upper_row, upper_column]
+                if upper_piece != self.NO_PLAYER:
+                    levels[height, row, column] = upper_piece
+                    self.remove(upper_height, upper_row, upper_column)
+                    return
+        # No pieces above, just leave this space empty.
+        levels[height, row, column] = self.NO_PLAYER
+
+    def is_pinned(self, height: int, row: int, column: int) -> bool:
+        support_count = 0
+        for height2, row2, column2 in self.find_neighbours(
+                height,
+                row,
+                column,
+                dh_start=1):
+            neighbour_piece = self.board[height2][row2][column2]
+            if neighbour_piece != self.NO_PLAYER:
+                support_count += 1
+                if support_count > 1:
+                    return True  # Supporting more than one neighbour.
+        return False

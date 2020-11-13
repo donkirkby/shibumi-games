@@ -146,3 +146,10 @@ Finished adding Spire. New games now take about two days, if they don't require
 any new features. I have yet to achieve an ideal game where a player places
 their own colour on the peak of the pyramid. I did manage to place a red on the
 peak, but that's a loss.
+
+When I went back to measuring Spargo performance, it had improved to just under
+3 seconds per move at 100 iterations. After adding a multiprocessing pool for
+the playouts, the performance improved to 1 second per move. That makes Spargo
+playable again at a competitive level, bringing the time per move down from
+around 3 or 4 minutes to around 1 minute. Hopefully, the tensorflow analysis
+will be even faster.

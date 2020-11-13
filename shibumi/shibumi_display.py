@@ -67,6 +67,7 @@ class ShibumiDisplay(GameDisplay):
             'ball-r-shadow-1.png')
         self.remove_pixmap = self.load_pixmap('ball-x-shadow-1.png')
         self.item_levels = []
+        self.hovered_piece: typing.Optional[GraphicsShibumiPieceItem] = None
         for height in range(self.start_state.size):
             item_level = []
             for row in range(self.start_state.size - height):
@@ -315,6 +316,11 @@ class ShibumiDisplay(GameDisplay):
                     piece_item.setOpacity(0.001
                                           if piece == game_state.NO_PLAYER
                                           else 1)
+                    if piece_item == self.hovered_piece:
+                        if is_valid:
+                            piece_item.setOpacity(0.5)
+                        else:
+                            self.hovered_piece = None
         displayed_player: typing.Optional[int] = None
         if is_ended:
             if game_state.is_win(game_state.WHITE):
@@ -455,6 +461,7 @@ class ShibumiDisplay(GameDisplay):
             assert move_type == MoveType.RED
             piece_item.setPixmap(self.red_scaled)
         piece_item.setOpacity(0.5)
+        self.hovered_piece = piece_item
 
     def on_hover_leave(self, piece_item: GraphicsShibumiPieceItem):
         assert isinstance(self.current_state, ShibumiGameState)
@@ -463,6 +470,7 @@ class ShibumiDisplay(GameDisplay):
         piece_item.setOpacity(0.001
                               if piece == self.start_state.NO_PLAYER
                               else 1.0)
+        self.hovered_piece = None
 
     def on_click(self, piece_item: GraphicsShibumiPieceItem):
         if not self.can_move():
