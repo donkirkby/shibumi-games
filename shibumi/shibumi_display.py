@@ -338,6 +338,8 @@ class ShibumiDisplay(GameDisplay):
             self.ui.player_pixmap.setPixmap(self.white_pixmap)
         elif displayed_player == game_state.BLACK:
             self.ui.player_pixmap.setPixmap(self.black_pixmap)
+        elif displayed_player == game_state.RED:
+            self.ui.player_pixmap.setPixmap(self.red_pixmap)
         self.ui.player_pixmap.setVisible(displayed_player != game_state.NO_PLAYER)
         if self.show_counts:
             self.update_count_text()
