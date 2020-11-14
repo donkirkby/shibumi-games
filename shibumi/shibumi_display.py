@@ -329,6 +329,9 @@ class ShibumiDisplay(GameDisplay):
             elif game_state.is_win(game_state.BLACK):
                 self.update_move_text('wins')
                 displayed_player = game_state.BLACK
+            elif game_state.is_win(game_state.RED):
+                self.update_move_text('wins')
+                displayed_player = game_state.RED
             else:
                 self.update_move_text('draw')
         else:
@@ -449,10 +452,10 @@ class ShibumiDisplay(GameDisplay):
             return
         levels = self.current_state.get_levels()
         piece = levels[piece_item.height][piece_item.row][piece_item.column]
-        if self.show_move_types:
+        if piece != self.start_state.NO_PLAYER:
+            move_type = MoveType(piece)
+        elif self.show_move_types:
             move_type = self.selected_move_type
-            if move_type == MoveType.REMOVE:
-                move_type = MoveType(piece)
         else:
             move_type = MoveType(self.current_state.get_active_player())
         if move_type == self.start_state.BLACK:

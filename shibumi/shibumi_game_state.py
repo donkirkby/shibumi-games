@@ -163,6 +163,8 @@ class ShibumiGameState(GameState, ABC):
                                                              None]:
         """ Generate all neighbour positions to the starting position.
 
+        Excludes any that are covered or cut off by overpasses.
+
         :param height: height of starting position
         :param row: row of starting position
         :param column: column of starting position
@@ -378,7 +380,8 @@ class ShibumiGameState(GameState, ABC):
 
     def is_pinned(self, height: int, row: int, column: int) -> bool:
         support_count = 0
-        for height2, row2, column2 in self.find_neighbours(
+        for height2, row2, column2 in self.find_possible_neighbours(
+                self.size,
                 height,
                 row,
                 column,
@@ -389,3 +392,15 @@ class ShibumiGameState(GameState, ABC):
                 if support_count > 1:
                     return True  # Supporting more than one neighbour.
         return False
+
+    def is_free(self, height: int, row: int, column: int) -> bool:
+        for height2, row2, column2 in self.find_possible_neighbours(
+                self.size,
+                height,
+                row,
+                column,
+                dh_start=1):
+            neighbour_piece = self.board[height2][row2][column2]
+            if neighbour_piece != self.NO_PLAYER:
+                return False
+        return True
