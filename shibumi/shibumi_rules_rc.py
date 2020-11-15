@@ -41,6 +41,96 @@ produce a winner\
  before the last\
  ball is played.\
 \x0a\
+\x00\x00\x05u\
+-\
+--\x0atitle: Spook \
+Rules\x0a\x0a---\x0a\x0a* de\
+signed by Dieter\
+ Stein\x0a* 2 playe\
+rs\x0a\x0a### Objectiv\
+e\x0aGet all of you\
+r balls caught b\
+y Spooky the gho\
+st.\x0a\x0a### Play\x0aTh\
+e board starts e\
+mpty.\x0a\x0a#### A vi\
+sit to the haunt\
+ed castle\x0aTwo pl\
+ayers, Red and B\
+lack, take turns\
+ placing one bal\
+l of their colou\
+r either\x0aon an e\
+mpty board hole \
+or on a 2 \xc3\x97 2 p\
+latform. Startin\
+g with Red the p\
+yramid is\x0abuilt \
+up until in the \
+last turn Black \
+places the white\
+ ball (Spooky th\
+e ghost)\x0aon top.\
+\x0a\x0aThen Red makes\
+ the first move \
+of the getaway p\
+hase of the game\
+.\x0a\x0a#### The geta\
+way\x0aTo be played\
+ in candlelight.\
+\x0a\x0aOn their turn \
+a player must ei\
+ther:\x0a\x0a* remove \
+a ball (of any c\
+olour) directly \
+supporting only \
+Spooky and drop \
+him or\x0a* remove \
+a free ball (of \
+any colour) whic\
+h is orthogonall\
+y adjacent to Sp\
+ooky\x0a  and move \
+Spooky there. If\
+ possible this m\
+ove may be repea\
+ted arbitrarily\x0a\
+  removing addit\
+ional balls of t\
+he same colour.\x0a\
+\x0aThese options c\
+annot be combine\
+d in one turn.\x0a\x0a\
+Only if no move \
+is available the\
+n:\x0a\x0a* if Spooky \
+is isolated (onl\
+y empty spaces o\
+rthogonally arou\
+nd), he must be\x0a\
+  placed orthogo\
+nally adjacent t\
+o any ball on th\
+e board or on a \
+platform,\x0a* othe\
+rwise one unpinn\
+ed ball of the o\
+pponent must be \
+removed (a ball \
+drop may\x0a  occur\
+).\x0a\x0aAs usual, pi\
+nned balls (supp\
+orting more than\
+ one ball) may n\
+ot be removed.\x0a\x0a\
+### End of the g\
+ame\x0aThe player w\
+ho has no more b\
+alls of his colo\
+ur on the board \
+in the getaway p\
+hase\x0awins the ga\
+me.\x0a\
 \x00\x00\x029\
 -\
 --\x0atitle: Spaiji\
@@ -79,7 +169,7 @@ d group wins.\x0a\x0aI\
 f tied, the seco\
 nd player (Black\
 ) wins.\x0a\
-\x00\x00\x00\xc6\
+\x00\x00\x00\xde\
 <\
 !DOCTYPE RCC><RC\
 C version=\x221.0\x22>\
@@ -92,8 +182,9 @@ pargo.md</file>\x0a\
 <file>./spire.md\
 </file>\x0a<file>./\
 spline.md</file>\
-\x0a</qresource>\x0a</\
-RCC>\x0a\
+\x0a<file>./spook.m\
+d</file>\x0a</qreso\
+urce>\x0a</RCC>\x0a\
 \x00\x00\x03\xfd\
 -\
 --\x0atitle: Spargo\
@@ -243,6 +334,10 @@ qt_resource_name = b"\
 \x03\x04\xb1\xd4\
 \x00s\
 \x00p\x00l\x00i\x00n\x00e\x00.\x00m\x00d\
+\x00\x08\
+\x07e\xeat\
+\x00s\
+\x00p\x00o\x00o\x00k\x00.\x00m\x00d\
 \x00\x09\
 \x08\x00q\xf4\
 \x00s\
@@ -265,18 +360,20 @@ qt_resource_name = b"\
 qt_resource_struct = b"\
 \x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x01\
 \x00\x00\x00\x00\x00\x00\x00\x00\
-\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x02\
+\x00\x00\x00\x00\x00\x02\x00\x00\x00\x06\x00\x00\x00\x02\
 \x00\x00\x00\x00\x00\x00\x00\x00\
 \x00\x00\x00 \x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\
 \x00\x00\x01t\x95i\x8e\x9e\
-\x00\x00\x00\x90\x00\x00\x00\x00\x00\x01\x00\x00\x09\x0e\
+\x00\x00\x00\xa6\x00\x00\x00\x00\x00\x01\x00\x00\x0e\x9f\
 \x00\x00\x01u\x85Y\xd2\xab\
 \x00\x00\x008\x00\x00\x00\x00\x00\x01\x00\x00\x02\x06\
+\x00\x00\x01u\xce)\xcc\x80\
+\x00\x00\x00N\x00\x00\x00\x00\x00\x01\x00\x00\x07\x7f\
 \x00\x00\x01uM\xf0c\x04\
-\x00\x00\x00x\x00\x00\x00\x00\x00\x01\x00\x00\x05\x0d\
+\x00\x00\x00\x8e\x00\x00\x00\x00\x00\x01\x00\x00\x0a\x9e\
 \x00\x00\x01uM\xf9\xf0\xc6\
-\x00\x00\x00P\x00\x00\x00\x00\x00\x01\x00\x00\x04C\
-\x00\x00\x01u\x85[%\x18\
+\x00\x00\x00f\x00\x00\x00\x00\x00\x01\x00\x00\x09\xbc\
+\x00\x00\x01u\xce)\xd5\x94\
 "
 
 def qInitResources():

@@ -6,6 +6,8 @@ from zero_play.game_state import GameState
 
 
 class SpookDisplay(ShibumiDisplay):
+    rules_path = ':/shibumi_rules/spook.md'
+
     def __init__(self):
         super().__init__(SpookState())
         self.ui.pass_button.clicked.connect(self.make_pass_move)

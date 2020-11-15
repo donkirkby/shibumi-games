@@ -5,8 +5,12 @@
       link: /rules/spaiji.html
     - name: Spargo / Margo
       link: /rules/spargo.html
+    - name: Spire
+      link: /rules/spire.html
     - name: Spline
       link: /rules/spline.html
+    - name: Spook
+      link: /rules/spook.html
 - name: Journal
   link: /journal
   dropdown:
