@@ -809,7 +809,43 @@ def test_valid_none_free(start: int, end: int, expected_valid: bool, reason: str
         assert valid_moves[move] == expected_valid, move
 
 
-def test():
+@pytest.mark.parametrize('start,end,expected_valid,reason',
+                         [(0, 8, False, "not near ghost"),
+                          (8, 10, True, "drop ghost"),
+                          (10, 12, False, "empty"),
+                          (12, 14, True, "drop ghost"),
+                          (14, 30, False, "empty or ghost"),
+                          (30, 31, False, "can't pass until you've moved")])
+def test_valid_drop_only(start: int, end: int, expected_valid: bool, reason: str):
+    """ Ghost has neighbours, but none are free.
+
+    Valid moves are to remove opponent pieces.
+    """
+    board = SpookState("""\
+  A C E G
+7 B B . . 7
+
+5 R R . . 5
+
+3 . . . B 3
+
+1 . . . R 1
+  A C E G
+   B D F
+ 6 W . . 6
+
+ 4 . . . 4
+
+ 2 . . . 2
+   B D F
+>B(B,R)
+""")
+    valid_moves = board.get_valid_moves()
+    for move in range(start, end):
+        assert valid_moves[move] == expected_valid, move
+
+
+def test_win():
     state = SpookState("""\
   A C E G
 7 . . . . 7

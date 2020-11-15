@@ -21,7 +21,7 @@ def test_empty(pixmap_differ: PixmapDiffer):
         expected_scene.render(expected)
 
         display = SpargoDisplay()
-        display.resize(336, 264)
+        display.resize(348, 264)
 
         render_display(display, actual)
     assert display.ui.move_text.text() == 'to move'
@@ -54,7 +54,7 @@ def test_update(pixmap_differ: PixmapDiffer):
 
         display = SpargoDisplay()
 
-        display.resize(336, 264)
+        display.resize(348, 264)
         display.update_board(SpargoState("""\
   A C E G
 7 . . . . 7

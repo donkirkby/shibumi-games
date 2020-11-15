@@ -53,7 +53,7 @@ def test_hover_enter_remove(pixmap_differ: PixmapDiffer):
         column = 2
         piece_item = display.item_levels[height][row][column]
 
-        display.resize(336, 264)
+        display.resize(348, 264)
         display.grab()  # Force layout to recalculate.
 
         display.on_hover_enter(piece_item)

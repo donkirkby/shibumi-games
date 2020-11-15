@@ -24,7 +24,7 @@ def test_empty(pixmap_differ: PixmapDiffer):
 
         display = SandboxDisplay()
 
-        display.resize(336, 264)
+        display.resize(348, 264)
 
         render_display(display, actual)
     for widget in (display.ui.move_black,
@@ -130,7 +130,7 @@ def test_red(pixmap_differ: PixmapDiffer):
   A C E G
 """))
 
-        display.resize(336, 264)
+        display.resize(348, 264)
 
         render_display(display, actual)
     assert display.ui.player_pixmap.pixmap() is None
@@ -162,7 +162,7 @@ def test_hover_enter_red(pixmap_differ: PixmapDiffer):
         column = 2
         piece_item = display.item_levels[height][row][column]
 
-        display.resize(336, 264)
+        display.resize(348, 264)
         display.grab()  # Force layout to recalculate.
 
         display.on_hover_enter(piece_item)
@@ -208,7 +208,7 @@ def test_hover_enter_remove(pixmap_differ: PixmapDiffer):
         column = 2
         piece_item = display.item_levels[height][row][column]
 
-        display.resize(336, 264)
+        display.resize(348, 264)
         display.grab()  # Force layout to recalculate.
 
         display.on_hover_enter(piece_item)
@@ -266,7 +266,7 @@ def test_hover_enter_remove_update(pixmap_differ: PixmapDiffer):
         column = 2
         piece_item = display.item_levels[height][row][column]
 
-        display.resize(336, 264)
+        display.resize(348, 264)
         display.grab()  # Force layout to recalculate.
 
         display.on_hover_enter(piece_item)
@@ -312,7 +312,7 @@ def test_hover_enter_leave(pixmap_differ: PixmapDiffer):
         column = 2
         piece_item = display.item_levels[height][row][column]
 
-        display.resize(336, 264)
+        display.resize(348, 264)
         display.grab()  # Force layout to recalculate.
 
         display.on_hover_enter(piece_item)

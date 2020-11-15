@@ -37,7 +37,7 @@ def test_empty(pixmap_differ: PixmapDiffer):
 
         display = SplineDisplay()
 
-        display.resize(336, 264)
+        display.resize(348, 264)
 
         render_display(display, actual)
     black_icon = SplineDisplay.load_pixmap('ball-b-shadow-1.png').toImage()
@@ -79,7 +79,7 @@ def test_first_level(pixmap_differ: PixmapDiffer):
   A C E G
 """))
 
-        display.resize(336, 264)
+        display.resize(348, 264)
 
         render_display(display, actual)
     white_icon = SplineDisplay.load_pixmap('ball-w-shadow-1.png').toImage()
@@ -129,7 +129,7 @@ def test_second_level(pixmap_differ: PixmapDiffer):
    B D F
 """))
 
-        display.resize(336, 264)
+        display.resize(348, 264)
 
         render_display(display, actual)
 
@@ -168,7 +168,7 @@ def test_resize_wide(pixmap_differ: PixmapDiffer):
   A C E G
 """))
 
-        display.resize(456, 264)
+        display.resize(468, 264)
 
         render_display(display, actual)
 
@@ -189,7 +189,7 @@ def test_resize_narrow(pixmap_differ: PixmapDiffer):
 
         display = SplineDisplay()
 
-        display.resize(192, 264)
+        display.resize(204, 264)
 
         render_display(display, actual)
 
@@ -219,7 +219,7 @@ def test_hover_enter(pixmap_differ: PixmapDiffer):
         column = 2
         piece_item = display.item_levels[height][row][column]
 
-        display.resize(336, 264)
+        display.resize(348, 264)
         display.grab()  # Force layout to recalculate.
 
         display.on_hover_enter(piece_item)
@@ -250,7 +250,7 @@ def test_click(pixmap_differ: PixmapDiffer):
         column = 2
         piece_item = display.item_levels[height][row][column]
 
-        display.resize(336, 264)
+        display.resize(348, 264)
         display.grab()  # Force layout to recalculate.
 
         display.on_click(piece_item)
@@ -277,7 +277,7 @@ def test_hover_leave(pixmap_differ: PixmapDiffer):
         column = 2
         piece_item = display.item_levels[height][row][column]
 
-        display.resize(336, 264)
+        display.resize(348, 264)
         display.grab()  # Force layout to recalculate.
 
         display.on_hover_enter(piece_item)
@@ -320,7 +320,7 @@ def test_hover_leave_existing(pixmap_differ: PixmapDiffer):
         column = 2
         piece_item = display.item_levels[height][row][column]
 
-        display.resize(336, 264)
+        display.resize(348, 264)
         display.grab()  # Force layout to recalculate.
 
         display.on_hover_leave(piece_item)
@@ -374,7 +374,7 @@ def test_double_update(pixmap_differ: PixmapDiffer):
   A C E G
 """))
 
-        display.resize(336, 264)
+        display.resize(348, 264)
 
         render_display(display, actual)
 
@@ -398,7 +398,7 @@ def test_coordinates(pixmap_differ: PixmapDiffer):
         expected_scene.render(expected)
 
         display = SplineDisplay()
-        display.resize(336, 224)
+        display.resize(348, 224)
 
         display.show_coordinates = True
 

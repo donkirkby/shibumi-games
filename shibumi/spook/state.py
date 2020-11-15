@@ -161,7 +161,7 @@ class SpookState(ShibumiGameState):
 
             # Look to see if the ghost can capture one of its neighbours.
             neighbour_count = 0
-            free_neighbour_count = 0
+            valid_neighbour_count = 0
             ghost_height, ghost_row, ghost_column = self.find_ghost()
             for height, row, column in self.find_possible_neighbours(
                     self.size,
@@ -179,7 +179,6 @@ class SpookState(ShibumiGameState):
                 if height == ghost_height:
                     if not self.is_free(height, row, column):
                         continue
-                    free_neighbour_count += 1
                 else:
                     if restricted_colour != self.NO_PLAYER:
                         # Can't drop once you start moving horizontally.
@@ -188,6 +187,7 @@ class SpookState(ShibumiGameState):
                         continue
                 move = self.get_index(height, row, column)
                 valid_moves[move] = True
+                valid_neighbour_count += 1
             if neighbour_count == 0:
                 # No neighbours, so see where the ghost can move.
                 self.fill_supported_moves(valid_moves)
@@ -209,7 +209,7 @@ class SpookState(ShibumiGameState):
                     else:
                         # No neighbours, so not allowed to move ghost there.
                         valid_moves[move] = False
-            elif free_neighbour_count == 0:
+            elif valid_neighbour_count == 0:
                 # No free neighbours, so see which opponents can be removed.
                 player = self.get_active_player()
                 opponent = self.RED if player == self.BLACK else self.BLACK

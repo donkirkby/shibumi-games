@@ -69,7 +69,7 @@ def test_board_size_2(pixmap_differ: PixmapDiffer):
         display = MargoDisplay(size=2)
 
         trigger_resize(display, 292, 240)
-        display.resize(336, 264)
+        display.resize(348, 264)
         board_text = """\
   A C
 3 . B 3
@@ -174,7 +174,7 @@ def test_board_size_3(pixmap_differ: PixmapDiffer):
         expected_scene.render(expected)
 
         display = MargoDisplay(size=3)
-        display.resize(336, 264)
+        display.resize(348, 264)
 
         board_text = """\
   A C E
@@ -211,7 +211,7 @@ def test_coordinates(pixmap_differ: PixmapDiffer):
         add_text(expected_scene, 'C', 213, 214, 12)
         expected_scene.render(expected)
 
-        display.resize(480, 264)
+        display.resize(492, 264)
 
         display.show_coordinates = True
 
