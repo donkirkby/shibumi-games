@@ -105,6 +105,7 @@ class ShibumiDisplay(GameDisplay):
         self.ui.move_white.setIcon(self.white_pixmap)
         self.ui.move_red.setIcon(self.red_pixmap)
         self.ui.remove.setIcon(self.remove_pixmap)
+        self.ui.pass_button.setVisible(False)
         self.show_counts = False
         self.show_move_types = False
         self.debug_message = ''
