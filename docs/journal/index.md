@@ -153,3 +153,11 @@ the playouts, the performance improved to 1 second per move. That makes Spargo
 playable again at a competitive level, bringing the time per move down from
 around 3 or 4 minutes to around 1 minute. Hopefully, the tensorflow analysis
 will be even faster.
+
+With the performance improvements, I wondered if Margo 6x6 would have a playable
+AI, but it still crashed from too much recursion. I switched the random playouts
+from tail recursion to a loop, and now it doesn't crash. Even with the
+improvements, though, it's still 22 times slower than Spargo 4x4. It will feel
+a bit like playing by mail, I suppose.
+
+Final feature for the 0.4 release: a second Dieter Stein game, called Spook.
