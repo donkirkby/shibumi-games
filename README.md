@@ -46,16 +46,17 @@ it by installing those dependencies like this:
 
 ### Game Credits
 The Shibumi game system was designed by Cameron Browne and Néstor Romeral
-Andrés. The complete set of games rules are available on the
+Andrés. The complete set of game rules are available on the
 [nestorgames web site], and the games used in this project are used with the
 generous permission of the designers. There are more games in a [BGG list].
-* Spline was designed by Néstor Romeral Andrés.
 * Spaiji was designed by Néstor Romeral Andrés.
-* Sploof was designed by Matt Green, and took first place in the Shibumi
-Challenge.
 * Spargo and Margo were designed by Cameron Browne.
 * Spire was designed by Dieter Stein, and took second place in the Shibumi
 Challenge.
+* Spline was designed by Néstor Romeral Andrés.
+* Sploof was designed by Matt Green, and took first place in the Shibumi
+Challenge.
+* Spook was designed by Dieter Stein.
 
 [nestorgames web site]: https://nestorgames.com/shibumibook_detail.html
 [BGG list]: https://boardgamegeek.com/boardgamefamily/13434/series-shibumi/linkeditems/boardgamefamily?pageid=1&sort=usersrated

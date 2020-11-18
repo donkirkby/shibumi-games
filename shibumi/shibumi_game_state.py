@@ -42,17 +42,20 @@ class ShibumiGameState(GameState, ABC):
                  size: int = 4):
         self.size = size
         if board is None:
-            r = np.arange(self.size, dtype=np.int8)
-            heights = r.reshape((self.size, 1, 1))
-            rows = r.reshape((1, self.size, 1))
-            columns = r.reshape((1, 1, self.size))
-            level_sizes = self.size - heights
-            levels = self.UNUSABLE * np.logical_or(rows >= level_sizes,
-                                                   columns >= level_sizes)
+            levels = self.UNUSABLE * np.logical_not(self.get_usable_positions())
             board = levels
             if text is not None:
                 self.load_text(text, levels)
         self.board = board
+
+    def get_usable_positions(self):
+        r = np.arange(self.size, dtype=np.int8)
+        heights = r.reshape((self.size, 1, 1))
+        rows = r.reshape((1, self.size, 1))
+        columns = r.reshape((1, 1, self.size))
+        level_sizes = self.size - heights
+        is_usablex = np.logical_and(rows < level_sizes, columns < level_sizes)
+        return is_usablex
 
     def __eq__(self, other):
         if not isinstance(other, ShibumiGameState):

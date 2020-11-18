@@ -215,11 +215,11 @@
         },
         "zero-play": {
             "hashes": [
-                "sha256:7648cba221818a50a4390e810585775a9364148fb3d9f655b4af60c6e03c56a4",
-                "sha256:7acb73f4cb6e367475eab4d845c6e658274a4e2327ab9179c05ddbc381e2dd69"
+                "sha256:7473938b606f0f132f5d846b36a8266bdb2ecc1f510768d6d23eb72cd8e56954",
+                "sha256:a9c27b580fe81d57111a784c6fe0ee6c5f4186e6671356c5c695b33b16d8aa48"
             ],
             "index": "pypi",
-            "version": "==0.3.0"
+            "version": "==0.4.0"
         }
     },
     "develop": {
