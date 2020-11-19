@@ -1,6 +1,6 @@
 import numpy as np
 
-from shibumi.shibumi_game_state import ShibumiGameState
+from shibumi.shibumi_game_state import ShibumiGameState, MoveType
 
 
 class SploofState(ShibumiGameState):
@@ -45,6 +45,17 @@ class SploofState(ShibumiGameState):
         text += f'>{player_display}({player_stock},{opponent_stock})\n'
         return text
 
+    def display_move(self, move: int) -> str:
+        position = move % self.calculate_volume()
+        position_display = super().display_move(position)
+        if position < move:
+            player_display = 'R'
+        elif self.get_active_player() == self.WHITE:
+            player_display = 'W'
+        else:
+            player_display = 'B'
+        return player_display + position_display
+
     def get_valid_moves(self) -> np.ndarray:
         size = self.size
         volume = self.calculate_volume(size)
@@ -52,8 +63,10 @@ class SploofState(ShibumiGameState):
         # if self.is_win(self.BLACK) or self.is_win(self.WHITE):
         #     return valid_moves
 
-        self.fill_supported_moves(valid_moves)
         board = self.board
+        player_stock = board[-1, -1, -2]
+        if 0 < player_stock:
+            self.fill_supported_moves(valid_moves)
         usable_positions = self.get_usable_positions()
         filled_positions = np.logical_and(board != self.NO_PLAYER,
                                           usable_positions)
@@ -97,5 +110,48 @@ class SploofState(ShibumiGameState):
         new_board[-1, -1, -3] = old_player_stock
         return new_state
 
+    def get_index(self,
+                  height: int,
+                  row: int = 0,
+                  column: int = 0,
+                  move_type: MoveType = MoveType.BLACK):
+        position_index = super().get_index(height, row, column)
+        if move_type == MoveType.RED:
+            return position_index + self.calculate_volume()
+        return position_index
+
+    def get_piece_count(self, player: int) -> int:
+        if player == self.get_active_player():
+            return self.board[-1, -1, -2]
+        return self.board[-1, -1, -3]
+
     def is_win(self, player: int) -> bool:
+        if player == self.get_active_player():
+            return False
+        valid_moves = self.get_valid_moves()
+        if not valid_moves.any():
+            # Opponent has no valid moves, you win.
+            return True
+        usable_positions = self.get_usable_positions()
+        board = self.board
+        player_pieces = np.logical_and(board == player, usable_positions)
+        cutoff_pieces = board[1, :-1, :-1] != self.NO_PLAYER  # Either colour.
+        # Count the number of the player's pieces in each row on the base level.
+        row_counts = player_pieces[0].sum(1)
+        # Zero out any rows that are cut off by pieces crossing over.
+        blocked_row_pieces = np.logical_and(cutoff_pieces[:-1, :],
+                                            cutoff_pieces[1:, :])
+        blocked_rows = blocked_row_pieces.any(1)
+        row_counts[1:-1] *= np.logical_not(blocked_rows)
+        if (row_counts == 4).any():
+            return True
+        # Count the number of the player's pieces in each column.
+        column_counts = player_pieces[0].sum(0)
+        # Zero out any columns that are cut off by pieces crossing over.
+        blocked_column_pieces = np.logical_and(cutoff_pieces[:, :-1],
+                                               cutoff_pieces[:, 1:])
+        blocked_columns = blocked_column_pieces.any(0)
+        column_counts[1:-1] *= np.logical_not(blocked_columns)
+        if (column_counts == 4).any():
+            return True
         return False
