@@ -1,4 +1,5 @@
 import numpy as np
+import typing
 
 from shibumi.shibumi_game_state import ShibumiGameState, MoveType
 
@@ -34,6 +35,7 @@ class SploofState(ShibumiGameState):
             board[-1, -1, -1] = player
             board[-1, -1, -2] = player_stock
             board[-1, -1, -3] = opponent_stock
+        self.winner: typing.Optional[int] = None
 
     def display(self, show_coordinates: bool = False) -> str:
         text = super().display(show_coordinates)
@@ -126,15 +128,28 @@ class SploofState(ShibumiGameState):
         return self.board[-1, -1, -3]
 
     def is_win(self, player: int) -> bool:
-        if player == self.get_active_player():
-            return False
-        valid_moves = self.get_valid_moves()
-        if not valid_moves.any():
-            # Opponent has no valid moves, you win.
-            return True
+        if self.winner is not None:
+            pass
+        elif self.has_line(player):
+            self.winner = player
+        elif self.has_line(-player):
+            self.winner = -player
+        else:
+            # Not the active player, see if the active player has no valid moves.
+            valid_moves = self.get_valid_moves()
+            if valid_moves.any():
+                self.winner = self.NO_PLAYER
+            else:
+                # Active player has no valid moves, opponent wins.
+                self.winner = -self.get_active_player()
+        return self.winner == player
+
+    def has_line(self, player: int) -> bool:
         usable_positions = self.get_usable_positions()
         board = self.board
         player_pieces = np.logical_and(board == player, usable_positions)
+        filled_positions = np.logical_and(board != self.NO_PLAYER,
+                                          usable_positions)
         cutoff_pieces = board[1, :-1, :-1] != self.NO_PLAYER  # Either colour.
         # Count the number of the player's pieces in each row on the base level.
         row_counts = player_pieces[0].sum(1)
@@ -154,4 +169,25 @@ class SploofState(ShibumiGameState):
         column_counts[1:-1] *= np.logical_not(blocked_columns)
         if (column_counts == 4).any():
             return True
+
+        # Decide which colour is on top of each position.
+        size = self.size
+        expanded_size = size * 2 - 1
+        top_pieces = np.zeros((expanded_size, expanded_size), bool)
+        for height in range(size):
+            level_view = top_pieces[height:expanded_size-height:2,
+                                    height:expanded_size-height:2]
+            level_pieces = player_pieces[height, :size-height, :size-height]
+            level_filled = filled_positions[height, :size-height, :size-height]
+            level_view[level_filled] = level_pieces[level_filled]
+        line_counts1 = np.zeros((expanded_size-3, expanded_size-3), np.int8)
+        line_counts2 = np.zeros((expanded_size-3, expanded_size-3), np.int8)
+        for i in range(4):
+            line_counts1 += top_pieces[i:expanded_size-3+i, i:expanded_size-3+i]
+            line_counts2 += top_pieces[3-i:expanded_size-i, i:expanded_size-3+i]
+        if (line_counts1 == 4).any():
+            return True
+        if (line_counts2 == 4).any():
+            return True
+
         return False

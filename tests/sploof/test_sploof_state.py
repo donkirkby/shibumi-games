@@ -254,15 +254,15 @@ def test_piece_count():
 def test_no_valid_moves():
     state = SploofState("""\
   A C E G
-7 W W W W 7
+7 W . W . 7
 
-5 W B W B 5
+5 . W B W 5
 
-3 B W B W 3
+3 W B W . 3
 
-1 W B W B 1
+1 . W . W 1
   A C E G
->W(0,12)
+>W(0,18)
 """)
 
     assert state.get_winner() == state.BLACK
@@ -362,3 +362,53 @@ def test_cutoff_column():
 """)
 
     assert state.get_winner() == state.NO_PLAYER
+
+
+def test_diagonal_win():
+    state = SploofState("""\
+  A C E G
+7 R R R . 7
+
+5 R B B R 5
+
+3 R B W R 3
+
+1 R R R W 1
+  A C E G
+   B D F
+ 6 . . . 6
+
+ 4 . W . 4
+
+ 2 . . W 2
+   B D F
+>B(1,0)
+""")
+
+    assert state.get_winner() == state.WHITE
+
+
+def test_let_opponent_win():
+    state1 = SploofState("""\
+  A C E G
+7 . . W W 7
+
+5 . . W W 5
+
+3 . . W W 3
+
+1 B . R B 1
+  A C E G
+   B D F
+ 6 . . W 6
+
+ 4 . . . 4
+
+ 2 . . W 2
+   B D F
+>B(16,0)
+""")
+
+    state2 = state1.make_move(32)
+
+    assert state2.get_winner() == state2.WHITE
