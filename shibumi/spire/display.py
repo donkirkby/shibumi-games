@@ -6,7 +6,7 @@ from zero_play.game_state import GameState
 
 
 class SpireDisplay(ShibumiDisplay):
-    rules_path = ':/shibumi_rules/spire.md'
+    rules_path = ':/shibumi_rules/spire.html'
 
     def __init__(self):
         start_state = SpireState()

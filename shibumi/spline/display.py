@@ -6,7 +6,7 @@ from shibumi.spline.game import SplineState
 
 
 class SplineDisplay(ShibumiDisplay):
-    rules_path = ':/shibumi_rules/spline.md'
+    rules_path = ':/shibumi_rules/spline.html'
 
     def __init__(self):
         super().__init__(SplineState())

@@ -6,7 +6,7 @@ from zero_play.game_state import GameState
 
 
 class SpookDisplay(ShibumiDisplay):
-    rules_path = ':/shibumi_rules/spook.md'
+    rules_path = ':/shibumi_rules/spook.html'
 
     def __init__(self):
         super().__init__(SpookState())

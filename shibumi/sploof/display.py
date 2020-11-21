@@ -5,6 +5,8 @@ from zero_play.game_state import GameState
 
 
 class SploofDisplay(ShibumiDisplay):
+    rules_path = ':/shibumi_rules/sploof.html'
+
     def __init__(self):
         super().__init__(SploofState())
         self.visible_counts = (self.start_state.WHITE, self.start_state.BLACK)

@@ -7,7 +7,7 @@ from zero_play.game_state import GameState
 
 
 class SpaijiDisplay(ShibumiDisplay):
-    rules_path = ':/shibumi_rules/spaiji.md'
+    rules_path = ':/shibumi_rules/spaiji.html'
 
     def __init__(self):
         super().__init__(SpaijiState())

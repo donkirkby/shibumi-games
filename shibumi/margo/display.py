@@ -4,7 +4,7 @@ from shibumi.spargo.display import SpargoDisplay
 
 
 class MargoDisplay(SpargoDisplay):
-    rules_path = ':/shibumi_rules/spargo.md'
+    rules_path = ':/shibumi_rules/spargo.html'
 
     def __init__(self, size: int = 6):
         super().__init__(size=size)
