@@ -1,12 +1,75 @@
 from pathlib import Path
 
-from PySide2.QtGui import QPainter
+from PySide2.QtGui import QPainter, QColor
 
+from shibumi.spaiji.display import SpaijiDisplay
+from shibumi.spaiji.game import SpaijiState
 from shibumi.spline.display import SplineDisplay
 from shibumi.spline.game import SplineState
 from shibumi.sploof.display import SploofDisplay
 from shibumi.sploof.state import SploofState
 from zero_play.diagram_writer import DiagramWriter
+
+
+class SpaijiLossDiagram(DiagramWriter):
+    def __init__(self):
+        display = SpaijiDisplay()
+        display.update_board(SpaijiState('''\
+  A C E G
+7 B W W W 7
+
+5 B R R B 5
+
+3 W R R B 3
+
+1 B B W B 1
+  A C E G
+   B D F
+ 6 W W B 6
+
+ 4 B R W 4
+
+ 2 W B W 2
+   B D F
+    C E
+  5 W B 5
+
+  3 B B 3
+    C E
+     D
+   4 W 4
+     D
+>B
+'''))
+        display.resize(300, 224)
+        super().__init__(display)
+
+    def draw(self, painter: QPainter):
+        super().draw(painter)
+        pen = painter.pen()
+        pen.setColor(QColor('darkgrey'))
+        painter.setPen(pen)
+        w = self.width
+        h = self.height
+        size = int(w*0.06)
+        x = int(w*0.49)
+        y = int(h*0.47)
+        painter.drawLine(x, y-size, x, y+size)
+        painter.drawLine(x-size, y, x+size, y)
+        x = int(w*0.6)
+        y = int(h*0.37)
+        painter.drawLine(x, y-size, x, y+size)
+        painter.drawLine(x-size, y, x+size, y)
+
+
+class SpaijiWinDiagram(SpaijiLossDiagram):
+    def __init__(self):
+        super().__init__()
+        state = self.display.current_state
+        assert isinstance(state, SpaijiState)
+        board = state.board
+        board[2, 1, 1] = state.WHITE
+        board[3, 0, 0] = state.BLACK
 
 
 class SplineDiagram(DiagramWriter):
@@ -73,7 +136,7 @@ class SplineDiagram2(DiagramWriter):
     def draw(self, painter: QPainter):
         super().draw(painter)
         pen = painter.pen()
-        pen.setColor('darkgrey')
+        pen.setColor(QColor('darkgrey'))
         painter.setPen(pen)
         w = self.width
         h = self.height
@@ -192,7 +255,7 @@ class SploofBlockedDiagram(DiagramWriter):
     def draw(self, painter: QPainter):
         super().draw(painter)
         pen = painter.pen()
-        pen.setColor('darkgrey')
+        pen.setColor(QColor('darkgrey'))
         painter.setPen(pen)
         w = self.width
         h = self.height
@@ -202,6 +265,8 @@ class SploofBlockedDiagram(DiagramWriter):
 
 def main():
     rules_path = Path(__file__).parent.parent / "docs" / "rules"
+    SpaijiLossDiagram().write(rules_path / "spaiji_loss.png")
+    SpaijiWinDiagram().write(rules_path / "spaiji_win.png")
     SplineDiagram().write(rules_path / "spline.png")
     SplineDiagram2().write(rules_path / "spline2.png")
     SploofStartDiagram().write(rules_path / "sploof_start.png")
@@ -213,4 +278,4 @@ def main():
 if __name__ == '__main__':
     main()
 elif __name__ == '__live_coding__':
-    SplineDiagram2().demo()
+    SpaijiWinDiagram().demo()
