@@ -381,6 +381,55 @@ def test_move_ghost():
     assert active_player == state2.BLACK
 
 
+def test_move_ghost_one_space():
+    state1 = SpookState("""\
+  A C E G
+7 B R . . 7
+
+5 B R . W 5
+
+3 B R . . 3
+
+1 . . . . 1
+  A C E G
+   B D F
+ 6 . . . 6
+
+ 4 B . . 4
+
+ 2 . . . 2
+   B D F
+>R(B,R)
+""")
+    expected_display = """\
+  A C E G
+7 B R . . 7
+
+5 B R W . 5
+
+3 B R . . 3
+
+1 . . . . 1
+  A C E G
+   B D F
+ 6 . . . 6
+
+ 4 B . . 4
+
+ 2 . . . 2
+   B D F
+>B(B,R)
+"""
+
+    state2 = state1.make_move(10)
+
+    display = state2.display()
+    active_player = state2.get_active_player()
+
+    assert display == expected_display
+    assert active_player == state2.BLACK
+
+
 def test_remove_opponent_piece():
     state1 = SpookState("""\
   A C E G

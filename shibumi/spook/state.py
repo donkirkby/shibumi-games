@@ -1,4 +1,5 @@
 import numpy as np
+import typing
 
 from shibumi.shibumi_game_state import ShibumiGameState, PlayerCode
 
@@ -69,6 +70,9 @@ class SpookState(ShibumiGameState):
     def get_active_player(self) -> int:
         return self.board[-1, -1, -1]
 
+    def get_players(self) -> typing.Iterable[int]:
+        return self.BLACK, self.RED
+
     def make_move(self, move: int) -> 'ShibumiGameState':
         player = self.get_active_player()
         volume = self.calculate_volume()
@@ -110,10 +114,13 @@ class SpookState(ShibumiGameState):
                 # This wasn't a ghost drop.
                 is_neighbour_captured = False
                 if new_board[move_coordinates] == self.NO_PLAYER:
-                    ghost_distance = sum(abs(a-b)
-                                         for a, b in zip(ghost_coordinates,
-                                                         move_coordinates))
-                    is_neighbour_captured = ghost_distance == 1
+                    if removed_piece == self.NO_PLAYER:
+                        is_neighbour_captured = False
+                    else:
+                        ghost_distance = sum(abs(a-b)
+                                             for a, b in zip(ghost_coordinates,
+                                                             move_coordinates))
+                        is_neighbour_captured = ghost_distance == 1
                     if is_neighbour_captured or removed_piece == self.NO_PLAYER:
                         # Move ghost.
                         new_board[ghost_coordinates] = self.NO_PLAYER
@@ -143,7 +150,7 @@ class SpookState(ShibumiGameState):
         return new_state
 
     def get_move_count(self) -> int:
-        return self.board[-1, -1, -2]
+        return int(self.board[-1, -1, -2])
 
     def get_valid_moves(self) -> np.ndarray:
         volume = self.calculate_volume(self.size)
