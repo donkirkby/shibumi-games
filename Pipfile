@@ -13,7 +13,7 @@ sqlalchemy-stubs = "*"
 [packages]
 zero-play = "*"
 numpy = "<1.19.0"
-pyside2 = "==5.15.0"  # Waiting for a fix: https://bugreports.qt.io/browse/PYSIDE-1404
+pyside2 = "==5.15.2"  # Waiting for a fix: https://bugreports.qt.io/browse/PYSIDE-1404
 pip = "*"
 alembic = "*"
 
