@@ -1,0 +1,53 @@
+# This workflow will install Python dependencies and run tests with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Python application
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout ZeroPlay
+        uses: actions/checkout@v2
+        with:
+          repository: donkirkby/zero-play
+          path: zero-play
+      - name: Checkout Shibumi Games
+        uses: actions/checkout@v2
+        with:
+          path: shibumi-games
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install missing package and fake XServer
+        run: |
+          # Work around missing deps: https://bugreports.qt.io/browse/QTBUG-84749
+          sudo apt-get install libxcb-xinerama0 libxkbcommon-x11-0 xserver-xephyr
+      - name: Install dependencies
+        run: |
+          pwd
+          cd shibumi-games
+          python -m pip install --upgrade pip
+          pip install pipenv
+          pipenv install --dev
+          pipenv install -e ../zero-play
+          pipenv graph
+      - name: Test with pytest
+        run: |
+          pwd
+          cd shibumi-games
+          MYPYPATH=../zero-play/ pipenv run mypy shibumi
+          # Add QT_DEBUG_PLUGINS=1 before xvfb-run to debug Qt library problems.
+          xvfb-run -a pipenv run coverage run --source=shibumi -m pytest
+      - name: Upload code coverage
+        run: |
+          cd shibumi-games
+          pipenv install codecov
+          pipenv run codecov
