@@ -1,12 +1,13 @@
 version: 2
 updates:
-- package-ecosystem: pip
-  directory: "/"
-  schedule:
-    interval: daily
-    time: "13:00"
-  open-pull-requests-limit: 10
-  ignore:
-  - dependency-name: alembic
-    versions:
-    - 1.5.7
+  - package-ecosystem: pip
+    directory: "/"
+    schedule:
+      interval: daily
+    ignore:
+      - dependency-name: pyside2
+        versions: ["5.15.x"]  # Waiting for a fix: https://bugreports.qt.io/browse/PYSIDE-1404
+  - package-ecosystem: bundler
+    directory: "/docs"
+    schedule:
+      interval: daily
