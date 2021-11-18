@@ -1,6 +1,6 @@
-from PySide2.QtCore import QSize
-from PySide2.QtGui import QPainter
-from PySide2.QtWidgets import QGraphicsScene
+from PySide6.QtCore import QSize
+from PySide6.QtGui import QPainter
+from PySide6.QtWidgets import QGraphicsScene
 
 from shibumi.spook.display import SpookDisplay
 from shibumi.spook.state import SpookState

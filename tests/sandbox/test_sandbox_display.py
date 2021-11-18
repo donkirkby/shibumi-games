@@ -1,6 +1,6 @@
-from PySide2.QtCore import QSize
-from PySide2.QtGui import QPainter
-from PySide2.QtWidgets import QGraphicsScene, QApplication
+from PySide6.QtCore import QSize
+from PySide6.QtGui import QPainter
+from PySide6.QtWidgets import QGraphicsScene, QApplication
 
 from shibumi.sandbox.display import SandboxDisplay
 from shibumi.sandbox.game import SandboxState
@@ -133,7 +133,7 @@ def test_red(pixmap_differ: PixmapDiffer):
         display.resize(348, 264)
 
         render_display(display, actual)
-    assert display.ui.player_pixmap.pixmap() is None
+    assert display.ui.player_pixmap.pixmap().isNull()
 
 
 # noinspection DuplicatedCode

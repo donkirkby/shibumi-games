@@ -1,10 +1,10 @@
 import typing
 from math import floor
 
-from PySide2.QtCore import QSize
-from PySide2.QtCore import Qt
-from PySide2.QtGui import QImage, QPixmap, QFont, QResizeEvent, QPainter
-from PySide2.QtWidgets import (QGraphicsPixmapItem, QGraphicsSceneHoverEvent,
+from PySide6.QtCore import QSize
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QImage, QPixmap, QFont, QResizeEvent, QPainter
+from PySide6.QtWidgets import (QGraphicsPixmapItem, QGraphicsSceneHoverEvent,
                                QGraphicsSceneMouseEvent, QGraphicsScene)
 
 from shibumi.shibumi_display_ui import Ui_ShibumiDisplay
@@ -130,7 +130,7 @@ class ShibumiDisplay(GameDisplay):
             if code in value:
                 count_pixmap.setPixmap(pixmap)
             else:
-                count_pixmap.setPixmap(None)
+                count_pixmap.setPixmap(QPixmap())
         self.update_count_text()
 
     @property
@@ -344,6 +344,8 @@ class ShibumiDisplay(GameDisplay):
             self.ui.player_pixmap.setPixmap(self.black_pixmap)
         elif displayed_player == game_state.RED:
             self.ui.player_pixmap.setPixmap(self.red_pixmap)
+        if displayed_player is not None:
+            displayed_player = int(displayed_player)
         self.ui.player_pixmap.setVisible(displayed_player != game_state.NO_PLAYER)
         if self.show_counts:
             self.update_count_text()

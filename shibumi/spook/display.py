@@ -17,7 +17,7 @@ class SpookDisplay(ShibumiDisplay):
         super().update_board(game_state)
         valid_moves = game_state.get_valid_moves()
         volume = game_state.calculate_volume()
-        is_pass_valid = valid_moves[volume]
+        is_pass_valid = bool(valid_moves[volume])
         self.ui.pass_button.setVisible(is_pass_valid)
 
     def make_pass_move(self):

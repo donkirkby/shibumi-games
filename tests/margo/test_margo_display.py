@@ -1,6 +1,6 @@
-from PySide2.QtCore import QSize
-from PySide2.QtGui import QPainter, QPixmap, Qt
-from PySide2.QtWidgets import QGraphicsScene
+from PySide6.QtCore import QSize
+from PySide6.QtGui import QPainter, QPixmap, Qt
+from PySide6.QtWidgets import QGraphicsScene
 
 from shibumi.margo.display import MargoDisplay
 from shibumi.spargo.game import SpargoState

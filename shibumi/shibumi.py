@@ -1,7 +1,7 @@
 import sys
 import typing
 
-from PySide2.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication
 from pkg_resources import EntryPoint
 
 from zero_play.zero_play import ZeroPlayWindow
@@ -28,7 +28,7 @@ def main():
     app = QApplication(sys.argv)
     window = ShibumiWindow()
     window.show()
-    return app.exec_()
+    return app.exec()
 
 
 if __name__ == "__main__":

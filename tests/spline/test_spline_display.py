@@ -1,6 +1,6 @@
-from PySide2.QtCore import QSize
-from PySide2.QtGui import QPainter, QFont, QResizeEvent
-from PySide2.QtWidgets import QGraphicsScene, QGraphicsView
+from PySide6.QtCore import QSize
+from PySide6.QtGui import QPainter, QFont, QResizeEvent
+from PySide6.QtWidgets import QGraphicsScene, QGraphicsView
 
 from shibumi.spline.game import SplineState
 from zero_play.game_display import center_text_item

@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from PySide2.QtGui import QPainter, QColor
+from PySide6.QtGui import QPainter, QColor
 
 from shibumi.spaiji.display import SpaijiDisplay
 from shibumi.spaiji.game import SpaijiState

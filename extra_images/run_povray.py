@@ -3,8 +3,8 @@ from argparse import ArgumentParser
 from pathlib import Path
 from subprocess import run
 
-from PySide2.QtGui import QPixmap, Qt, QPainter
-from PySide2.QtWidgets import QApplication
+from PySide6.QtGui import QPixmap, Qt, QPainter
+from PySide6.QtWidgets import QApplication
 
 
 def parse_args():
