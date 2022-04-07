@@ -68,7 +68,7 @@ class SpireState(ShibumiGameState):
 
     def get_valid_moves(self) -> np.ndarray:
         volume = self.calculate_volume(self.size)
-        valid_moves = np.ndarray(volume * 2, bool)
+        valid_moves: np.ndarray = np.ndarray(volume * 2, bool)
         player_moves = valid_moves[:volume]
         self.fill_supported_moves(player_moves)
 
@@ -91,7 +91,7 @@ class SpireState(ShibumiGameState):
     def check_colour_matches(self, valid_moves: np.ndarray, colour: int):
         levels = self.get_levels()
         size = self.size
-        match_counts = np.ndarray(levels.shape, np.int8)
+        match_counts: np.ndarray = np.ndarray(levels.shape, np.int8)
         indexes = self.get_used_indexes(size)
         # Look for matching neighbours within each 2x2 square.
         # delta = dst - src

@@ -31,7 +31,7 @@ class SandboxState(ShibumiGameState):
     def get_valid_moves(self) -> np.ndarray:
         valid_spaces = super().get_valid_moves()
         volume = self.calculate_volume(self.size)
-        valid_moves = np.ndarray(volume*4, dtype=bool)
+        valid_moves: np.ndarray = np.ndarray(volume*4, dtype=bool)
         for section in range(3):
             valid_moves[section*volume:(section+1)*volume] = valid_spaces
 

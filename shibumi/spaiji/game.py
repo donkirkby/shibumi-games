@@ -89,7 +89,7 @@ class SpaijiState(ShibumiGameState):
 
     def get_valid_moves(self) -> np.ndarray:
         volume = self.calculate_volume()
-        valid_moves = np.ndarray(2*volume, bool)
+        valid_moves: np.ndarray = np.ndarray(2*volume, bool)
         valid_spaces = valid_moves[:volume]
         self.fill_supported_moves(valid_spaces)
         levels = self.get_levels()
