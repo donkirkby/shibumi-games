@@ -13,7 +13,7 @@ types-setuptools = "*"
 
 [packages]
 zero-play = "*"
-numpy = "<1.19.0"
+numpy = "*"
 pip = "*"
 alembic = "*"
 pyside6 = "*"
