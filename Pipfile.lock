@@ -960,11 +960,11 @@
         },
         "types-setuptools": {
             "hashes": [
-                "sha256:8ee03d823fe7fda0bd35faeae33d35cb5c25b497263e6a58b34c4cfd05f40bcf",
-                "sha256:9660b8774b12cd61b448e2fd87a667c02e7ec13ce9f15171f1d49a4654c4df6a"
+                "sha256:affd968a3a7218e1c96f1806eb457f4027eac803b3caaddccf98a4e5776b1724",
+                "sha256:b0341c29c7f44f7625204532b8829bd92ebb5fd48aa9f3e2052177e743e990b1"
             ],
             "index": "pypi",
-            "version": "==57.4.18"
+            "version": "==62.6.1"
         },
         "typing-extensions": {
             "hashes": [
