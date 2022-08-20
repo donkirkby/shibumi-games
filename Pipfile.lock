@@ -34,11 +34,11 @@
         },
         "fonttools": {
             "hashes": [
-                "sha256:0292e391c1b46f2308bda20ea2a2dd5253725e7e2d3a1928b631338eb318eb22",
-                "sha256:1cfb335c0abdeb6231191dc4f9d7ce1173e2ac94b335c617e045b96f9c974aea"
+                "sha256:cb91ef8d5a435d90aeb3ab814b2548c6b515df5bc13b4c5adaa23778f2f79823",
+                "sha256:e637d2fe06bddabbfc488e02ef32d04d561e3c71e9ba11abc7782ea753ceb218"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==4.35.0"
+            "version": "==4.36.0"
         },
         "greenlet": {
             "hashes": [
@@ -619,11 +619,11 @@
         },
         "fonttools": {
             "hashes": [
-                "sha256:0292e391c1b46f2308bda20ea2a2dd5253725e7e2d3a1928b631338eb318eb22",
-                "sha256:1cfb335c0abdeb6231191dc4f9d7ce1173e2ac94b335c617e045b96f9c974aea"
+                "sha256:cb91ef8d5a435d90aeb3ab814b2548c6b515df5bc13b4c5adaa23778f2f79823",
+                "sha256:e637d2fe06bddabbfc488e02ef32d04d561e3c71e9ba11abc7782ea753ceb218"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==4.35.0"
+            "version": "==4.36.0"
         },
         "iniconfig": {
             "hashes": [
@@ -1019,11 +1019,11 @@
         },
         "types-setuptools": {
             "hashes": [
-                "sha256:005ccb8a1a7d0dce61cd63081dad0ddc599af4413bb49ce1333119a78a7bb2e1",
-                "sha256:8290b6bf1d916e6b007784d5cbcd112a1af9a2d76343231fcce0a55185343702"
+                "sha256:050ccaff1d0fecc1b1269168fe4da396c2a0743f0d287af391a9312c18a8b095",
+                "sha256:57f7d89eaa52a40ccb97f2cbe6178c6ad90f843afb67680933f8ef1472da53f8"
             ],
             "index": "pypi",
-            "version": "==64.0.1"
+            "version": "==65.1.0"
         },
         "typing-extensions": {
             "hashes": [
