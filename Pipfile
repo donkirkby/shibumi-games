@@ -12,11 +12,11 @@ sqlalchemy-stubs = "*"
 types-setuptools = "*"
 
 [packages]
-zero-play = "*"
 numpy = "*"
 pip = "*"
 alembic = "*"
 pyside6 = "*"
+zero-play = {editable = true, path = "./../zero-play"}
 
 [requires]
-python_version = "3.8"
+python_version = "3.10"
