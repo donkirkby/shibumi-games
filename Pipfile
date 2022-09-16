@@ -19,4 +19,5 @@ pyside6 = "*"
 zero-play = {editable = true, path = "./../zero-play"}
 
 [requires]
+# Sync with .github/workflows/py-build.yml
 python_version = "3.10"
