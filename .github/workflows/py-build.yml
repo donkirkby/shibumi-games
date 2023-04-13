@@ -52,11 +52,10 @@ jobs:
           MYPYPATH=../zero-play/ pipenv run mypy shibumi
           # Add QT_DEBUG_PLUGINS=1 before xvfb-run to debug Qt library problems.
           xvfb-run -a pipenv run coverage run --source=shibumi -m pytest
-      - name: Upload code coverage
-        run: |
-          cd shibumi-games
-          pipenv install codecov
-          pipenv run codecov
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          directory: shibumi-games
       - name: Upload image diffs
         uses: actions/upload-artifact@v3
         if: ${{ always() && steps.test.outcome == 'failure' }}
