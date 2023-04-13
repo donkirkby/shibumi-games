@@ -1,8 +1,8 @@
 # Shibumi Games [![Build Badge]][build] [![Coverage Badge]][codecov] [![PyPI Badge]][pypi]
 ### Simple board games hiding complexity
 
-[Build Badge]: https://travis-ci.org/donkirkby/shibumi-games.svg?branch=master
-[build]: https://travis-ci.org/donkirkby/shibumi-games
+[Build Badge]: https://github.com/donkirkby/shibumi-games/actions/workflows/py-build.yml/badge.svg?branch=master
+[build]: https://github.com/donkirkby/shibumi-games/actions
 [Coverage Badge]: https://codecov.io/github/donkirkby/shibumi-games/coverage.svg?branch=master
 [codecov]: https://codecov.io/github/donkirkby/shibumi-games?branch=master
 [PyPI Badge]: https://badge.fury.io/py/shibumi.svg

@@ -29,7 +29,7 @@ setup(name='shibumi',
           'Programming Language :: Python :: 3.8'],
       keywords='boardgames alphazero machine learning mcts shibumi',
       packages=setuptools.find_packages(),
-      install_requires=['zero-play', 'numpy', 'PySide2'],
+      install_requires=['zero-play', 'numpy'],
       extras_require={'ml': ['zero-play[ml]'],
                       'ml-gpu': ['zero-play[ml-gpu]']},
       entry_points={

@@ -18,16 +18,16 @@ jobs:
 
     steps:
       - name: Checkout ZeroPlay
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: donkirkby/zero-play
           path: zero-play
       - name: Checkout Shibumi Games
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: shibumi-games
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           # Sync with Pipfile
           python-version: "3.10"
@@ -58,7 +58,7 @@ jobs:
           pipenv install codecov
           pipenv run codecov
       - name: Upload image diffs
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: ${{ always() && steps.test.outcome == 'failure' }}
         with:
           name: image-diffs
