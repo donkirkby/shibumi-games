@@ -289,6 +289,25 @@ def test_group_with_covered_pieces():
     assert black_count == 9
 
 
+def test_move_count_ignores_state():
+    board = SpaijiState('''\
+  A C E G
+7 . . . . 7
+
+5 . . . . 5
+
+3 . . . B 3
+
+1 . . W B 1
+  A C E G
+>B(3G)
+''')
+
+    black_count = board.get_move_count()
+
+    assert black_count == 3
+
+
 def test_first_move_no_neighbours():
     """ Can't pick a first move with no neighbours. """
     board = SpaijiState('''\

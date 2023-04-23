@@ -281,15 +281,20 @@ class ShibumiGameState(GameState, ABC):
 
     def get_move_count(self) -> int:
         """ The number of moves that have already been made in the start_state. """
-        pieces = self.board.reshape(self.size * self.size * self.size)
+        pieces = self.exclude_end_spaces()
         return sum(piece in (self.WHITE, self.BLACK)
                    for piece in pieces)
 
     def get_piece_count(self, player: int) -> int:
-        end_spaces = self.size * self.size - 1
-        spaces = self.board.reshape(self.size*self.size*self.size)[:-end_spaces]
+        spaces = self.exclude_end_spaces()
         player_count = (spaces == player).sum()
         return player_count
+
+    def exclude_end_spaces(self):
+        end_space_count = self.size * self.size - 1
+        all_spaces = self.board.reshape(self.size * self.size * self.size)
+        spaces = all_spaces[:-end_space_count]
+        return spaces
 
     def get_spaces(self) -> np.ndarray:
         """ Extract the board spaces from the complete game state. """
