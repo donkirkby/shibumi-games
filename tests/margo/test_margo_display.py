@@ -12,7 +12,7 @@ from zero_play.pixmap_differ import PixmapDiffer, render_display
 def test_board_size_2(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
-    with pixmap_differ.create_painters(240, 240, 'margo_board_size_2') as (
+    with pixmap_differ.create_qpainters((240, 240)) as (
             actual,
             expected):
         expected_scene = QGraphicsScene(0, 0, 240, 240)
@@ -87,7 +87,7 @@ def test_board_size_2(pixmap_differ: PixmapDiffer):
 def test_board_size_3(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
-    with pixmap_differ.create_painters(240, 240, 'margo_board_size_3') as (
+    with pixmap_differ.create_qpainters((240, 240)) as (
             actual,
             expected):
         expected_scene = QGraphicsScene(0, 0, 240, 240)
@@ -195,7 +195,7 @@ def test_board_size_3(pixmap_differ: PixmapDiffer):
 def test_coordinates(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
-    with pixmap_differ.create_painters(360, 240, 'margo_coordinates') as (
+    with pixmap_differ.create_qpainters((360, 240)) as (
             actual,
             expected):
         expected_scene = QGraphicsScene(0, 0, 360, 240)

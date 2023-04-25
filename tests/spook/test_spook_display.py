@@ -11,8 +11,7 @@ from zero_play.pixmap_differ import PixmapDiffer, render_display
 def test_hover_enter_remove(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
-    with pixmap_differ.create_painters(240, 240,
-                                       'spook_hover_enter_remove') as (
+    with pixmap_differ.create_qpainters((240, 240)) as (
             actual,
             expected):
         expected_scene = QGraphicsScene(0, 0, 240, 240)

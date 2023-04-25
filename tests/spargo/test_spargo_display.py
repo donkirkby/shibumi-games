@@ -10,7 +10,7 @@ from zero_play.pixmap_differ import PixmapDiffer, render_display
 def test_empty(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
-    with pixmap_differ.create_painters(240, 240, 'spargo_empty') as (
+    with pixmap_differ.create_qpainters((240, 240)) as (
             actual,
             expected):
         expected_scene = QGraphicsScene(0, 0, 240, 240)
@@ -39,7 +39,7 @@ def test_empty(pixmap_differ: PixmapDiffer):
 def test_update(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
-    with pixmap_differ.create_painters(240, 240, 'spargo_update') as (
+    with pixmap_differ.create_qpainters((240, 240)) as (
             actual,
             expected):
         expected_scene = QGraphicsScene(0, 0, 240, 240)

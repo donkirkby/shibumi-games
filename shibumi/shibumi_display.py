@@ -220,7 +220,7 @@ class ShibumiDisplay(GameDisplay):
         final_width = left_width+(board_size-2)*mid_width+right_width
         final_height = top_height+(board_size-2)*mid_height+bottom_height
         assembled_board = QPixmap(final_width, final_height)
-        assembled_board.fill(Qt.transparent)
+        assembled_board.fill(Qt.GlobalColor.transparent)
         assembled_painter = QPainter(assembled_board)
         # top left
         assembled_painter.drawPixmap(0, 0,
@@ -445,8 +445,8 @@ class ShibumiDisplay(GameDisplay):
         scaled_pixmap = pixmap.scaled(
             width,
             height,
-            Qt.KeepAspectRatio,
-            Qt.SmoothTransformation)
+            Qt.AspectRatioMode.KeepAspectRatio,
+            Qt.TransformationMode.SmoothTransformation)
         return scaled_pixmap
 
     def on_hover_enter(self, piece_item: GraphicsShibumiPieceItem):

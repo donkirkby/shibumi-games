@@ -12,7 +12,7 @@ from zero_play.pixmap_differ import PixmapDiffer, render_display
 def test_empty(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
-    with pixmap_differ.create_painters(240, 240, 'sandbox_empty') as (
+    with pixmap_differ.create_qpainters((240, 240)) as (
             actual,
             expected):
         expected_scene = QGraphicsScene(0, 0, 240, 240)
@@ -98,7 +98,7 @@ def test_make_move_red(application: QApplication):
 def test_red(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
-    with pixmap_differ.create_painters(240, 240, 'sandbox_red') as (
+    with pixmap_differ.create_qpainters((240, 240)) as (
             actual,
             expected):
         expected_scene = QGraphicsScene(0, 0, 240, 240)
@@ -140,7 +140,7 @@ def test_red(pixmap_differ: PixmapDiffer):
 def test_hover_enter_red(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
-    with pixmap_differ.create_painters(240, 240, 'sandbox_hover_enter_red') as (
+    with pixmap_differ.create_qpainters((240, 240)) as (
             actual,
             expected):
         expected_scene = QGraphicsScene(0, 0, 240, 240)
@@ -174,8 +174,7 @@ def test_hover_enter_red(pixmap_differ: PixmapDiffer):
 def test_hover_enter_remove(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
-    with pixmap_differ.create_painters(240, 240,
-                                       'sandbox_hover_enter_remove') as (
+    with pixmap_differ.create_qpainters((240, 240)) as (
             actual,
             expected):
         expected_scene = QGraphicsScene(0, 0, 240, 240)
@@ -220,8 +219,7 @@ def test_hover_enter_remove(pixmap_differ: PixmapDiffer):
 def test_hover_enter_remove_update(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
-    with pixmap_differ.create_painters(240, 240,
-                                       'sandbox_hover_enter_remove_update') as (
+    with pixmap_differ.create_qpainters((240, 240)) as (
             actual,
             expected):
         expected_scene = QGraphicsScene(0, 0, 240, 240)
@@ -279,8 +277,7 @@ def test_hover_enter_remove_update(pixmap_differ: PixmapDiffer):
 def test_hover_enter_leave(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
-    with pixmap_differ.create_painters(240, 240,
-                                       'sandbox_hover_enter_leave') as (
+    with pixmap_differ.create_qpainters((240, 240)) as (
             actual,
             expected):
         expected_scene = QGraphicsScene(0, 0, 240, 240)

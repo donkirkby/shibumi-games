@@ -25,7 +25,7 @@ def add_text(scene: QGraphicsScene, text: str, x: int, y: int, font_size: int):
 def test_empty(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
-    with pixmap_differ.create_painters(240, 240, 'spline_empty') as (
+    with pixmap_differ.create_qpainters((240, 240)) as (
             actual,
             expected):
         expected_scene = QGraphicsScene(0, 0, 240, 240)
@@ -49,7 +49,7 @@ def test_empty(pixmap_differ: PixmapDiffer):
 def test_first_level(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
-    with pixmap_differ.create_painters(240, 240, 'spline_first_level') as (
+    with pixmap_differ.create_qpainters((240, 240)) as (
             actual,
             expected):
         expected_scene = QGraphicsScene(0, 0, 240, 240)
@@ -90,7 +90,7 @@ def test_first_level(pixmap_differ: PixmapDiffer):
 def test_second_level(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
-    with pixmap_differ.create_painters(240, 240, 'spline_second_level') as (
+    with pixmap_differ.create_qpainters((240, 240)) as (
             actual,
             expected):
         expected_scene = QGraphicsScene(0, 0, 240, 240)
@@ -138,7 +138,7 @@ def test_second_level(pixmap_differ: PixmapDiffer):
 def test_resize_wide(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
-    with pixmap_differ.create_painters(340, 240, 'spline_resize_wide') as (
+    with pixmap_differ.create_qpainters((340, 240)) as (
             actual,
             expected):
         expected_scene = QGraphicsScene(0, 0, 300, 240)
@@ -177,7 +177,7 @@ def test_resize_wide(pixmap_differ: PixmapDiffer):
 def test_resize_narrow(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
-    with pixmap_differ.create_painters(120, 240, 'spline_resize_narrow') as (
+    with pixmap_differ.create_qpainters((120, 240)) as (
             actual,
             expected):
         expected_scene = QGraphicsScene(0, 0, 120, 240)
@@ -198,7 +198,7 @@ def test_resize_narrow(pixmap_differ: PixmapDiffer):
 def test_hover_enter(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
-    with pixmap_differ.create_painters(240, 240, 'spline_hover_enter') as (
+    with pixmap_differ.create_qpainters((240, 240)) as (
             actual,
             expected):
         expected_scene = QGraphicsScene(0, 0, 240, 240)
@@ -231,7 +231,7 @@ def test_hover_enter(pixmap_differ: PixmapDiffer):
 def test_click(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
-    with pixmap_differ.create_painters(240, 240, 'spline_click') as (
+    with pixmap_differ.create_qpainters((240, 240)) as (
             actual,
             expected):
         expected_scene = QGraphicsScene(0, 0, 240, 240)
@@ -262,7 +262,7 @@ def test_click(pixmap_differ: PixmapDiffer):
 def test_hover_leave(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
-    with pixmap_differ.create_painters(240, 240, 'spline_hover_leave') as (
+    with pixmap_differ.create_qpainters((240, 240)) as (
             actual,
             expected):
         expected_scene = QGraphicsScene(0, 0, 240, 240)
@@ -290,7 +290,7 @@ def test_hover_leave(pixmap_differ: PixmapDiffer):
 def test_hover_leave_existing(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
-    with pixmap_differ.create_painters(240, 240, 'spline_hover_leave_existing') as (
+    with pixmap_differ.create_qpainters((240, 240)) as (
             actual,
             expected):
         expected_scene = QGraphicsScene(0, 0, 240, 240)
@@ -332,7 +332,7 @@ def test_hover_leave_existing(pixmap_differ: PixmapDiffer):
 def test_double_update(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
-    with pixmap_differ.create_painters(240, 240, 'spline_double_update') as (
+    with pixmap_differ.create_qpainters((240, 240)) as (
             actual,
             expected):
         expected_scene = QGraphicsScene(0, 0, 240, 240)
@@ -383,7 +383,7 @@ def test_double_update(pixmap_differ: PixmapDiffer):
 def test_coordinates(pixmap_differ: PixmapDiffer):
     actual: QPainter
     expected: QPainter
-    with pixmap_differ.create_painters(240, 200, 'spline_coordinates') as (
+    with pixmap_differ.create_qpainters((240, 200)) as (
             actual,
             expected):
         expected_scene = QGraphicsScene(0, 0, 240, 200)
