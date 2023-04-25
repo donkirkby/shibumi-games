@@ -37,8 +37,8 @@ class ShibumiGameState(GameState, ABC):
                           UNUSABLE: ' '}
 
     def __init__(self,
-                 text: str = None,
-                 board: np.ndarray = None,
+                 text: str | None = None,
+                 board: np.ndarray | None = None,
                  size: int = 4):
         self.size = size
         if board is None:
@@ -232,7 +232,7 @@ class ShibumiGameState(GameState, ABC):
                             continue
             yield neighbour_height, neighbour_row, neighbour_column
 
-    def calculate_volume(self, base_size: int = None):
+    def calculate_volume(self, base_size: int | None = None):
         if base_size is None:
             base_size = self.size
         return base_size * (base_size + 1) * (2 * base_size + 1) // 6

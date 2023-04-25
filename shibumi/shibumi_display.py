@@ -350,7 +350,7 @@ class ShibumiDisplay(GameDisplay):
         if self.show_counts:
             self.update_count_text()
 
-    def update_move_text(self, text: str = None):
+    def update_move_text(self, text: str | None = None):
         if self.debug_message:
             self.ui.move_text.setText(self.debug_message)
         elif text is not None:
@@ -492,7 +492,7 @@ class ShibumiDisplay(GameDisplay):
             self.make_move(move_index)
 
     @staticmethod
-    def load_pixmap(name: str, size: QSize = None) -> QPixmap:
+    def load_pixmap(name: str, size: QSize | None = None) -> QPixmap:
         file_path = ':/shibumi_images/' + name
         image = QImage(str(file_path))
         if image.isNull():

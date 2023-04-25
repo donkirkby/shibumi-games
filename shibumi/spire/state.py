@@ -9,7 +9,7 @@ from shibumi.shibumi_game_state import ShibumiGameState, MoveType
 class SpireState(ShibumiGameState):
     game_name = 'Spire'
 
-    def __init__(self, text: str = None, board: np.ndarray = None):
+    def __init__(self, text: str | None = None, board: np.ndarray | None = None):
         """ Initialize a board state.
 
         :param text: a text representation, like that from display()

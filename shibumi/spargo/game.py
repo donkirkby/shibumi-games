@@ -11,10 +11,10 @@ class IllegalMoveError(Exception):
 
 class SpargoState(ShibumiGameState):
     def __init__(self,
-                 text: str = None,
-                 board: np.ndarray = None,
+                 text: str | None = None,
+                 board: np.ndarray | None = None,
                  size: int = 4,
-                 history: typing.Set[bytes] = None):
+                 history: typing.Set[bytes] | None = None):
         if text is None:
             player = self.BLACK
         else:

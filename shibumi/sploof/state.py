@@ -8,8 +8,8 @@ class SploofState(ShibumiGameState):
     game_name = 'Sploof'
 
     def __init__(self,
-                 text: str = None,
-                 board: np.ndarray = None,
+                 text: str | None = None,
+                 board: np.ndarray | None = None,
                  size: int = 4):
         super().__init__(text, board, size)
 

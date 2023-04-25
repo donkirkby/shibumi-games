@@ -9,8 +9,8 @@ class SpookState(ShibumiGameState):
     players = (ShibumiGameState.RED, ShibumiGameState.BLACK)
 
     def __init__(self,
-                 text: str = None,
-                 board: np.ndarray = None,
+                 text: str | None = None,
+                 board: np.ndarray | None = None,
                  size: int = 4):
         super().__init__(text, board, size)
         if board is None:
@@ -230,9 +230,9 @@ class SpookState(ShibumiGameState):
                         valid_moves[move] = True
         return valid_moves
 
-    def find_ghost(self):
+    def find_ghost(self) -> typing.Tuple[int, int, int]:
         ghost_locations: np.ndarray = np.argwhere(self.board == self.WHITE)
-        return tuple(ghost_locations[0])
+        return tuple(ghost_locations[0])  # type: ignore
 
     def is_win(self, player: int) -> bool:
         if self.board[-1, -1, -3] == self.UNUSABLE:

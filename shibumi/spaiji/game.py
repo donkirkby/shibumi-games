@@ -9,8 +9,8 @@ class SpaijiState(ShibumiGameState):
     game_name = 'Spaiji'
 
     def __init__(self,
-                 text: str = None,
-                 board: np.ndarray = None,
+                 text: str | None = None,
+                 board: np.ndarray | None = None,
                  size: int = 4):
         if text is None:
             player = self.WHITE
