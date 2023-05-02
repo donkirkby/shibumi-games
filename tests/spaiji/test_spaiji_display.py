@@ -1,15 +1,14 @@
 from shibumi.spaiji.display import SpaijiDisplay
-from zero_play.pixmap_differ import PixmapDiffer
 
 
-def test_start(pixmap_differ: PixmapDiffer):
+def test_start(application):
     display = SpaijiDisplay()
 
     assert display.ui.move_black.isVisibleTo(display)
     assert display.ui.move_white.isVisibleTo(display)
 
 
-def test_second_move(pixmap_differ: PixmapDiffer):
+def test_second_move(application):
     display = SpaijiDisplay()
     display.ui.move_white.setChecked(True)
 

@@ -14,7 +14,7 @@ The board starts empty.
 
 ### Play
 Players take turns adding a ball of their colour to a playable
-point. The ball must have freedom (i.e. it must be visibly connected
+point. The ball must have freedom (i.e., it must be visibly connected
 to at least one empty board hole by a chain of visibly touching
 friendly balls) following the move.
 

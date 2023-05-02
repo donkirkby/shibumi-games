@@ -46,6 +46,7 @@ Andrés. The complete set of game rules are available on the
 generous permission of the designers. There are more games in a [BGG list].
 * Spaiji was designed by Néstor Romeral Andrés.
 * Spargo and Margo were designed by Cameron Browne.
+* Sparks was designed by [Dieter Stein].
 * Spire was designed by Dieter Stein, and took second place in the Shibumi
 Challenge.
 * Spline was designed by Néstor Romeral Andrés.
@@ -55,6 +56,7 @@ Challenge.
 
 [nestorgames web site]: https://nestorgames.com/shibumibook_detail.html
 [BGG list]: https://boardgamegeek.com/boardgamefamily/13434/series-shibumi/linkeditems/boardgamefamily?pageid=1&sort=usersrated
+[Dieter Stein]: https://spielstein.com/
 
 ### Image Credits
 The marble and board graphics were designed by Cameron Browne, and are used with

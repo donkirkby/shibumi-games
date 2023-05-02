@@ -9,8 +9,11 @@ title: Spook Rules
 ### Objective
 Get all of your balls caught by Spooky the ghost.
 
-### Play
+### Start
 The board starts empty.
+
+### Play
+The game is played in two phases.
 
 #### A visit to the haunted castle
 Two players, Red and Black, take turns placing one ball of their colour either
@@ -41,6 +44,6 @@ Only if no move is available then:
 
 As usual, pinned balls (supporting more than one ball) may not be removed.
 
-### End of the game
+### End
 The player who has no more balls of his colour on the board in the getaway phase
 wins the game.
