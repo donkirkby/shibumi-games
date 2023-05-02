@@ -18922,174 +18922,203 @@ K\xb9\xa3[!\x9eS\xb1)\xd5}\xf2\xb3,7\x08\
 \x1d\xe2\xfe\xd1\xce\xf6\xcc\xef \xf5?!\x8f\x9e\xdb\x85\
 \xd16\xfd\x0d\x0db`\x08\xbc\xa9x!\x00\x00\x00\x00\
 IEND\xaeB`\x82\
-\x00\x00\x0au\
+\x00\x00\x0cE\
 <\
 !DOCTYPE html>\x0a<\
 html>\x0a<head><met\
 a charset=\x22UTF-8\
 \x22></head>\x0a<body>\
-\x0a<h1>Spook Rules\
-</h1>\x0a<ul>\x0a<li>d\
-esigned by Diete\
-r Stein</li>\x0a<li\
->2 players</li>\x0a\
-</ul>\x0a<h3>Object\
-ive</h3>\x0a<p>Plac\
-e your ball on t\
-op of the fire.<\
-/p>\x0a<h3>Start</h\
-3>\x0a<p>The board \
-(a \xe2\x80\x9cfireplace\xe2\
-\x80\x9d) starts fille\
-d with white and\
- black balls in \
-an alternating p\
-attern. The red \
-balls (called \xe2\x80\
-\x9csparks\xe2\x80\x9d) are \
-kept ready to ha\
-nd.</p>\x0a<p><img \
-alt=\x22Start\x22 src=\
-\x22sparks_start.pn\
-g\x22 title=\x22Start \
-position\x22 /></p>\
-\x0a<h3>Play</h3>\x0a<\
-p>Two players, W\
-hite and Black, \
-are taking turns\
- by putting a <s\
-trong>spark</str\
-ong> from the\x0asu\
-pply <strong>and\
-</strong> a ball\
- <strong>of thei\
-r own colour</st\
-rong> from the b\
-oard (the <em>co\
-al ball</em>)\x0ain\
-to the hand.</p>\
-\x0a<p>Coal can onl\
-y be taken if it\
- isn't <strong>p\
-inned</strong>. \
-(It is <strong>f\
-ree</strong>, or\
- it supports\x0aat \
-most <strong>one\
-</strong> ball o\
-n the level abov\
-e.)</p>\x0a<p>If th\
-e coal ball was \
-<strong>free</st\
-rong>, the playe\
-r fills the empt\
-ied space with t\
-he spark\x0aand pla\
-ys the coal on a\
-ny other place.<\
-/p>\x0a<p>If the co\
-al ball was <str\
-ong>not free</st\
-rong>, a support\
-ed ball will jus\
-t drop into plac\
-e:</p>\x0a<ul>\x0a<li>\
-If a <strong>spa\
-rk</strong> drop\
-ped, the player \
-<strong>returns<\
-/strong> the spa\
-rk in the hand t\
-o the\x0a  supply a\
-nd plays only th\
-e coal ball on a\
-ny place.</li>\x0a<\
-li>If a white or\
- black <strong>c\
-oal ball</strong\
-> dropped, the p\
-layer plays both\
- balls in the\x0a  \
-hand on any plac\
-e and in any des\
-ired order.</li>\
-\x0a</ul>\x0a<p>In thi\
-s example, white\
- takes spark <st\
-rong>x</strong> \
-from the supply,\
- removes coal <s\
-trong>a</strong>\
-,\x0aputs <strong>x\
-</strong> there,\
- and plays <stro\
-ng>a</strong>.</\
-p>\x0a<p><img alt=\x22\
-Move 1a\x22 src=\x22sp\
-arks_move1a.png\x22\
- title=\x22Before m\
-ove 1\x22 />\x0a<img a\
-lt=\x22Move 1b\x22 src\
-=\x22sparks_move1b.\
-png\x22 title=\x22Afte\
-r move 1\x22 /></p>\
-\x0a<p>The next pla\
-yer, Black, take\
-s another spark \
-<strong>y</stron\
-g>, removes coal\
- <strong>b</stro\
-ng> which\x0amakes \
-coal <strong>a</\
-strong> drop. Bl\
-ack has two ball\
-s now (<strong>b\
-</strong> and <s\
-trong>y</strong>\
-) and plays them\
-.</p>\x0a<p><img al\
-t=\x22Move 2a\x22 src=\
-\x22sparks_move2a.p\
-ng\x22 title=\x22Befor\
-e move 2\x22 />\x0a<im\
-g alt=\x22Move 2b\x22 \
-src=\x22sparks_move\
-2b.png\x22 title=\x22A\
-fter move 2\x22 /><\
-/p>\x0a<h3>End</h3>\
-\x0a<p>The player w\
-ho places a ball\
- of their own co\
-lour on top of t\
-he pyramid (the\x0a\
-fire cone) wins \
-the game.</p>\x0a<h\
-3>Strategy</h3>\x0a\
-<p>There are 14 \
-moves. With each\
- turn the pyrami\
-d normally grows\
- by one ball. On\
-ly\x0aif a spark is\
- dropped, the nu\
-mber of balls is\
- not increased. \
-No dropping spar\
-ks\x0awould be a wi\
-n for Black. Yet\
- there will be s\
-park drops in ev\
-ery game and\x0apla\
-yers sometimes c\
-an force or avoi\
-d them. So contr\
-olling the occur\
-rence of\x0aspark d\
-rops is essentia\
-l: White wins by\
- an odd, Black b\
-y an even number\
- of\x0aspark drops.\
+\x0a<h1>Sparks Rule\
+s</h1>\x0a<ul>\x0a<li>\
+designed by Diet\
+er Stein</li>\x0a<l\
+i>2 players</li>\
+\x0a</ul>\x0a<h3>Objec\
+tive</h3>\x0a<p>Pla\
+ce your ball on \
+top of the fire.\
+</p>\x0a<h3>Start</\
+h3>\x0a<p>The board\
+ (a \xe2\x80\x9cfireplace\
+\xe2\x80\x9d) starts fill\
+ed with white an\
+d black balls in\
+ an alternating \
+pattern. The red\
+ balls (called \xe2\
+\x80\x9csparks\xe2\x80\x9d) are\
+ kept ready to h\
+and.</p>\x0a<p><img\
+ alt=\x22Start\x22 src\
+=\x22sparks_start.p\
+ng\x22 title=\x22Start\
+ position\x22 /></p\
+>\x0a<h3>Play</h3>\x0a\
+<p>Two players, \
+White and Black,\
+ are taking turn\
+s by putting a <\
+strong>spark</st\
+rong> from the\x0as\
+upply <strong>an\
+d</strong> a bal\
+l <strong>of the\
+ir own colour</s\
+trong> from the \
+board (the <em>c\
+oal ball</em>)\x0ai\
+nto the hand.</p\
+>\x0a<p>Coal can on\
+ly be taken if i\
+t isn't <strong>\
+pinned</strong>.\
+ (It is <strong>\
+free</strong>, o\
+r it supports\x0aat\
+ most <strong>on\
+e</strong> ball \
+on the level abo\
+ve.)</p>\x0a<p>If t\
+he coal ball was\
+ <strong>free</s\
+trong>, the play\
+er fills the emp\
+tied space with \
+the spark\x0aand pl\
+ays the coal on \
+any other place.\
+</p>\x0a<p>If the c\
+oal ball was <st\
+rong>not free</s\
+trong>, a suppor\
+ted ball will ju\
+st drop into pla\
+ce:</p>\x0a<ul>\x0a<li\
+>If a <strong>sp\
+ark</strong> dro\
+pped, the player\
+ <strong>returns\
+</strong> the sp\
+ark in the hand \
+to the\x0a  supply \
+and plays only t\
+he coal ball on \
+any place.</li>\x0a\
+<li>If a white o\
+r black <strong>\
+coal ball</stron\
+g> dropped, the \
+player plays bot\
+h balls in the\x0a \
+ hand on any pla\
+ce and in any de\
+sired order.</li\
+>\x0a</ul>\x0a<p>In th\
+is example, whit\
+e takes spark <s\
+trong>x</strong>\
+ from the supply\
+, removes coal <\
+strong>a</strong\
+>,\x0aputs <strong>\
+x</strong> there\
+, and plays <str\
+ong>a</strong>.<\
+/p>\x0a<p><img alt=\
+\x22Move 1a\x22 src=\x22s\
+parks_move1a.png\
+\x22 title=\x22Before \
+move 1\x22 />\x0a<img \
+alt=\x22Move 1b\x22 sr\
+c=\x22sparks_move1b\
+.png\x22 title=\x22Aft\
+er move 1\x22 /></p\
+>\x0a<p>The next pl\
+ayer, Black, tak\
+es another spark\
+ <strong>y</stro\
+ng>, removes coa\
+l <strong>b</str\
+ong> which\x0amakes\
+ coal <strong>a<\
+/strong> drop. B\
+lack has two bal\
+ls now (<strong>\
+b</strong> and <\
+strong>y</strong\
+>) and plays the\
+m.</p>\x0a<p><img a\
+lt=\x22Move 2a\x22 src\
+=\x22sparks_move2a.\
+png\x22 title=\x22Befo\
+re move 2\x22 />\x0a<i\
+mg alt=\x22Move 2b\x22\
+ src=\x22sparks_mov\
+e2b.png\x22 title=\x22\
+After move 2\x22 />\
+</p>\x0a<h3>End</h3\
+>\x0a<p>The player \
+who places a bal\
+l of their own c\
+olour on top of \
+the pyramid (the\
+\x0afire cone) wins\
+ the game.</p>\x0a<\
+h3>Strategy</h3>\
+\x0a<p>There are at\
+ least 14 moves.\
+ With each turn \
+the pyramid norm\
+ally grows by on\
+e\x0aball. Only if \
+a spark is dropp\
+ed, the number o\
+f balls is not i\
+ncreased. No\x0adro\
+pping sparks wou\
+ld be a win for \
+Black. Yet there\
+ will be spark d\
+rops in\x0aevery ga\
+me and players s\
+ometimes can for\
+ce or avoid them\
+. So controlling\
+ the\x0aoccurrence \
+of spark drops i\
+s essential: Whi\
+te wins by an od\
+d, Black by an e\
+ven\x0anumber of sp\
+ark drops.</p>\x0a<\
+p>Another way to\
+ look at it: you\
+ win if the numb\
+er of sparks is \
+14 after your\x0atu\
+rn. Since the nu\
+mber of sparks u\
+sually increases\
+ after both your\
+ turn and\x0ayour o\
+pponent's turn, \
+you want the num\
+ber of sparks to\
+ be even after y\
+our turn.\x0aTheref\
+ore, you want th\
+e number of spar\
+ks to be odd at \
+the start of you\
+r turn.\x0aIf it's \
+not, try to drop\
+ a spark. Either\
+ way, try to set\
+ up sparks that \
+only\x0ayou can dro\
+p, and don't run\
+ out of coals th\
+at you can drop.\
 </p></body>\x0a</ht\
 ml>\x0a\
 \x00\x00\x04\x05\
@@ -35180,44 +35209,44 @@ qt_resource_struct = b"\
 \x00\x00\x00\x00\x00\x00\x00\x00\
 \x00\x00\x00\x00\x00\x02\x00\x00\x00\x14\x00\x00\x00\x02\
 \x00\x00\x00\x00\x00\x00\x00\x00\
-\x00\x00\x02*\x00\x00\x00\x00\x00\x01\x00\x05\xefA\
+\x00\x00\x02*\x00\x00\x00\x00\x00\x01\x00\x05\xf1\x11\
 \x00\x00\x01\x87\xd8\x9e\xa6\xee\
 \x00\x00\x00\xdc\x00\x00\x00\x00\x00\x01\x00\x01\xed\xad\
-\x00\x00\x01\x87\xd8\xe9\xde\x8b\
+\x00\x00\x01\x87\xdb\x14\x12\x8e\
 \x00\x00\x00\xa0\x00\x00\x00\x00\x00\x01\x00\x01Lo\
 \x00\x00\x01\x87\xd8\x9e\xa6n\
 \x00\x00\x01\xa4\x00\x00\x00\x00\x00\x01\x00\x04\x9c\x9f\
-\x00\x00\x01\x87\xd8\xe9\xde\x8f\
+\x00\x00\x01\x87\xdb\x14\x12\x8e\
 \x00\x00\x00b\x00\x00\x00\x00\x00\x01\x00\x00\x9d\x94\
 \x00\x00\x01\x87\xd8\x9e\xa72\
-\x00\x00\x02D\x00\x00\x00\x00\x00\x01\x00\x06\x9e\x0a\
+\x00\x00\x02D\x00\x00\x00\x00\x00\x01\x00\x06\x9f\xda\
 \x00\x00\x01\x87\xd8\x9e\xa7\x22\
 \x00\x00\x01J\x00\x00\x00\x00\x00\x01\x00\x03V\xce\
 \x00\x00\x01\x87\xd8\x9e\xa7\x02\
-\x00\x00\x01\xc0\x00\x00\x00\x00\x00\x01\x00\x04\xa7\x18\
-\x00\x00\x01\x87\xd8\xe9\xde\x93\
+\x00\x00\x01\xc0\x00\x00\x00\x00\x00\x01\x00\x04\xa8\xe8\
+\x00\x00\x01\x87\xdb\x14\x12\x92\
 \x00\x00\x01f\x00\x00\x00\x00\x00\x01\x00\x03\xf1&\
-\x00\x00\x01\x87\xd8\xe9\xde\x93\
+\x00\x00\x01\x87\xdb\x14\x12\x92\
 \x00\x00\x00\xc2\x00\x00\x00\x00\x00\x01\x00\x01\xe7#\
-\x00\x00\x01\x87\xd8\xe9\xde\x93\
-\x00\x00\x02j\x00\x00\x00\x00\x00\x01\x00\x07L\xcf\
+\x00\x00\x01\x87\xdb\x14\x12\x96\
+\x00\x00\x02j\x00\x00\x00\x00\x00\x01\x00\x07N\x9f\
 \x00\x00\x01\x87\xd8\x9e\xa6V\
 \x00\x00\x01\x82\x00\x00\x00\x00\x00\x01\x00\x03\xf7\x02\
 \x00\x00\x01\x87\xd8\x9e\xa7F\
 \x00\x00\x00H\x00\x00\x00\x00\x00\x01\x00\x00\x98\x0d\
-\x00\x00\x01\x87\xd8\xe9\xde\x93\
-\x00\x00\x01\xdc\x00\x00\x00\x00\x00\x01\x00\x04\xab!\
+\x00\x00\x01\x87\xdb\x14\x12\x92\
+\x00\x00\x01\xdc\x00\x00\x00\x00\x00\x01\x00\x04\xac\xf1\
 \x00\x00\x01\x87\xd8\x9e\xa6\x82\
-\x00\x00\x02\x02\x00\x00\x00\x00\x00\x01\x00\x05=\xdf\
+\x00\x00\x02\x02\x00\x00\x00\x00\x00\x01\x00\x05?\xaf\
 \x00\x00\x01\x87\xd8\x9e\xa6\xde\
 \x00\x00\x01\x22\x00\x00\x00\x00\x00\x01\x00\x02\xac*\
 \x00\x00\x01\x87\xd8\x9e\xa6\xca\
-\x00\x00\x02\x8e\x00\x00\x00\x00\x00\x01\x00\x07\xe4\xac\
+\x00\x00\x02\x8e\x00\x00\x00\x00\x00\x01\x00\x07\xe6|\
 \x00\x00\x01\x87\xd8\x9e\xa6\xb6\
 \x00\x00\x00 \x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\
 \x00\x00\x01\x87\xd8\x9e\xa6\x9e\
 \x00\x00\x00\x84\x00\x00\x00\x00\x00\x01\x00\x01G\xcc\
-\x00\x00\x01\x87\xd8\xe9\xde\x8f\
+\x00\x00\x01\x87\xdb\x14\x12\x8e\
 \x00\x00\x00\xf8\x00\x00\x00\x00\x00\x01\x00\x01\xf2\x80\
 \x00\x00\x01\x87\xd8\x9e\xa7Z\
 "

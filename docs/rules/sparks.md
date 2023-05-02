@@ -49,13 +49,19 @@ The player who places a ball of their own colour on top of the pyramid (the
 fire cone) wins the game.
 
 ### Strategy
-
 There are at least 14 moves. With each turn the pyramid normally grows by one
 ball. Only if a spark is dropped, the number of balls is not increased. No
 dropping sparks would be a win for Black. Yet there will be spark drops in
 every game and players sometimes can force or avoid them. So controlling the
 occurrence of spark drops is essential: White wins by an odd, Black by an even
 number of spark drops.
+
+Another way to look at it: you win if the number of sparks is 14 after your
+turn. Since the number of sparks usually increases after both your turn and
+your opponent's turn, you want the number of sparks to be even after your turn.
+Therefore, you want the number of sparks to be odd at the start of your turn.
+If it's not, try to drop a spark. Either way, try to set up sparks that only
+you can drop, and don't run out of coals that you can drop.
 
 [Start]: sparks_start.png "Start position"
 [Move 1a]: sparks_move1a.png "Before move 1"
