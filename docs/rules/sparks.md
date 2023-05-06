@@ -45,8 +45,9 @@ makes coal **a** drop. Black has two balls now (**b** and **y**) and plays them.
 ![Move 2b]
 
 ### End
-The player who places a ball of their own colour on top of the pyramid (the
-fire cone) wins the game.
+The player who places a coal on top of the pyramid (the fire cone) wins the
+game. If all of a player's coals are pinned at the start of their turn, they
+lose.
 
 ### Strategy
 There are at least 14 moves. With each turn the pyramid normally grows by one

@@ -464,3 +464,36 @@ def test_black_win():
 
     assert not state2.is_win(state.WHITE)
     assert state2.is_win(state.BLACK)
+
+
+def test_all_pinned():
+    state = SparksState(dedent("""\
+          A C E G
+        7 W B W R 7
+
+        5 B R R R 5
+
+        3 R B W B 3
+
+        1 R B B W 1
+          A C E G
+           B D F
+         6 R R W 2
+         
+         4 B B R 4
+         
+         2 R W R 2
+           B D F
+            C E
+          5 R W 5
+          
+          3 W . 3
+            C E
+        <B
+        """))
+
+    assert state.get_piece_count(state.WHITE) == 8
+    assert state.get_piece_count(state.RED) == 12
+    assert state.get_piece_count(state.BLACK) == 8
+    assert state.is_win(state.WHITE)
+    assert not state.is_win(state.BLACK)

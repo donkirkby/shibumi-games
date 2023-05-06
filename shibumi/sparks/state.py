@@ -188,4 +188,8 @@ class SparksState(ShibumiGameState):
         return new_state
 
     def is_win(self, player: int) -> bool:
-        return self.board[3, 0, 0] == player
+        if self.board[3, 0, 0] in (self.BLACK, self.WHITE):
+            return self.board[3, 0, 0] == player
+        if not self.get_valid_moves().any():
+            return player != self.get_active_player()
+        return False
