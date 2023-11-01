@@ -17,6 +17,8 @@ pip = "*"
 alembic = "*"
 pyside6 = "<6.5"  # 6.5.0 causes fatal Python error. Try 6.5.1 when released.
 zero-play = {editable = true, path = "./../zero-play"}
+tensorflow = "*"
+nvidia-cudnn-cu11 = "==8.6.*"
 
 [requires]
 # Sync with .github/workflows/py-build.yml
