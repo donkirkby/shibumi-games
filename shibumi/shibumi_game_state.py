@@ -1,3 +1,6 @@
+from copy import copy
+
+import math
 from abc import ABC
 from enum import IntEnum
 import functools
@@ -35,18 +38,47 @@ class ShibumiGameState(GameState, ABC):
                           RED: 'R',
                           GameState.NO_PLAYER: '.',
                           UNUSABLE: ' '}
+    usable_positions_by_size: typing.Dict[int, np.ndarray] = {}
 
     def __init__(self,
                  text: str | None = None,
-                 board: np.ndarray | None = None,
+                 levels: np.ndarray | None = None,
                  size: int = 4):
         self.size = size
-        if board is None:
-            levels = self.UNUSABLE * np.logical_not(self.get_usable_positions())
-            board = levels
-            if text is not None:
-                self.load_text(text, levels)
-        self.board = board
+        if levels is None:
+            type_count = len(self.piece_types)
+            packed = np.zeros(math.ceil(size * size * size * type_count / 8),
+                              dtype=np.uint8)
+            self.packed = packed
+            if text is None:
+                return
+            levels = self.levels
+        if text is not None:
+            self.load_text(text, levels)
+        self.levels = levels
+
+    @property
+    def piece_types(self):
+        return self.BLACK, self.WHITE, self.RED
+
+    @property
+    def levels(self) -> np.ndarray:
+        type_count = len(self.piece_types)
+        trimmed_size = self.size * self.size * self.size * type_count
+        trimmed = np.unpackbits(self.packed)[:trimmed_size]
+        return trimmed.reshape(type_count, self.size, self.size, self.size)
+
+    @levels.setter
+    def levels(self, levels):
+        self.packed = np.packbits(levels)
+
+    @property
+    def spaces(self) -> np.ndarray:
+        return self.levels
+
+    @spaces.setter
+    def spaces(self, spaces: np.ndarray) -> None:
+        self.levels = spaces
 
     def get_usable_positions(self):
         r = np.arange(self.size, dtype=np.int8)
@@ -54,18 +86,19 @@ class ShibumiGameState(GameState, ABC):
         rows = r.reshape((1, self.size, 1))
         columns = r.reshape((1, 1, self.size))
         level_sizes = self.size - heights
-        is_usablex = np.logical_and(rows < level_sizes, columns < level_sizes)
-        return is_usablex
+        is_usable = np.logical_and(rows < level_sizes, columns < level_sizes)
+        return is_usable
 
     def __eq__(self, other):
         if not isinstance(other, ShibumiGameState):
             return False
-        return np.array_equal(self.board, other.board)
+        return np.array_equal(self.levels, other.levels)
 
     def load_text(self, text: str, levels: np.ndarray):
         character_players = {
             character: player
             for player, character in self.display_characters.items()}
+        piece_types = self.piece_types
         lines = text.splitlines()
         for height in range(self.size):
             level_size = self.size - height
@@ -86,7 +119,9 @@ class ShibumiGameState(GameState, ABC):
                         message = f'Unexpected {character!r} at line ' \
                                   f'{line_index+1}, column {character_index+1}.'
                         raise ValueError(message) from ex
-                    levels[height, i, j] = player
+                    if player != self.NO_PLAYER:
+                        piece_type = piece_types.index(player)
+                        levels[piece_type, height, i, j] = 1
             lines = lines[level_size*2 + 1:]
 
     def get_valid_moves(self) -> np.ndarray:
@@ -104,7 +139,7 @@ class ShibumiGameState(GameState, ABC):
         :param valid_moves: an array of boolean flags - will be set to True for
             each space that is supported
         """
-        levels = self.get_levels()
+        levels = self.levels
         piece_index = 0
         for height in range(self.size):
             level_size = self.size - height
@@ -114,10 +149,11 @@ class ShibumiGameState(GameState, ABC):
                         is_supported = True
                     else:
                         below_height = height - 1
-                        is_supported = all(levels[below_height, lower_row, lower_column] != self.NO_PLAYER
-                                           for lower_row in range(row, row + 2)
-                                           for lower_column in range(column, column + 2))
-                    is_valid = is_supported and levels[height, row, column] == self.NO_PLAYER
+                        is_supported = all(
+                            levels[:, below_height, lower_row, lower_column].sum() != 0
+                            for lower_row in range(row, row + 2)
+                            for lower_column in range(column, column + 2))
+                    is_valid = is_supported and levels[:, height, row, column].sum() == 0
                     valid_moves[piece_index] = is_valid
                     piece_index += 1
 
@@ -180,14 +216,13 @@ class ShibumiGameState(GameState, ABC):
         :return:
         """
         size = self.size
-        no_player = int(self.NO_PLAYER)
         possible_neighbours = self.find_possible_neighbours(size,
                                                             height,
                                                             row,
                                                             column,
                                                             dh_start,
                                                             dh_end)
-        levels = self.get_levels()
+        levels = self.levels
         for (neighbour_height,
              neighbour_row,
              neighbour_column) in possible_neighbours:
@@ -197,9 +232,8 @@ class ShibumiGameState(GameState, ABC):
             if (0 <= cover_height < size and
                     0 <= cover_row < size - cover_height and
                     0 <= cover_column < size - cover_height):
-                cover_piece = (
-                    levels[cover_height][cover_row][cover_column])
-                if cover_piece != no_player:
+                cover_piece = levels[:, cover_height, cover_row, cover_column]
+                if cover_piece.sum():
                     continue
             if neighbour_height == height:
                 overpass_height = neighbour_height + 1
@@ -217,18 +251,19 @@ class ShibumiGameState(GameState, ABC):
                     if not (0 <= overpass_col1 and
                             overpass_col2 < size - overpass_height):
                         pass  # Next to the edge, no possible overpass.
-                    elif not(0 <= overpass_row1 and
-                             overpass_row2 < size - overpass_height):
+                    elif not (0 <= overpass_row1 and
+                              overpass_row2 < size - overpass_height):
                         pass  # Next to the edge, no possible overpass.
                     else:
-                        overpass_piece1 = levels[overpass_height,
+                        overpass_piece1 = levels[:,
+                                                 overpass_height,
                                                  overpass_row1,
                                                  overpass_col1]
-                        overpass_piece2 = levels[overpass_height,
+                        overpass_piece2 = levels[:,
+                                                 overpass_height,
                                                  overpass_row2,
                                                  overpass_col2]
-                        if (overpass_piece1 != no_player and
-                                overpass_piece2 != no_player):
+                        if overpass_piece1.sum() and overpass_piece2.sum():
                             continue
             yield neighbour_height, neighbour_row, neighbour_column
 
@@ -238,10 +273,10 @@ class ShibumiGameState(GameState, ABC):
         return base_size * (base_size + 1) * (2 * base_size + 1) // 6
 
     def display(self, show_coordinates: bool = False) -> str:
-        levels = self.get_levels()
+        levels = self.levels
         lines = []
         for height in range(self.size):
-            level_pieces = levels[height, :self.size - height, :self.size - height]
+            level_pieces = levels[:, height, :self.size - height, :self.size - height]
             # noinspection PyUnresolvedReferences
             if height > 0 and (level_pieces == self.NO_PLAYER).all():
                 break
@@ -256,7 +291,12 @@ class ShibumiGameState(GameState, ABC):
                 row_name = str(row*2 + 1 + height)
                 line = [' ' * height + row_name]
                 for column in range(level_size):
-                    piece = level_pieces[row, column]
+                    piece_types, = np.where(level_pieces[:, row, column])
+                    if piece_types.size:
+                        piece_type = piece_types[0]
+                        piece = self.piece_types[piece_type]
+                    else:
+                        piece = self.NO_PLAYER
                     line.append(self.display_characters[piece])
                 line.append(row_name)
                 lines.append(' '.join(line))
@@ -265,9 +305,6 @@ class ShibumiGameState(GameState, ABC):
             lines.append(header)
         lines.append('')
         return '\n'.join(lines)
-
-    def get_levels(self) -> np.ndarray:
-        return self.board.reshape((self.size, self.size, self.size))
 
     def display_move(self, move: int) -> str:
         height, row, column = self.get_coordinates(move)
@@ -281,24 +318,11 @@ class ShibumiGameState(GameState, ABC):
 
     def get_move_count(self) -> int:
         """ The number of moves that have already been made in the start_state. """
-        pieces = self.exclude_end_spaces()
-        return sum(piece in (self.WHITE, self.BLACK)
-                   for piece in pieces)
+        return self.levels.sum()
 
     def get_piece_count(self, player: int) -> int:
-        spaces = self.exclude_end_spaces()
-        player_count = (spaces == player).sum()
-        return player_count
-
-    def exclude_end_spaces(self):
-        end_space_count = self.size * self.size - 1
-        all_spaces = self.board.reshape(self.size * self.size * self.size)
-        spaces = all_spaces[:-end_space_count]
-        return spaces
-
-    def get_spaces(self) -> np.ndarray:
-        """ Extract the board spaces from the complete game state. """
-        return self.get_levels()
+        piece_type = self.piece_types.index(player)
+        return self.levels[piece_type].sum()
 
     def get_index(self, height: int,
                   row: int = 0,
@@ -362,53 +386,57 @@ class ShibumiGameState(GameState, ABC):
         raise ValueError(f'Invalid move index: {move_index}.')
 
     def make_move(self, move: int) -> 'ShibumiGameState':
-        new_board = self.__class__(board=self.board.copy())
-        levels = new_board.get_levels()
+        new_board = copy(self)
+        levels = new_board.levels
         height, row, column = self.get_coordinates(move)
         player = self.get_active_player()
-        levels[height, row, column] = player
+        piece_type = self.piece_types.index(player)
+        levels[piece_type, height, row, column] = 1
+        new_board.levels = levels
         return new_board
 
     def remove(self, height: int, row: int, column: int):
         upper_height = height+1
-        levels = self.board
+        levels = self.levels
         for upper_row in (row-1, row):
             if not 0 <= upper_row < self.size - upper_height:
                 continue
             for upper_column in (column-1, column):
                 if not 0 <= upper_column < self.size - upper_height:
                     continue
-                upper_piece = levels[upper_height, upper_row, upper_column]
-                if upper_piece != self.NO_PLAYER:
-                    levels[height, row, column] = upper_piece
+                upper_piece = levels[:, upper_height, upper_row, upper_column]
+                if upper_piece.sum() != 0:
+                    levels[:, height, row, column] = upper_piece
+                    self.levels = levels
                     self.remove(upper_height, upper_row, upper_column)
                     return
         # No pieces above, just leave this space empty.
-        levels[height, row, column] = self.NO_PLAYER
+        levels[:, height, row, column] = 0
+        self.levels = levels
 
     def is_pinned(self, height: int, row: int, column: int) -> bool:
         support_count = 0
+        levels = self.levels
         for height2, row2, column2 in self.find_possible_neighbours(
                 self.size,
                 height,
                 row,
                 column,
                 dh_start=1):
-            neighbour_piece = self.board[height2][row2][column2]
-            if neighbour_piece != self.NO_PLAYER:
+            if levels[:, height2, row2, column2].sum():
                 support_count += 1
                 if support_count > 1:
                     return True  # Supporting more than one neighbour.
         return False
 
     def is_free(self, height: int, row: int, column: int) -> bool:
+        levels = self.levels
         for height2, row2, column2 in self.find_possible_neighbours(
                 self.size,
                 height,
                 row,
                 column,
                 dh_start=1):
-            neighbour_piece = self.board[height2][row2][column2]
-            if neighbour_piece != self.NO_PLAYER:
+            if levels[:, height2, row2, column2].sum():
                 return False
         return True

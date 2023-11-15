@@ -1,8 +1,6 @@
 import sys
-import typing
 
 from PySide6.QtWidgets import QApplication
-from pkg_resources import EntryPoint
 
 from zero_play.zero_play import ZeroPlayWindow
 
@@ -15,13 +13,11 @@ class ShibumiWindow(ZeroPlayWindow):
         return 'Shibumi'
 
     @staticmethod
-    def filter_games(
-            entries: typing.Iterable[EntryPoint]) -> typing.Generator[EntryPoint,
-                                                                      None,
-                                                                      None]:
-        for entry_point in entries:
-            if entry_point.module_name.startswith('shibumi.'):
-                yield entry_point
+    def filter_games(entries: list) -> list:
+        shibumi_entries = [entry_point
+                           for entry_point in entries
+                           if entry_point.module.startswith('shibumi.')]
+        return shibumi_entries
 
 
 def main():

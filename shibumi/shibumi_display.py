@@ -1,4 +1,6 @@
 import typing
+
+import numpy as np
 from math import floor
 
 from PySide6.QtCore import QSize
@@ -299,19 +301,26 @@ class ShibumiDisplay(GameDisplay):
             move_type = self.selected_move_type
         else:
             move_type = MoveType.BLACK
-        for level, item_level in zip(game_state.get_levels(),
+        state_levels = np.moveaxis(game_state.levels, 0, 3)
+        for level, item_level in zip(state_levels,
                                      self.item_levels):
             for row_pieces, row_items in zip(level, item_level):
                 piece_item: GraphicsShibumiPieceItem
-                for piece, piece_item in zip(row_pieces, row_items):
+                for piece_flags, piece_item in zip(row_pieces, row_items):
                     move_index = game_state.get_index(piece_item.height,
                                                       piece_item.row,
                                                       piece_item.column,
                                                       move_type)
                     is_valid = valid_moves[move_index] and not is_ended
-                    piece_item.setVisible(bool(piece != game_state.NO_PLAYER or
+                    piece_item.setVisible(bool(piece_flags.sum() != 0 or
                                                is_valid))
                     piece_item.hover_listener = self if is_valid else None
+                    piece_types = np.argwhere(piece_flags)
+                    if piece_types.size == 0:
+                        piece = game_state.NO_PLAYER
+                    else:
+                        piece_type = piece_types[0, 0]
+                        piece = game_state.piece_types[piece_type]
                     pixmap = pixmaps[piece]
                     piece_item.setPixmap(pixmap)
                     piece_item.setOpacity(0.001
@@ -453,9 +462,15 @@ class ShibumiDisplay(GameDisplay):
         assert isinstance(self.current_state, ShibumiGameState)
         if not self.can_move():
             return
-        levels = self.current_state.get_levels()
-        piece = levels[piece_item.height][piece_item.row][piece_item.column]
-        if piece != self.start_state.NO_PLAYER:
+        state = self.current_state
+        levels = state.levels
+        piece_flags = levels[:,
+                             piece_item.height,
+                             piece_item.row,
+                             piece_item.column]
+        if piece_flags.sum():
+            piece_type = np.argwhere(piece_flags)[0, 0]
+            piece = self.current_state.piece_types[piece_type]
             move_type = MoveType(piece)
         elif self.show_move_types:
             move_type = self.selected_move_type
@@ -473,10 +488,11 @@ class ShibumiDisplay(GameDisplay):
 
     def on_hover_leave(self, piece_item: GraphicsShibumiPieceItem):
         assert isinstance(self.current_state, ShibumiGameState)
-        levels = self.current_state.get_levels()
-        piece = levels[piece_item.height][piece_item.row][piece_item.column]
+        state = self.current_state
+        levels = state.levels
+        piece_flags = levels[:, piece_item.height, piece_item.row, piece_item.column]
         piece_item.setOpacity(0.001
-                              if piece == self.start_state.NO_PLAYER
+                              if piece_flags.sum() == 0
                               else 1.0)
         self.hovered_piece = None
 

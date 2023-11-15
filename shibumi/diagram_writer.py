@@ -35,7 +35,7 @@ class ShibumiDiagramWriter(DiagramWriter):
         text_item.setFont(font)
         game_state = display.current_state
         assert isinstance(game_state, ShibumiGameState)
-        if game_state.get_levels()[level][row][column] == game_state.BLACK:
+        if game_state.levels[level][row][column] == game_state.BLACK:
             text_item.setBrush(QColor('white'))
         x = piece_item.x() + piece_item.pixmap().width() // 2
         y = piece_item.y() + round(piece_item.pixmap().height() * 0.45)

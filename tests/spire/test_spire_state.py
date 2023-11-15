@@ -53,7 +53,7 @@ def test_lower_rows(start: int, end: int, expected_valid: bool, reason: str):
 """)
     valid_moves = board.get_valid_moves()
     for move in range(start, end):
-        assert valid_moves[move] == expected_valid, move
+        assert (move, valid_moves[move]) == (move, expected_valid)
 
 
 @pytest.mark.parametrize('start,end,expected_valid,reason',

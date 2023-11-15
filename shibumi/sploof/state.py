@@ -1,3 +1,5 @@
+from copy import copy
+
 import numpy as np
 import typing
 
@@ -9,42 +11,38 @@ class SploofState(ShibumiGameState):
 
     def __init__(self,
                  text: str | None = None,
-                 board: np.ndarray | None = None,
                  size: int = 4):
-        super().__init__(text, board, size)
+        super().__init__(text, size=size)
 
-        if board is None:
-            board = self.board
-            if text is None:
-                # Starting layout is red around the edges.
-                board[0, (0, -1), :] = self.RED
-                board[0, 1:-1, (0, -1)] = self.RED
-                player = self.WHITE
-                player_stock = 2
-                opponent_stock = 2
-            else:
-                lines = text.splitlines()
-                move_line = lines[-1]
-                player_text = move_line[1]
-                player = self.WHITE if player_text == 'W' else self.BLACK
-                stock_text = move_line[3:-1]
-                stock_fields = stock_text.split(',')
-                player_stock, opponent_stock = (int(stock)
-                                                for stock in stock_fields)
+        levels = self.levels
+        if text is None:
+            # Starting layout is red around the edges.
+            red_type = self.piece_types.index(self.RED)
+            levels[red_type, 0, (0, -1), :] = 1
+            levels[red_type, 0, 1:-1, (0, -1)] = 1
+            player = self.WHITE
+            player_stock = 2
+            opponent_stock = 2
+            self.levels = levels
+        else:
+            lines = text.splitlines()
+            move_line = lines[-1]
+            player_text = move_line[1]
+            player = self.WHITE if player_text == 'W' else self.BLACK
+            stock_text = move_line[3:-1]
+            stock_fields = stock_text.split(',')
+            player_stock, opponent_stock = (int(stock)
+                                            for stock in stock_fields)
 
-            board[-1, -1, -1] = player
-            board[-1, -1, -2] = player_stock
-            board[-1, -1, -3] = opponent_stock
+        self.active_player = player
+        self.player_stock = player_stock
+        self.opponent_stock = opponent_stock
         self.winner: typing.Optional[int] = None
 
     def display(self, show_coordinates: bool = False) -> str:
         text = super().display(show_coordinates)
-        board = self.board
-        player = board[-1, -1, -1]
-        player_display = 'W' if player == self.WHITE else 'B'
-        player_stock = board[-1, -1, -2]
-        opponent_stock = board[-1, -1, -3]
-        text += f'>{player_display}({player_stock},{opponent_stock})\n'
+        player_display = 'W' if self.active_player == self.WHITE else 'B'
+        text += f'>{player_display}({self.player_stock},{self.opponent_stock})\n'
         return text
 
     def display_move(self, move: int) -> str:
@@ -65,16 +63,17 @@ class SploofState(ShibumiGameState):
         # if self.is_win(self.BLACK) or self.is_win(self.WHITE):
         #     return valid_moves
 
-        board = self.board
-        player_stock = board[-1, -1, -2]
+        levels = self.levels
+        player_stock = self.player_stock
         if 0 < player_stock:
             self.fill_supported_moves(valid_moves)
         usable_positions = self.get_usable_positions()
-        filled_positions = np.logical_and(board != self.NO_PLAYER,
+        filled_positions = np.logical_and(levels.sum(axis=0),
                                           usable_positions)
-        red_positions = np.logical_and(board == self.RED,
+        red_type = self.piece_types.index(self.RED)
+        red_positions = np.logical_and(levels[red_type],
                                        filled_positions)
-        supporting_counts = np.zeros(board.shape, np.int8)
+        supporting_counts = np.zeros(levels.shape[1:], np.int8)
         supporting_counts[:-1, :, :] += filled_positions[1:, :, :]
         supporting_counts[:-1, 1:, :] += filled_positions[1:, :-1, :]
         supporting_counts[:-1, :, 1:] += filled_positions[1:, :, :-1]
@@ -90,26 +89,28 @@ class SploofState(ShibumiGameState):
         return valid_moves
 
     def get_active_player(self) -> int:
-        return self.board[-1, -1, -1]
+        return self.active_player
 
     def make_move(self, move: int) -> 'ShibumiGameState':
-        new_state = self.__class__(board=self.board.copy())
-        new_board = new_state.board
+        new_state = copy(self)
+        new_levels = new_state.levels
         volume = self.calculate_volume(self.size)
         position_index = move % volume
         height, row, column = self.get_coordinates(position_index)
-        player = new_board[-1, -1, -1]
-        new_board[-1, -1, -1] = -player
-        old_player_stock = new_board[-1, -1, -2]
-        new_player_stock = new_board[-1, -1, -3]
+        player = new_state.active_player
+        new_state.active_player = -player
+        old_player_stock = self.player_stock
+        new_player_stock = self.opponent_stock
         if move < volume:
-            new_board[height, row, column] = player
+            piece_type = self.piece_types.index(player)
+            new_levels[piece_type, height, row, column] = 1
+            new_state.levels = new_levels
             old_player_stock -= 1
         else:
             new_state.remove(height, row, column)
             old_player_stock += 2
-        new_board[-1, -1, -2] = new_player_stock
-        new_board[-1, -1, -3] = old_player_stock
+        new_state.player_stock = new_player_stock
+        new_state.opponent_stock = old_player_stock
         return new_state
 
     def get_index(self,
@@ -124,8 +125,8 @@ class SploofState(ShibumiGameState):
 
     def get_piece_count(self, player: int) -> int:
         if player == self.get_active_player():
-            return self.board[-1, -1, -2]
-        return self.board[-1, -1, -3]
+            return self.player_stock
+        return self.opponent_stock
 
     def is_win(self, player: int) -> bool:
         if self.winner is not None:
@@ -146,11 +147,12 @@ class SploofState(ShibumiGameState):
 
     def has_line(self, player: int) -> bool:
         usable_positions = self.get_usable_positions()
-        board = self.board
-        player_pieces = np.logical_and(board == player, usable_positions)
-        filled_positions = np.logical_and(board != self.NO_PLAYER,
+        levels = self.levels
+        piece_type = self.piece_types.index(player)
+        player_pieces = np.logical_and(levels[piece_type], usable_positions)
+        filled_positions = np.logical_and(levels.sum(axis=0),
                                           usable_positions)
-        cutoff_pieces = board[1, :-1, :-1] != self.NO_PLAYER  # Either colour.
+        cutoff_pieces = levels[:, 1, :-1, :-1].sum(axis=0)  # Either colour.
         # Count the number of the player's pieces in each row on the base level.
         row_counts = player_pieces[0].sum(1)
         # Zero out any rows that are cut off by pieces crossing over.
@@ -185,8 +187,10 @@ class SploofState(ShibumiGameState):
         for i in range(4):
             line_counts1 += top_pieces[i:expanded_size-3+i, i:expanded_size-3+i]
             line_counts2 += top_pieces[3-i:expanded_size-i, i:expanded_size-3+i]
+        # noinspection PyUnresolvedReferences
         if (line_counts1 == 4).any():
             return True
+        # noinspection PyUnresolvedReferences
         if (line_counts2 == 4).any():
             return True
 

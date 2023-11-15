@@ -107,7 +107,7 @@ def test_init_text_second_level():
    B D F
  6 . . . 6
 
- 4 . R . 4
+ 4 . W . 4
 
  2 . . . 2
    B D F
@@ -445,7 +445,7 @@ def test_valid_moves_after_win():
     assert expected_valid_moves == valid_moves.tolist()
 
 
-def test_get_levels():
+def test_levels():
     board = SplineState("""\
   A C E G
 7 W W W . 7
@@ -464,27 +464,28 @@ def test_get_levels():
  2 . W . 2
    B D F
 """)
-    w = board.WHITE
-    b = board.BLACK
-    n = board.NO_PLAYER
-    u = board.UNUSABLE
-    expected_levels = [[[n, b, b, n],
-                        [w, b, b, n],
-                        [w, w, b, w],
-                        [w, w, w, n]],
-                       [[n, w, n, u],
-                        [b, w, b, u],
-                        [b, w, n, u],
-                        [u, u, u, u]],
-                       [[n, n, u, u],
-                        [n, n, u, u],
-                        [u, u, u, u],
-                        [u, u, u, u]],
-                       [[n, u, u, u],
-                        [u, u, u, u],
-                        [u, u, u, u],
-                        [u, u, u, u]]]
-    assert board.get_levels().tolist() == expected_levels
+    empty_level = 4*[[0, 0, 0, 0]]
+    expected_levels = [[[[0, 1, 1, 0],  # Black pieces
+                         [0, 1, 1, 0],
+                         [0, 0, 1, 0],
+                         [0, 0, 0, 0]],
+                        [[0, 0, 0, 0],
+                         [1, 0, 1, 0],
+                         [1, 0, 0, 0],
+                         [0, 0, 0, 0]],
+                        empty_level,
+                        empty_level],
+                       [[[0, 0, 0, 0],  # White pieces
+                         [1, 0, 0, 0],
+                         [1, 1, 0, 1],
+                         [1, 1, 1, 0]],
+                        [[0, 1, 0, 0],
+                         [0, 1, 0, 0],
+                         [0, 1, 0, 0],
+                         [0, 0, 0, 0]],
+                        empty_level,
+                        empty_level]]
+    assert board.levels.tolist() == expected_levels
 
 
 @pytest.mark.parametrize(['move_index', 'expected_display'],

@@ -6,9 +6,14 @@ class SplineState(ShibumiGameState):
 
     game_name = 'Spline'
 
+    @property
+    def piece_types(self):
+        return self.BLACK, self.WHITE
+
     def is_win(self, player: int) -> bool:
-        levels = self.get_levels()
-        player_pieces = levels == player
+        levels = self.levels
+        piece_type = self.piece_types.index(player)
+        player_pieces = levels[piece_type]
         if self.is_straight_winner(player_pieces):
             return True
         if self.is_diagonal_winner(player_pieces):
